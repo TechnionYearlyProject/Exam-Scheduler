@@ -1,0 +1,14 @@
+<programs>
+	<program>
+		<name>מסלול כללי ארבע-שנתי</name>
+		<program_id>0</program_id>
+	</program>
+	<program>
+		<name>מסלול כללי תלת-שנתי</name>
+		<program_id>1</program_id>
+	</program>
+	<program>
+		<name>הנדסת תוכנה</name>
+		<program_id>2</program_id>
+	</program>
+</programs>
