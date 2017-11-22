@@ -1,8 +1,10 @@
 package db;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class Semester {
     public Map<Integer, Course> courses;
@@ -12,14 +14,14 @@ public class Semester {
     }
 
     public Course addCourse(int id, String name) {
-        Course c = new Course(id, name);
+        Course course = new Course(id, name);
         if (courses.keySet().contains(id)) {
             // Course already exists
             // Throw something ?
             return null;
         }
-        courses.put(id, c);
-        return c;
+        courses.put(id, course);
+        return course;
     }
 
     public Course getCourse(int id) {
@@ -27,5 +29,9 @@ public class Semester {
             return null;
         }
         return courses.get(id);
+    }
+
+    public Collection<Course> getCourseCollection() {
+        return courses.values();
     }
 }
