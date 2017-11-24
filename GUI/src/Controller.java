@@ -2,10 +2,7 @@ package src;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -42,10 +39,18 @@ public class Controller implements Initializable {
     public void onNextButtonClick(){
         wantedYear = yearChoice.getValue();
         if (wantedYear == null) {
-            System.out.println("Please pick a year");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please pick a year.", ButtonType.OK);
+            alert.setHeaderText("Year");
+            alert.showAndWait();
             return;
         }
         RadioButton pickedButton = (RadioButton)semesterToggleGroup.getSelectedToggle();
+        if(pickedButton == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please pick a semester.", ButtonType.OK);
+            alert.setHeaderText("Semester");
+            alert.showAndWait();
+            return;
+        }
         if(radioButtonA == pickedButton){
             wantedSemester = SEMESTER_A;
         }
