@@ -1,11 +1,14 @@
 package src;
-
+import com.jfoenix.controls.JFXComboBox;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+
 import java.net.URL;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import static src.SEMESTER.SEMESTER_A;
@@ -16,7 +19,7 @@ enum SEMESTER{ SEMESTER_A, SEMESTER_B, SEMESTER_K }
 public class Controller implements Initializable {
     public VBox topBar;
     @FXML
-    ChoiceBox<String> yearChoice;
+    JFXComboBox<String> yearChoice;
     @FXML
     ToggleGroup semesterToggleGroup;
     @FXML
@@ -36,19 +39,22 @@ public class Controller implements Initializable {
         }
     }
 
+    private void createAlert(String text, String title){
+        Alert alert = new Alert(Alert.AlertType.ERROR, text, ButtonType.OK);
+        alert.setHeaderText("");
+        alert.setTitle(title);
+        alert.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        alert.showAndWait();
+    }
     public void onNextButtonClick(){
         wantedYear = yearChoice.getValue();
         if (wantedYear == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please pick a year.", ButtonType.OK);
-            alert.setHeaderText("Year");
-            alert.showAndWait();
+            createAlert("אנא בחר/י שנת לימודים.","שגיאה");
             return;
         }
         RadioButton pickedButton = (RadioButton)semesterToggleGroup.getSelectedToggle();
         if(pickedButton == null){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please pick a semester.", ButtonType.OK);
-            alert.setHeaderText("Semester");
-            alert.showAndWait();
+            createAlert("אנא בחר/י סמסטר.","שגיאה");
             return;
         }
         if(radioButtonA == pickedButton){
