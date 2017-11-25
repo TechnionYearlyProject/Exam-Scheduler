@@ -32,7 +32,7 @@ public class Database {
     }
 
     private String getSemesterDir(int year, String semester) {
-        return year + '_' + semester;
+        return Integer.toString(year) + '_' + semester;
     }
 
     private Semester parseSemester(String path) {
@@ -54,12 +54,24 @@ public class Database {
         Element root = XMLTree.getDocumentElement();
         NodeList courses = root.getChildNodes();
         for (int i = 0; i < courses.getLength(); i++) {
-            Element courseElement = (Element) courses.item(i);
-            String courseID = courseElement.getElementsByTagName("course_id").item(0).getTextContent();
-            String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
+            Node n = courses.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element courseElement = (Element) n;
+                String courseID = courseElement.getElementsByTagName("course_id").item(0).getTextContent();
+                String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
+                Course course = semester.addCourse(Integer.parseInt(courseID), name);
 
-            // TODO Add program semester parsing
-            Course course = semester.addCourse(Integer.parseInt(courseID), name);
+                NodeList programs = courseElement.getElementsByTagName("semester");
+                for (int j = 0; j < programs.getLength(); j++) {
+                    Node m = programs.item(j);
+                    if (m.getNodeType() == Node.ELEMENT_NODE) {
+                        Element programElement = (Element) m;
+                        String programID = programElement.getAttribute("program_id");
+                        String programSemester = programElement.getTextContent();
+                        course.addProgram(Integer.parseInt(programID), Integer.parseInt(programSemester));
+                    }
+                }
+            }
         }
     }
 
