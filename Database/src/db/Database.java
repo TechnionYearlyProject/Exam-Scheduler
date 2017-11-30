@@ -46,11 +46,11 @@ public class Database {
         Document XMLTree = null;
         try {
             XMLTree = parser.parse(XMLFile);
-        } catch (SAXException e) {
+        } catch (SAXException | IOException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            // TODO Raise something
         }
+        assert XMLTree != null;
         Element root = XMLTree.getDocumentElement();
         NodeList courses = root.getChildNodes();
         for (int i = 0; i < courses.getLength(); i++) {
@@ -66,9 +66,9 @@ public class Database {
                     Node m = programs.item(j);
                     if (m.getNodeType() == Node.ELEMENT_NODE) {
                         Element programElement = (Element) m;
-                        String programID = programElement.getAttribute("program_id");
+                        String program = programElement.getAttribute("program");
                         String programSemester = programElement.getTextContent();
-                        course.addProgram(Integer.parseInt(programID), Integer.parseInt(programSemester));
+                        course.setStudyProgram(program, Integer.parseInt(programSemester));
                     }
                 }
             }

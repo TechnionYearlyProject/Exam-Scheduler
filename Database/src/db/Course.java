@@ -6,7 +6,7 @@ import java.util.Map;
 public class Course {
     public int id;
     public String name;
-    private Map<Integer, Integer> programs;
+    private Map<String, Integer> programs;
 
     public Course(int id, String name) {
         this.id = id;
@@ -14,11 +14,15 @@ public class Course {
         programs = new HashMap<>();
     }
 
-    public void addProgram(int programId, int semester) {
-        programs.put(programId, semester);
+    public void setStudyProgram(String program, int semester) {
+        programs.put(program, semester);
     }
 
-    public int getProgramSemester(int programId) {
-        return programs.get(programId);
+    public void removeStudyProgram(String program) {
+        programs.remove(program);
+    }
+
+    public int getStudyProgramSemester(String program) {
+        return programs.get(program);
     }
 }

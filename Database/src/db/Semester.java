@@ -1,23 +1,34 @@
 package db;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class Semester {
     public Map<Integer, Course> courses;
+    private Set<String> programs;
 
     public Semester() {
         courses = new HashMap<>();
+        programs = new HashSet<>();
+    }
+
+    public void addStudyProgram(String program) {
+        // TODO Check if add successful
+        programs.add(program);
+    }
+
+    public void removeStudyProgram(String program) {
+        // TODO Check if removal successful
+        programs.remove(program);
+        for (Course course: courses.values()) {
+            course.removeStudyProgram(program);
+        }
     }
 
     public Course addCourse(int id, String name) {
         Course course = new Course(id, name);
         if (courses.keySet().contains(id)) {
-            // Course already exists
-            // Throw something ?
             return null;
         }
         courses.put(id, course);
