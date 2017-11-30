@@ -43,27 +43,26 @@ public class Database {
         return Integer.toString(year) + '_' + semester;
     }
 
-    private Document loadXMLFile(String filePath) {
+    private Document loadXMLFile(String filePath) throws InvalidDatabase {
         File XMLFile = new File(filePath);
-        Document XMLTree = null;
+        Document XMLTree;
         try {
             XMLTree = parser.parse(XMLFile);
         } catch (SAXException | IOException e) {
-            e.printStackTrace();
-            // TODO Raise something
+            throw new InvalidDatabase( e.toString());
         }
         assert XMLTree != null;
         return XMLTree;
     }
 
-    private Semester parseSemester(String path) {
+    private Semester parseSemester(String path) throws InvalidDatabase {
         Semester semester = new Semester();
         parseStudyPrograms(path + separator + "study_programs.xml", semester);
         parseCourses(path + separator + "courses.xml", semester);
         return semester;
     }
 
-    private void parseStudyPrograms(String filePath, Semester semester) {
+    private void parseStudyPrograms(String filePath, Semester semester) throws InvalidDatabase {
         Document XMLTree = loadXMLFile(filePath);
         Element root = XMLTree.getDocumentElement();
         NodeList programs = root.getChildNodes();
@@ -72,12 +71,16 @@ public class Database {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element program = (Element) n;
                 String programName = program.getTextContent();
-                semester.addStudyProgram(programName);
+                try {
+                    semester.addStudyProgram(programName);
+                } catch (StudyProgramAlreadyExist e) {
+                    throw new InvalidDatabase("Duplicate study program] in database: '" + programName + "'");
+                }
             }
         }
     }
 
-    private void parseCourses(String filePath, Semester semester) {
+    private void parseCourses(String filePath, Semester semester) throws InvalidDatabase {
         List<String> programList = semester.getStudyProgramCollection();
         Document XMLTree = loadXMLFile(filePath);
         Element root = XMLTree.getDocumentElement();
@@ -88,8 +91,12 @@ public class Database {
                 Element courseElement = (Element) n;
                 String courseID = courseElement.getElementsByTagName("course_id").item(0).getTextContent();
                 String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
-                Course course = semester.addCourse(Integer.parseInt(courseID), name);
-
+                Course course;
+                try {
+                    course = semester.addCourse(Integer.parseInt(courseID), name);
+                } catch (CourseAlreadyExist e) {
+                    throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
+                }
                 NodeList programs = courseElement.getElementsByTagName("semester");
                 for (int j = 0; j < programs.getLength(); j++) {
                     Node m = programs.item(j);
@@ -97,7 +104,8 @@ public class Database {
                         Element programElement = (Element) m;
                         String program = programElement.getAttribute("program");
                         if (!programList.contains(program)) {
-                            // TODO Invalid database, raise something
+                            throw new InvalidDatabase("Course '" + name +
+                                    "' contains unknown program study: '" + program + "'");
                         }
                         String programSemester = programElement.getTextContent();
                         course.setStudyProgram(program, Integer.parseInt(programSemester));
@@ -107,7 +115,7 @@ public class Database {
         }
     }
 
-    public Semester loadSemester(int year, String sem) {
+    public Semester loadSemester(int year, String sem) throws InvalidDatabase {
         String semesterDir = getSemesterDir(year, sem);
         String path = baseDirectory + separator + "Database" + separator + "db" + separator + semesterDir;
         Semester semester = parseSemester(path);

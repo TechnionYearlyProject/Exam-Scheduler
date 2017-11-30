@@ -13,13 +13,17 @@ public class Semester {
         programs = new HashSet<>();
     }
 
-    public void addStudyProgram(String program) {
-        // TODO Check if add successful
+    public void addStudyProgram(String program) throws StudyProgramAlreadyExist {
+        if (programs.contains(program)) {
+            throw new StudyProgramAlreadyExist();
+        }
         programs.add(program);
     }
 
-    public void removeStudyProgram(String program) {
-        // TODO Check if removal successful
+    public void removeStudyProgram(String program) throws StudyProgramUnknown {
+        if (!programs.contains(program)) {
+            throw new StudyProgramUnknown();
+        }
         programs.remove(program);
         for (Course course: courses.values()) {
             course.removeStudyProgram(program);
@@ -32,11 +36,11 @@ public class Semester {
         return list;
     }
 
-    public Course addCourse(int id, String name) {
-        Course course = new Course(id, name);
+    public Course addCourse(int id, String name) throws CourseAlreadyExist {
         if (courses.keySet().contains(id)) {
-            return null;
+            throw new CourseAlreadyExist();
         }
+        Course course = new Course(id, name);
         courses.put(id, course);
         return course;
     }
