@@ -26,6 +26,12 @@ public class Semester {
         }
     }
 
+    public List<String> getStudyProgramCollection() {
+        List<String> list = new ArrayList<>();
+        list.addAll(programs);
+        return list;
+    }
+
     public Course addCourse(int id, String name) {
         Course course = new Course(id, name);
         if (courses.keySet().contains(id)) {
