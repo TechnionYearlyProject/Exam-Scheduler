@@ -15,3 +15,9 @@ class CourseAlreadyExist extends Exception {}
 class CourseUnknown extends Exception {}
 
 class CourseUnregistered extends Exception {}
+
+class InvalidSchedule extends  Exception {}
+
+class InvalidConstraint extends Exception {}
+
+class DateOutOfSchedule extends Exception {}
