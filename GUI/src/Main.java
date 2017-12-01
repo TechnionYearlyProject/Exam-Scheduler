@@ -11,14 +11,19 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader myLoader = new FXMLLoader(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
+        SemesterPickingController controller = new SemesterPickingController();
+        controller.setPrevStage(primaryStage);
+        myLoader.setController(controller);
+        Parent root = myLoader.load();
+        //Parent root = myLoader.load(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
         root.getStylesheets().add(getClass().getResource("Screens/SemesterPicking/semesterPicking.css").toExternalForm());
 
-        myLoader.setController(new SemesterPickingController());
+
         primaryStage.setTitle("בחירת סמסטר");
         Scene scene = new Scene(root,800,500);
         primaryStage.getIcons().add(new Image("resources/Technion-logo2.png"));
-
+        SemesterPickingController control = myLoader.getController();
+        control.setPrevStage(primaryStage);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
