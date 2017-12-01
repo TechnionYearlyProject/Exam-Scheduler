@@ -26,7 +26,11 @@ public class Semester {
         }
         programs.remove(program);
         for (Course course: courses.values()) {
-            course.removeStudyProgram(program);
+            try {
+                course.removeStudyProgram(program);
+            } catch (CourseUnregistered e) {
+                // Nothing to do...
+            }
         }
     }
 
@@ -36,23 +40,46 @@ public class Semester {
         return list;
     }
 
-    public Course addCourse(int id, String name) throws CourseAlreadyExist {
-        if (courses.keySet().contains(id)) {
+    public void addCourse(int id, String name) throws CourseAlreadyExist {
+        if (courses.containsKey(id)) {
             throw new CourseAlreadyExist();
         }
         Course course = new Course(id, name);
         courses.put(id, course);
-        return course;
     }
 
-    public Course getCourse(int id) {
-        if (!courses.keySet().contains(id)) {
-            return null;
+    public void removeCourse(int id) throws CourseUnknown {
+        if (!courses.containsKey(id)) {
+            throw new CourseUnknown();
         }
-        return courses.get(id);
+        courses.remove(id);
     }
 
-    public Collection<Course> getCourseCollection() {
-        return courses.values();
+    public void registerCourse(int courseId, String program, int semesterNum) throws CourseUnknown, StudyProgramUnknown {
+        if (!courses.containsKey(courseId)) {
+            throw new CourseUnknown();
+        }
+        if (!programs.contains(program)) {
+            throw new StudyProgramUnknown();
+        }
+        courses.get(courseId).setStudyProgram(program, semesterNum);
+    }
+
+    public void unregisterCourse(int courseId, String program) throws CourseUnknown, StudyProgramUnknown, CourseUnregistered {
+        if (!courses.keySet().contains(courseId)) {
+            throw new CourseUnknown();
+        }
+        if (!programs.contains(program)) {
+            throw new StudyProgramUnknown();
+        }
+        courses.get(courseId).removeStudyProgram(program);
+    }
+
+    public List<Course> getCourseCollection() {
+        List<Course> list = new ArrayList<>();
+        for (Course course: courses.values()) {
+            list.add(new Course(course)); // Copy ctor perform deep copy
+        }
+        return list;
     }
 }

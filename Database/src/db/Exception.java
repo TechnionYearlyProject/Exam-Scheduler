@@ -13,3 +13,5 @@ class StudyProgramUnknown extends Exception {}
 class CourseAlreadyExist extends Exception {}
 
 class CourseUnknown extends Exception {}
+
+class CourseUnregistered extends Exception {}
