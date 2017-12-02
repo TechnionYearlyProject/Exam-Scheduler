@@ -89,11 +89,10 @@ public class Database {
             Node n = courses.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element courseElement = (Element) n;
-                String courseID = courseElement.getElementsByTagName("course_id").item(0).getTextContent();
+                int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent());
                 String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
-                Course course;
                 try {
-                    course = semester.addCourse(Integer.parseInt(courseID), name);
+                    semester.addCourse(courseID, name);
                 } catch (CourseAlreadyExist e) {
                     throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
                 }
@@ -107,8 +106,10 @@ public class Database {
                             throw new InvalidDatabase("Course '" + name +
                                     "' contains unknown program study: '" + program + "'");
                         }
-                        String programSemester = programElement.getTextContent();
-                        course.setStudyProgram(program, Integer.parseInt(programSemester));
+                        int semesterNum = Integer.parseInt(programElement.getTextContent());
+                        try {
+                            semester.registerCourse(courseID, program, semesterNum);
+                        } catch (CourseUnknown | StudyProgramUnknown ignored) {} // should not happen
                     }
                 }
             }
