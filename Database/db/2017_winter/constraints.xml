@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraints>
+    <scheduleA>
+        <constraint>
+            <course_id>104031</course_id>
+            <start_date>01-01-2017</start_date>
+            <end_date>07-01-2017</end_date>
+        </constraint>
+    </scheduleA>
+</constraints>
