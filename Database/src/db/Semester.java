@@ -18,8 +18,9 @@ public class Semester {
     public Semester() {
         courses = new HashMap<>();
         programs = new HashSet<>();
-        // TODO Create 2 Schedule objects in ctor
         schedules = new HashMap<>();
+        schedules.put(Moed.MOED_A, new Schedule());
+        schedules.put(Moed.MOED_B, new Schedule());
     }
 
     public void addStudyProgram(String program) throws StudyProgramAlreadyExist {
@@ -90,7 +91,7 @@ public class Semester {
         schedules.get(moed).setEndDate(end);
     }
 
-    public void scheduleCourse(int courseId, Moed moed, Date date) throws CourseUnknown, DateOutOfSchedule {
+    public void scheduleCourse(int courseId, Moed moed, Date date) throws CourseUnknown, DateOutOfSchedule, UninitializedSchedule {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }

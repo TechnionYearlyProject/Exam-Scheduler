@@ -18,6 +18,8 @@ class CourseUnregistered extends Exception {}
 
 class InvalidSchedule extends  Exception {}
 
+class UninitializedSchedule extends Exception {}
+
 class InvalidConstraint extends Exception {}
 
 class DateOutOfSchedule extends Exception {}
