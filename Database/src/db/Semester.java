@@ -7,8 +7,14 @@ import java.util.*;
 public class Semester {
 
     enum Moed {
-        MOED_A,
-        MOED_B
+        MOED_A("A"),
+        MOED_B("B");
+
+        String str;
+
+        Moed(String str) {
+            this.str = str;
+        }
     }
 
     private Map<Integer, Course> courses;
@@ -83,22 +89,23 @@ public class Semester {
         return list;
     }
 
-    public void setStartDate(Moed moed, Date start) throws InvalidSchedule {
+    public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
         schedules.get(moed).setStartDate(start);
     }
 
-    public void setEndDate(Moed moed, Date end) throws InvalidSchedule {
+    public void setEndDate(Moed moed, Calendar end) throws InvalidSchedule {
         schedules.get(moed).setEndDate(end);
     }
 
-    public void scheduleCourse(int courseId, Moed moed, Date date) throws CourseUnknown, DateOutOfSchedule, UninitializedSchedule {
+    public void scheduleCourse(int courseId, Moed moed, Calendar calendar) throws CourseUnknown, DateOutOfSchedule,
+            UninitializedSchedule, ScheduleDateAlreadyTaken {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        if (date.before(schedules.get(moed).start) || date.after(schedules.get(moed).end)) {
+        if (calendar.before(schedules.get(moed).start) || calendar.after(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }
-        schedules.get(moed).scheduleCourse(courseId, date);
+        schedules.get(moed).scheduleCourse(courseId, calendar);
     }
 
     public void unscheduleCourse(int courseId, Moed moed) {

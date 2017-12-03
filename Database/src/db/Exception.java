@@ -23,3 +23,5 @@ class UninitializedSchedule extends Exception {}
 class InvalidConstraint extends Exception {}
 
 class DateOutOfSchedule extends Exception {}
+
+class ScheduleDateAlreadyTaken extends Exception {}

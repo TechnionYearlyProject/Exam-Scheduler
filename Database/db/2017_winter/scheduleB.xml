@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schedule>
-    <start_date>01-03-2017</start_date>
-    <end_date>01-04-2017</end_date>
-    <day date="03-03-2017">
-        <exam hour="09:00">104031</exam>
-        <exam hour="13:00">104166</exam>
-    </day>
-    <day date="07-03-2017">
-        <exam hour="09:00">234114</exam>
-    </day>
+    <start_date>None</start_date>
+    <end_date>None</end_date>
 </schedule>
