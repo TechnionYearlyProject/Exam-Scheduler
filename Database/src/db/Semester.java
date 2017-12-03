@@ -18,6 +18,7 @@ public class Semester {
     public Semester() {
         courses = new HashMap<>();
         programs = new HashSet<>();
+        // TODO Create 2 Schedule objects in ctor
         schedules = new HashMap<>();
     }
 
@@ -28,17 +29,10 @@ public class Semester {
         programs.add(program);
     }
 
-    public void removeStudyProgram(String program) throws StudyProgramUnknown {
-        if (!programs.contains(program)) {
-            throw new StudyProgramUnknown();
-        }
+    public void removeStudyProgram(String program) {
         programs.remove(program);
         for (Course course: courses.values()) {
-            try {
-                course.removeStudyProgram(program);
-            } catch (CourseUnregistered e) {
-                // Nothing to do...
-            }
+            course.removeStudyProgram(program);
         }
     }
 
@@ -56,17 +50,10 @@ public class Semester {
         courses.put(courseId, course);
     }
 
-    public void removeCourse(int courseId) throws CourseUnknown {
-        if (!courses.containsKey(courseId)) {
-            throw new CourseUnknown();
-        }
+    public void removeCourse(int courseId) {
         courses.remove(courseId);
         for (Schedule schedule: schedules.values()) {
-            try {
-                schedule.unscheduleCourse(courseId);
-            } catch (CourseUnknown e) {
-                // Nothing to do...
-            }
+            schedule.unscheduleCourse(courseId);
         }
     }
 
@@ -80,12 +67,9 @@ public class Semester {
         courses.get(courseId).setStudyProgram(program, semesterNum);
     }
 
-    public void unregisterCourse(int courseId, String program) throws CourseUnknown, StudyProgramUnknown, CourseUnregistered {
+    public void unregisterCourse(int courseId, String program) {
         if (!courses.keySet().contains(courseId)) {
-            throw new CourseUnknown();
-        }
-        if (!programs.contains(program)) {
-            throw new StudyProgramUnknown();
+            return;
         }
         courses.get(courseId).removeStudyProgram(program);
     }
@@ -116,10 +100,7 @@ public class Semester {
         schedules.get(moed).scheduleCourse(courseId, date);
     }
 
-    public void unscheduleCourse(int courseId, Moed moed) throws CourseUnknown {
-        if (!courses.containsKey(courseId)) {
-            throw new CourseUnknown();
-        }
+    public void unscheduleCourse(int courseId, Moed moed) {
         schedules.get(moed).unscheduleCourse(courseId);
     }
 }

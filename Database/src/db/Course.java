@@ -29,10 +29,7 @@ public class Course {
         programs.put(program, semester);
     }
 
-    public void removeStudyProgram(String program) throws CourseUnregistered {
-        if (!programs.containsKey(program)) {
-            throw new CourseUnregistered();
-        }
+    public void removeStudyProgram(String program) {
         programs.remove(program);
     }
 

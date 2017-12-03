@@ -9,6 +9,9 @@ public class Schedule {
     public Date end;
     private Map<Integer, Date> schedule;
 
+    // TODO Add ctor for new Schedule without dates
+    // TODO Handle missing start/end dates cases
+
     public Schedule(Date start, Date end) throws InvalidSchedule {
         if (end.before(start)) {
             throw new InvalidSchedule();
@@ -39,10 +42,7 @@ public class Schedule {
          schedule.put(id, (Date) date.clone());
     }
 
-    public void unscheduleCourse(int id) throws CourseUnknown {
-        if (!schedule.keySet().contains(id)) {
-            throw new CourseUnknown();
-        }
+    public void unscheduleCourse(int id) {
         schedule.remove(id);
     }
 }
