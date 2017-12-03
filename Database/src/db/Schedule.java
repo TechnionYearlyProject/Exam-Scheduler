@@ -18,6 +18,20 @@ public class Schedule {
         this.schedule = new HashMap<>();
     }
 
+    public void setStartDate(Date start) throws InvalidSchedule {
+        if (start.after(end)) {
+            throw new InvalidSchedule();
+        }
+        this.start = (Date) start.clone();
+    }
+
+    public void setEndDate(Date end) throws InvalidSchedule {
+        if (end.before(start)) {
+            throw new InvalidSchedule();
+        }
+        this.end = (Date) end.clone();
+    }
+
     public void scheduleCourse(int id, Date date) throws DateOutOfSchedule {
          if (date.before(start) || date.after(end)) {
              throw new DateOutOfSchedule();
