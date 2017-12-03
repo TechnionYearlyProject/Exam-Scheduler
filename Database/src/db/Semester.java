@@ -5,12 +5,20 @@ import java.util.*;
 
 
 public class Semester {
-    public Map<Integer, Course> courses;
+
+    enum Moed {
+        MOED_A,
+        MOED_B
+    }
+
+    private Map<Integer, Course> courses;
     private Set<String> programs;
+    private Map<Moed, Schedule> schedules;
 
     public Semester() {
         courses = new HashMap<>();
         programs = new HashSet<>();
+        schedules = new HashMap<>();
     }
 
     public void addStudyProgram(String program) throws StudyProgramAlreadyExist {
@@ -40,19 +48,26 @@ public class Semester {
         return list;
     }
 
-    public void addCourse(int id, String name) throws CourseAlreadyExist {
-        if (courses.containsKey(id)) {
+    public void addCourse(int courseId, String name) throws CourseAlreadyExist {
+        if (courses.containsKey(courseId)) {
             throw new CourseAlreadyExist();
         }
-        Course course = new Course(id, name);
-        courses.put(id, course);
+        Course course = new Course(courseId, name);
+        courses.put(courseId, course);
     }
 
-    public void removeCourse(int id) throws CourseUnknown {
-        if (!courses.containsKey(id)) {
+    public void removeCourse(int courseId) throws CourseUnknown {
+        if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        courses.remove(id);
+        courses.remove(courseId);
+        for (Schedule schedule: schedules.values()) {
+            try {
+                schedule.unscheduleCourse(courseId);
+            } catch (CourseUnknown e) {
+                // Nothing to do...
+            }
+        }
     }
 
     public void registerCourse(int courseId, String program, int semesterNum) throws CourseUnknown, StudyProgramUnknown {
@@ -81,5 +96,30 @@ public class Semester {
             list.add(new Course(course)); // Copy ctor perform deep copy
         }
         return list;
+    }
+
+    public void setStartDate(Moed moed, Date start) throws InvalidSchedule {
+        schedules.get(moed).setStartDate(start);
+    }
+
+    public void setEndDate(Moed moed, Date end) throws InvalidSchedule {
+        schedules.get(moed).setEndDate(end);
+    }
+
+    public void scheduleCourse(int courseId, Moed moed, Date date) throws CourseUnknown, DateOutOfSchedule {
+        if (!courses.containsKey(courseId)) {
+            throw new CourseUnknown();
+        }
+        if (date.before(schedules.get(moed).start) || date.after(schedules.get(moed).end)) {
+            throw new DateOutOfSchedule();
+        }
+        schedules.get(moed).scheduleCourse(courseId, date);
+    }
+
+    public void unscheduleCourse(int courseId, Moed moed) throws CourseUnknown {
+        if (!courses.containsKey(courseId)) {
+            throw new CourseUnknown();
+        }
+        schedules.get(moed).unscheduleCourse(courseId);
     }
 }
