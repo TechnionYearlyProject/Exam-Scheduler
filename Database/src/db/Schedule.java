@@ -43,20 +43,20 @@ public class Schedule {
         this.end = (Calendar) end.clone();
     }
 
-    public void scheduleCourse(int id, Calendar calendar) throws DateOutOfSchedule, UninitializedSchedule,
+    public void scheduleCourse(int id, Calendar date) throws DateOutOfSchedule, UninitializedSchedule,
             ScheduleDateAlreadyTaken {
         if (undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
-        if (calendar.before(start) || calendar.after(end)) {
+        if (date.before(start) || date.after(end)) {
             throw new DateOutOfSchedule();
         }
         for (Calendar cal: schedule.values()) {
-            if (calendar.equals(cal)) {
+            if (date.equals(cal)) {
                 throw new ScheduleDateAlreadyTaken();
             }
         }
-        schedule.put(id, (Calendar) calendar.clone());
+        schedule.put(id, (Calendar) date.clone());
     }
 
     public void unscheduleCourse(int id) {

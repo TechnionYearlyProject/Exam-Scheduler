@@ -97,15 +97,15 @@ public class Semester {
         schedules.get(moed).setEndDate(end);
     }
 
-    public void scheduleCourse(int courseId, Moed moed, Calendar calendar) throws CourseUnknown, DateOutOfSchedule,
+    public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,
             UninitializedSchedule, ScheduleDateAlreadyTaken {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        if (calendar.before(schedules.get(moed).start) || calendar.after(schedules.get(moed).end)) {
+        if (date.before(schedules.get(moed).start) || date.after(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }
-        schedules.get(moed).scheduleCourse(courseId, calendar);
+        schedules.get(moed).scheduleCourse(courseId, date);
     }
 
     public void unscheduleCourse(int courseId, Moed moed) {

@@ -11,16 +11,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Database {
     private String baseDirectory;
     private String separator;
     private Map<String, Semester> semesters;
     private DocumentBuilder parser;
+    private SimpleDateFormat dateParser, hourParser;
 
     public Database() {
         baseDirectory = System.getProperty("user.dir");
@@ -37,6 +37,8 @@ public class Database {
         } else {
             separator = "/";
         }
+        dateParser = new SimpleDateFormat("yyyy-MM-dd");
+        hourParser = new SimpleDateFormat("HH:mm");
     }
 
     private String getSemesterDir(int year, String semester) {
@@ -59,6 +61,7 @@ public class Database {
         Semester semester = new Semester();
         parseStudyPrograms(path + separator + "study_programs.xml", semester);
         parseCourses(path + separator + "courses.xml", semester);
+        parseSchedules(path + separator + "scheduleA.xml", path + separator + "scheduleB.xml", semester);
         return semester;
     }
 
@@ -110,6 +113,88 @@ public class Database {
                         try {
                             semester.registerCourse(courseID, program, semesterNum);
                         } catch (CourseUnknown | StudyProgramUnknown ignored) {} // should not happen
+                    }
+                }
+            }
+        }
+    }
+
+    private Calendar stringToDate(String dateStr, Semester.Moed moed) throws InvalidDatabase {
+        if (dateStr.equals("None")) {
+            return null;
+        }
+        try {
+            Calendar date = Calendar.getInstance();
+            date.setTime(dateParser.parse(dateStr));
+            return date;
+        } catch (ParseException e) {
+            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid date : '" + dateStr + "'");
+        }
+    }
+
+    private void addHourToDate(String hourStr, Semester.Moed moed, Calendar date) throws InvalidDatabase {
+        try {
+            Calendar tmp = Calendar.getInstance();
+            tmp.setTime(hourParser.parse(hourStr));
+            date.set(Calendar.HOUR, tmp.get(Calendar.HOUR_OF_DAY));
+            date.set(Calendar.MINUTE, tmp.get(Calendar.MINUTE));
+        } catch (ParseException e) {
+            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid hour : " + hourStr + "'");
+        }
+    }
+
+    private void parseSchedules(String filePath1, String filePath2, Semester semester) throws InvalidDatabase {
+        Map<Semester.Moed, Document> docs = new HashMap<>();
+        docs.put(Semester.Moed.MOED_A, loadXMLFile(filePath1));
+        docs.put(Semester.Moed.MOED_B, loadXMLFile(filePath2));
+        for (Map.Entry<Semester.Moed, Document> entry: docs.entrySet()) {
+            Semester.Moed moed = entry.getKey();
+            Document XMLTree = entry.getValue();
+            Element root = XMLTree.getDocumentElement();
+            String startDateStr = root.getElementsByTagName("start_date").item(0).getTextContent();
+            String endDateStr = root.getElementsByTagName("end_date").item(0).getTextContent();
+            Calendar startDate = stringToDate(startDateStr, moed);
+            Calendar endDate = stringToDate(endDateStr, moed);
+            if (startDate != null && endDate != null) {
+                try {
+                    semester.setStartDate(moed, startDate);
+                    semester.setEndDate(moed, endDate);
+                } catch (InvalidSchedule e) {
+                    throw new InvalidDatabase("Schedule '" + moed.str + "' end date is before start date");
+                }
+            } else {
+                return;
+            }
+            NodeList days = root.getElementsByTagName("day");
+            for (int i = 0; i < days.getLength(); i++) {
+                Node n = days.item(i);
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    Element dayElement = (Element) n;
+                    String dateStr = dayElement.getAttribute("date");
+                    Calendar date = stringToDate(dateStr, moed);
+                    NodeList exams = dayElement.getElementsByTagName("exam");
+                    for (int j = 0; j < exams.getLength(); j++) {
+                        Node m = exams.item(j);
+                        if (m.getNodeType() == Node.ELEMENT_NODE) {
+                            Element examElement = (Element) m;
+                            String hourStr = examElement.getAttribute("hour");
+                            addHourToDate(hourStr, moed, date);
+                            int courseId = Integer.parseInt(examElement.getTextContent());
+                            try {
+                                semester.scheduleCourse(courseId, moed, date);
+                            } catch (UninitializedSchedule e) {
+                                throw new InvalidDatabase("Start/End date missing in schedule " + moed.str);
+                            } catch (CourseUnknown e) {
+                                throw new InvalidDatabase("Schedule '" + moed.str + "' contain unknown course : '" +
+                                        courseId + "'");
+                            } catch (DateOutOfSchedule e) {
+                                throw new InvalidDatabase("Course '" + courseId + "' has invalid schedule date : '" +
+                                        dateStr + "' in schedule '" + moed.str + "'");
+                            } catch (ScheduleDateAlreadyTaken e) {
+                                throw new InvalidDatabase("Course '" + courseId + "' scheduled to an already taken date : '" +
+                                        dateStr + " " + hourStr + "' in schedule '" + moed.str + "'");
+                            }
+                        }
                     }
                 }
             }
