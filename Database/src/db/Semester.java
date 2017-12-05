@@ -5,12 +5,28 @@ import java.util.*;
 
 
 public class Semester {
-    public Map<Integer, Course> courses;
+
+    enum Moed {
+        MOED_A("A"),
+        MOED_B("B");
+
+        String str;
+
+        Moed(String str) {
+            this.str = str;
+        }
+    }
+
+    private Map<Integer, Course> courses;
     private Set<String> programs;
+    private Map<Moed, Schedule> schedules;
 
     public Semester() {
         courses = new HashMap<>();
         programs = new HashSet<>();
+        schedules = new HashMap<>();
+        schedules.put(Moed.MOED_A, new Schedule());
+        schedules.put(Moed.MOED_B, new Schedule());
     }
 
     public void addStudyProgram(String program) throws StudyProgramAlreadyExist {
@@ -20,17 +36,10 @@ public class Semester {
         programs.add(program);
     }
 
-    public void removeStudyProgram(String program) throws StudyProgramUnknown {
-        if (!programs.contains(program)) {
-            throw new StudyProgramUnknown();
-        }
+    public void removeStudyProgram(String program) {
         programs.remove(program);
         for (Course course: courses.values()) {
-            try {
-                course.removeStudyProgram(program);
-            } catch (CourseUnregistered e) {
-                // Nothing to do...
-            }
+            course.removeStudyProgram(program);
         }
     }
 
@@ -40,19 +49,19 @@ public class Semester {
         return list;
     }
 
-    public void addCourse(int id, String name) throws CourseAlreadyExist {
-        if (courses.containsKey(id)) {
+    public void addCourse(int courseId, String name) throws CourseAlreadyExist {
+        if (courses.containsKey(courseId)) {
             throw new CourseAlreadyExist();
         }
-        Course course = new Course(id, name);
-        courses.put(id, course);
+        Course course = new Course(courseId, name);
+        courses.put(courseId, course);
     }
 
-    public void removeCourse(int id) throws CourseUnknown {
-        if (!courses.containsKey(id)) {
-            throw new CourseUnknown();
+    public void removeCourse(int courseId) {
+        courses.remove(courseId);
+        for (Schedule schedule: schedules.values()) {
+            schedule.unscheduleCourse(courseId);
         }
-        courses.remove(id);
     }
 
     public void registerCourse(int courseId, String program, int semesterNum) throws CourseUnknown, StudyProgramUnknown {
@@ -65,12 +74,9 @@ public class Semester {
         courses.get(courseId).setStudyProgram(program, semesterNum);
     }
 
-    public void unregisterCourse(int courseId, String program) throws CourseUnknown, StudyProgramUnknown, CourseUnregistered {
+    public void unregisterCourse(int courseId, String program) {
         if (!courses.keySet().contains(courseId)) {
-            throw new CourseUnknown();
-        }
-        if (!programs.contains(program)) {
-            throw new StudyProgramUnknown();
+            return;
         }
         courses.get(courseId).removeStudyProgram(program);
     }
@@ -81,5 +87,28 @@ public class Semester {
             list.add(new Course(course)); // Copy ctor perform deep copy
         }
         return list;
+    }
+
+    public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
+        schedules.get(moed).setStartDate(start);
+    }
+
+    public void setEndDate(Moed moed, Calendar end) throws InvalidSchedule {
+        schedules.get(moed).setEndDate(end);
+    }
+
+    public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,
+            UninitializedSchedule, ScheduleDateAlreadyTaken {
+        if (!courses.containsKey(courseId)) {
+            throw new CourseUnknown();
+        }
+        if (date.before(schedules.get(moed).start) || date.after(schedules.get(moed).end)) {
+            throw new DateOutOfSchedule();
+        }
+        schedules.get(moed).scheduleCourse(courseId, date);
+    }
+
+    public void unscheduleCourse(int courseId, Moed moed) {
+        schedules.get(moed).unscheduleCourse(courseId);
     }
 }
