@@ -172,6 +172,7 @@ public class Database {
                     Element dayElement = (Element) n;
                     String dateStr = dayElement.getAttribute("date");
                     Calendar date = stringToDate(dateStr, moed);
+                    assert date != null;
                     NodeList exams = dayElement.getElementsByTagName("exam");
                     for (int j = 0; j < exams.getLength(); j++) {
                         Node m = exams.item(j);
@@ -199,6 +200,67 @@ public class Database {
                 }
             }
         }
+    }
+
+    private int compareDirs(String dir1, String dir2) {
+        String[] dir1Attr = dir1.split("_");
+        String[] dir2Attr = dir2.split("_");
+        // If same year
+        if (dir1Attr[0].equals(dir2Attr[0])) {
+            if (dir1Attr[1].equals(dir2Attr[1])) {
+                return 0;
+            }
+            return -(dir1Attr[1].compareTo(dir2Attr[1]));
+        }
+        return dir1Attr[0].compareTo(dir2Attr[0]);
+    }
+
+    public Semester createSemester(int year, String sem) throws SemesterAlreadyExist, InvalidDatabase {
+        String semesterName = year + "_" + sem;
+        if (semesters.containsKey(semesterName)) {
+            throw new SemesterAlreadyExist();
+        }
+        String path = baseDirectory + separator + "Database" + separator + "db";
+        String[] directories = new File(path).list();
+        assert directories != null;
+        directories = Arrays.stream(directories)
+                .filter(dir -> new File(path, dir).isDirectory())
+                .sorted(this::compareDirs)
+                .toArray(String[]::new);
+        Semester semester = new Semester();
+        if (directories.length > 0) {
+            Semester baseSemester = loadSemester(directories[directories.length - 1]);
+            List<String> programs = baseSemester.getStudyProgramCollection();
+            List<Course> courses = baseSemester.getCourseCollection();
+            for (String program: programs) {
+                try {
+                    semester.addStudyProgram(program);
+                } catch (StudyProgramAlreadyExist ignored) {}
+            }
+            for (Course course: courses) {
+                try {
+                    semester.addCourse(course.id, course.name);
+                    for (String program: programs) {
+                        int programSemester;
+                        try {
+                            programSemester = course.getStudyProgramSemester(program);
+                        } catch (CourseUnregistered e) {
+                            continue;
+                        }
+                        try {
+                            semester.registerCourse(course.id, program, programSemester);
+                        } catch (StudyProgramUnknown | CourseUnknown ignored) {}
+                    }
+                } catch (CourseAlreadyExist ignored) {}
+            }
+        }
+        semesters.put(semesterName, semester);
+        return semester;
+    }
+
+    private Semester loadSemester(String directory) throws InvalidDatabase {
+        String[] dirSplit = directory.split("_");
+        return loadSemester(Integer.parseInt(dirSplit[0]), dirSplit[1]);
     }
 
     public Semester loadSemester(int year, String sem) throws InvalidDatabase {

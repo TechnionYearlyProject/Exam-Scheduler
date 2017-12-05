@@ -6,6 +6,8 @@ class InvalidDatabase extends Exception {
     }
 }
 
+class SemesterAlreadyExist extends Exception {}
+
 class StudyProgramAlreadyExist extends Exception {}
 
 class StudyProgramUnknown extends Exception {}
