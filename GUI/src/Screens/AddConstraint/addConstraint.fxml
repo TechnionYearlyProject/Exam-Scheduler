@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="158.0"
+      prefWidth="319.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <Region prefHeight="85.0" prefWidth="319.0"/>
+   <HBox prefHeight="96.0" prefWidth="403.0">
+      <Region prefHeight="200.0" prefWidth="200.0"/>
+      <JFXComboBox fx:id="courseNameChoice" nodeOrientation="RIGHT_TO_LEFT" prefHeight="23.0" prefWidth="262.0"
+                   promptText="בחר/י קורס"/>
+      <Region prefHeight="34.0" prefWidth="135.0"/>
+   </HBox>
+   <HBox prefHeight="100.0" prefWidth="200.0">
+      <Region prefHeight="200.0" prefWidth="200.0"/>
+      <JFXTextField fx:id="courseIDChoice" minWidth="94.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="23.0"
+                    prefWidth="105.0" promptText="מספר קורס"/>
+      <Region prefHeight="33.0" prefWidth="46.0"/>
+   </HBox>
+   <HBox prefHeight="100.0" prefWidth="200.0">
+      <Region prefHeight="200.0" prefWidth="200.0"/>
+      <JFXComboBox fx:id="courseTypeChoice" nodeOrientation="RIGHT_TO_LEFT" prefHeight="23.0" prefWidth="242.0"
+                   promptText="סוג מבחן"/>
+      <Region prefHeight="36.0" prefWidth="126.0"/>
+   </HBox>
+   <HBox prefHeight="100.0" prefWidth="200.0">
+      <Region prefHeight="200.0" prefWidth="200.0"/>
+      <JFXButton fx:id="addButton" prefHeight="34.0" prefWidth="165.0" text="הוסף"/>
+      <Region prefHeight="52.0" prefWidth="111.0"/>
+      <JFXButton fx:id="cancelButton" prefHeight="34.0" prefWidth="165.0" text="ביטול"/>
+      <Region prefHeight="200.0" prefWidth="200.0"/>
+   </HBox>
+</VBox>
