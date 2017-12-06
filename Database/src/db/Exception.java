@@ -16,8 +16,6 @@ class CourseAlreadyExist extends Exception {}
 
 class CourseUnknown extends Exception {}
 
-class CourseUnregistered extends Exception {}
-
 class InvalidSchedule extends  Exception {}
 
 class UninitializedSchedule extends Exception {}

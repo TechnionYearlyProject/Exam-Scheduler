@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Database {
     private String baseDirectory;
@@ -210,9 +211,9 @@ public class Database {
             if (dir1Attr[1].equals(dir2Attr[1])) {
                 return 0;
             }
-            return -(dir1Attr[1].compareTo(dir2Attr[1]));
+            return dir1Attr[1].compareTo(dir2Attr[1]);
         }
-        return dir1Attr[0].compareTo(dir2Attr[0]);
+        return -(dir1Attr[0].compareTo(dir2Attr[0]));
     }
 
     public Semester createSemester(int year, String sem) throws SemesterAlreadyExist, InvalidDatabase {
@@ -223,13 +224,16 @@ public class Database {
         String path = baseDirectory + separator + "Database" + separator + "db";
         String[] directories = new File(path).list();
         assert directories != null;
-        directories = Arrays.stream(directories)
+        List<String> pathList = Arrays.stream(directories)
                 .filter(dir -> new File(path, dir).isDirectory())
                 .sorted(this::compareDirs)
-                .toArray(String[]::new);
+                .collect(Collectors.toList());
+        if (pathList.contains(semesterName)) {
+            throw new SemesterAlreadyExist();
+        }
         Semester semester = new Semester();
-        if (directories.length > 0) {
-            Semester baseSemester = loadSemester(directories[directories.length - 1]);
+        if (pathList.size() > 0) {
+            Semester baseSemester = loadSemester(pathList.get(0));
             List<String> programs = baseSemester.getStudyProgramCollection();
             List<Course> courses = baseSemester.getCourseCollection();
             for (String program: programs) {
@@ -241,14 +245,11 @@ public class Database {
                 try {
                     semester.addCourse(course.id, course.name);
                     for (String program: programs) {
-                        int programSemester;
+                        int programSemester = course.getStudyProgramSemester(program);
                         try {
-                            programSemester = course.getStudyProgramSemester(program);
-                        } catch (CourseUnregistered e) {
-                            continue;
-                        }
-                        try {
-                            semester.registerCourse(course.id, program, programSemester);
+                            if (programSemester > 0) {
+                                semester.registerCourse(course.id, program, programSemester);
+                            }
                         } catch (StudyProgramUnknown | CourseUnknown ignored) {}
                     }
                 } catch (CourseAlreadyExist ignored) {}

@@ -33,9 +33,9 @@ public class Course {
         programs.remove(program);
     }
 
-    public int getStudyProgramSemester(String program) throws CourseUnregistered {
+    public int getStudyProgramSemester(String program) {
         if (!programs.containsKey(program)) {
-            throw new CourseUnregistered();
+            return 0;
         }
         return programs.get(program);
     }
