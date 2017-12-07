@@ -43,7 +43,7 @@ public class Schedule {
         this.end = (Calendar) end.clone();
     }
 
-    public void scheduleCourse(int id, Calendar date) throws DateOutOfSchedule, UninitializedSchedule,
+    public void scheduleCourse(int courseId, Calendar date) throws DateOutOfSchedule, UninitializedSchedule,
             ScheduleDateAlreadyTaken {
         if (undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
@@ -56,10 +56,17 @@ public class Schedule {
                 throw new ScheduleDateAlreadyTaken();
             }
         }
-        schedule.put(id, (Calendar) date.clone());
+        schedule.put(courseId, (Calendar) date.clone());
     }
 
     public void unscheduleCourse(int id) {
         schedule.remove(id);
+    }
+
+    public Calendar getCourseSchedule(int courseId) {
+        if (!schedule.containsKey(courseId)) {
+            return null;
+        }
+        return (Calendar) schedule.get(courseId).clone();
     }
 }

@@ -111,4 +111,15 @@ public class Semester {
     public void unscheduleCourse(int courseId, Moed moed) {
         schedules.get(moed).unscheduleCourse(courseId);
     }
+
+    public Map<Integer, Calendar> getSchedule(Moed moed) {
+        Map<Integer, Calendar> schedule = new HashMap<>();
+        for (int courseId: courses.keySet()) {
+            Calendar date = schedules.get(moed).getCourseSchedule(courseId);
+            if (date != null) {
+                schedule.put(courseId, date);
+            }
+        }
+        return schedule;
+    }
 }
