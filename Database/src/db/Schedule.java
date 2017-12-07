@@ -25,7 +25,7 @@ public class Schedule {
         this.schedule = new HashMap<>();
     }
 
-    private boolean undefinedStartOrEnd() {
+    public boolean undefinedStartOrEnd() {
         return start == null || end == null;
     }
 
