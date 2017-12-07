@@ -129,12 +129,15 @@ public class Semester {
     }
 
     public void setConstraint(int courseId, Moed moed, Calendar start, Calendar end) throws UninitializedSchedule,
-            DateOutOfSchedule, InvalidConstraint {
+            DateOutOfSchedule, InvalidConstraint, CourseUnknown {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
         if (start.before(schedules.get(moed).start) || end.after(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
+        }
+        if (!courses.containsKey(courseId)) {
+            throw new CourseUnknown();
         }
         constraints.get(moed).setConstraint(courseId, start, end);
     }
