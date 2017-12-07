@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class Database {
     private String baseDirectory;
-    private String separator;
+    private String sep;
     private Map<String, Semester> semesters;
     private DocumentBuilder parser;
     private SimpleDateFormat dateParser, hourParser;
@@ -34,9 +34,9 @@ public class Database {
             e.printStackTrace();
         }
         if (System.getProperty("os.name").contains("Windows")) {
-            separator = "\\";
+            sep = "\\";
         } else {
-            separator = "/";
+            sep = "/";
         }
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
         hourParser = new SimpleDateFormat("HH:mm");
@@ -60,9 +60,10 @@ public class Database {
 
     private Semester parseSemester(String path) throws InvalidDatabase {
         Semester semester = new Semester();
-        parseStudyPrograms(path + separator + "study_programs.xml", semester);
-        parseCourses(path + separator + "courses.xml", semester);
-        parseSchedules(path + separator + "scheduleA.xml", path + separator + "scheduleB.xml", semester);
+        parseStudyPrograms(path + sep + "study_programs.xml", semester);
+        parseCourses(path + sep + "courses.xml", semester);
+        parseSchedules(path + sep + "scheduleA.xml", path + sep + "scheduleB.xml", semester);
+        parseConstraints(path + sep + "constraintsA.xml", path + sep + "constraintsB.xml", semester);
         return semester;
     }
 
@@ -203,6 +204,43 @@ public class Database {
         }
     }
 
+    private void parseConstraints(String filePath1, String filePath2, Semester semester) throws InvalidDatabase {
+        Map<Semester.Moed, Document> docs = new HashMap<>();
+        docs.put(Semester.Moed.MOED_A, loadXMLFile(filePath1));
+        docs.put(Semester.Moed.MOED_B, loadXMLFile(filePath2));
+        for (Map.Entry<Semester.Moed, Document> entry: docs.entrySet()) {
+            Semester.Moed moed = entry.getKey();
+            Document XMLTree = entry.getValue();
+            Element root = XMLTree.getDocumentElement();
+            NodeList constraints = root.getElementsByTagName("constraint");
+            for (int i = 0; i < constraints.getLength(); i++) {
+                Node n = constraints.item(i);
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    Element constraintElement = (Element) n;
+                    int courseId = Integer.parseInt(constraintElement.getElementsByTagName("course_id").item(0).getTextContent());
+                    String startDateStr = root.getElementsByTagName("start_date").item(0).getTextContent();
+                    String endDateStr = root.getElementsByTagName("end_date").item(0).getTextContent();
+                    Calendar startDate = stringToDate(startDateStr, moed);
+                    Calendar endDate = stringToDate(endDateStr, moed);
+                    try {
+                        semester.setConstraint(courseId, moed, startDate, endDate);
+                    } catch (InvalidConstraint e) {
+                        throw new InvalidDatabase("Course '" + courseId + "' has invalid constraint date : '" +
+                                startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
+                    } catch (UninitializedSchedule e) {
+                        throw new InvalidDatabase("Start/End date missing in schedule " + moed.str);
+                    } catch (CourseUnknown e) {
+                        throw new InvalidDatabase("Constraint List '" + moed.str + "' contain unknown course : '" +
+                                courseId + "'");
+                    } catch (DateOutOfSchedule e) {
+                        throw new InvalidDatabase("Course '" + courseId + "' constraint is out of the schedule dates : '" +
+                                startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
+                    }
+                }
+            }
+        }
+    }
+
     private int compareDirs(String dir1, String dir2) {
         String[] dir1Attr = dir1.split("_");
         String[] dir2Attr = dir2.split("_");
@@ -221,7 +259,7 @@ public class Database {
         if (semesters.containsKey(semesterName)) {
             throw new SemesterAlreadyExist();
         }
-        String path = baseDirectory + separator + "Database" + separator + "db";
+        String path = baseDirectory + sep + "Database" + sep + "db";
         String[] directories = new File(path).list();
         assert directories != null;
         List<String> pathList = Arrays.stream(directories)
@@ -266,7 +304,7 @@ public class Database {
 
     public Semester loadSemester(int year, String sem) throws InvalidDatabase {
         String semesterDir = getSemesterDir(year, sem);
-        String path = baseDirectory + separator + "Database" + separator + "db" + separator + semesterDir;
+        String path = baseDirectory + sep + "Database" + sep + "db" + sep + semesterDir;
         Semester semester = parseSemester(path);
         semesters.put(semesterDir, semester);
         return semester;
