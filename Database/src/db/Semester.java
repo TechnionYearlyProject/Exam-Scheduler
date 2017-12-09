@@ -146,14 +146,12 @@ public class Semester {
         constraints.get(moed).removeConstraint(courseId);
     }
 
-    public ConstraintList getConstraintList(Moed moed) {
-        ConstraintList cl = new ConstraintList();
+    public Map<Integer, ConstraintList.Constraint> getConstraintList(Moed moed) {
+        Map<Integer, ConstraintList.Constraint> cl = new HashMap<>();
         for (int courseId: courses.keySet()) {
             ConstraintList.Constraint constraint = constraints.get(moed).getConstraint(courseId);
             if (constraint != null) {
-                try {
-                    cl.setConstraint(courseId, constraint.start, constraint.end);
-                } catch (InvalidConstraint ignored) {}
+                cl.put(courseId, new ConstraintList.Constraint(constraint.start, constraint.end));
             }
         }
         return cl;
