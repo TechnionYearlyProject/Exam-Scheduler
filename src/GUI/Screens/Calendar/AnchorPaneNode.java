@@ -1,6 +1,6 @@
-package Screens.Calendar;
+package GUI.Screens.Calendar;
 
-import Screens.AddConstraint.AddConstraintController;
+import GUI.Screens.AddConstraint.AddConstraintController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -40,7 +40,7 @@ public class AnchorPaneNode extends AnchorPane {
         VBox vbox = new VBox(pane1,pane2,pane3);*/
         this.setOnMouseClicked(e->{
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Screens/AddConstraint/addConstraint.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Screens/AddConstraint/addConstraint.fxml"));
             stage.setTitle("הוספת קורס");
             AddConstraintController controller = new AddConstraintController(stage);
             loader.setController(controller);

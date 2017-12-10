@@ -1,4 +1,4 @@
-package Screens.Calendar;
+package GUI.Screens.Calendar;
 
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;

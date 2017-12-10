@@ -1,6 +1,6 @@
-package Screens.Calendar;
+package GUI.Screens.Calendar;
 
-import Screens.SEMESTER;
+import GUI.Screens.SEMESTER;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;

@@ -1,4 +1,4 @@
-package Screens.AddConstraint;
+package GUI.Screens.AddConstraint;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;

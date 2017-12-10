@@ -1,4 +1,4 @@
-package Screens.Calendar;
+package GUI.Screens.Calendar;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

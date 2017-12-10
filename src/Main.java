@@ -6,19 +6,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import Screens.SemesterPicking.SemesterPickingController;
+import GUI.Screens.SemesterPicking.SemesterPickingController;
 
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader myLoader = new FXMLLoader(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
+        FXMLLoader myLoader = new FXMLLoader(getClass().getResource("GUI/Screens/SemesterPicking/semesterPicking.fxml"));
         SemesterPickingController controller = new SemesterPickingController();
         controller.setPrevStage(primaryStage);
         myLoader.setController(controller);
         Parent root = myLoader.load();
         //Parent root = myLoader.load(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
-        root.getStylesheets().add(getClass().getResource("Screens/SemesterPicking/semesterPicking.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("GUI/Screens/SemesterPicking/semesterPicking.css").toExternalForm());
 
 
         primaryStage.setTitle("בחירת סמסטר");

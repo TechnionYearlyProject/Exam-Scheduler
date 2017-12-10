@@ -261,7 +261,8 @@ public class Database {
         if (semesters.containsKey(semesterName)) {
             throw new SemesterAlreadyExist();
         }
-        String path = baseDirectory + sep + "Database" + sep + "db";
+        System.out.println(baseDirectory);
+        String path = baseDirectory + sep + "db";
         String[] directories = new File(path).list();
         assert directories != null;
         List<String> pathList = Arrays.stream(directories)
@@ -306,7 +307,7 @@ public class Database {
 
     public Semester loadSemester(int year, String sem) throws InvalidDatabase {
         String semesterDir = getSemesterDir(year, sem);
-        String path = baseDirectory + sep + "Database" + sep + "db" + sep + semesterDir;
+        String path = baseDirectory + sep + "db" + sep + semesterDir;
         Semester semester = parseSemester(path);
         semesters.put(semesterDir, semester);
         return semester;

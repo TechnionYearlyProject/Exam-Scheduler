@@ -1,4 +1,4 @@
-package Screens.Login;
+package GUI.Screens.Login;
 import javafx.fxml.Initializable;
 
 

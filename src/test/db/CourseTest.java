@@ -1,5 +1,6 @@
-package db;
+package test.db;
 
+import db.Course;
 import org.junit.Before;
 import org.junit.Test;
 
