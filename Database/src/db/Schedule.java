@@ -1,9 +1,11 @@
 package db;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import db.exception.DateOutOfSchedule;
+import db.exception.InvalidSchedule;
+import db.exception.ScheduleDateAlreadyTaken;
+import db.exception.UninitializedSchedule;
+
+import java.util.*;
 
 public class Schedule {
     public Calendar start;
@@ -29,11 +31,21 @@ public class Schedule {
         return start == null || end == null;
     }
 
+    private void updateSchedules() {
+        if (start != null) {
+            schedule.entrySet().removeIf(entry -> entry.getValue().before(start));
+        }
+        if (end != null) {
+            schedule.entrySet().removeIf(entry -> entry.getValue().after(end));
+        }
+    }
+
     public void setStartDate(Calendar start) throws InvalidSchedule {
         if (end != null && start.after(end)) {
             throw new InvalidSchedule();
         }
         this.start = (Calendar) start.clone();
+        updateSchedules();
     }
 
     public void setEndDate(Calendar end) throws InvalidSchedule {
@@ -41,6 +53,7 @@ public class Schedule {
             throw new InvalidSchedule();
         }
         this.end = (Calendar) end.clone();
+        updateSchedules();
     }
 
     public void scheduleCourse(int courseId, Calendar date) throws DateOutOfSchedule, UninitializedSchedule,

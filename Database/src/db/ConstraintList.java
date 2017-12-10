@@ -1,5 +1,7 @@
 package db;
 
+import db.exception.InvalidConstraint;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Map;
 public class ConstraintList {
     private Map<Integer, Constraint> constraints;
 
-    class Constraint {
+    static class Constraint {
         public Calendar start;
         public Calendar end;
 

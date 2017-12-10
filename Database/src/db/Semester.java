@@ -1,6 +1,8 @@
 package db;
 
 
+import db.exception.*;
+
 import java.util.*;
 
 
@@ -96,10 +98,12 @@ public class Semester {
 
     public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
         schedules.get(moed).setStartDate(start);
+        // Schedules are already updated
     }
 
     public void setEndDate(Moed moed, Calendar end) throws InvalidSchedule {
         schedules.get(moed).setEndDate(end);
+        // Schedules are already updated
     }
 
     public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,
@@ -146,14 +150,12 @@ public class Semester {
         constraints.get(moed).removeConstraint(courseId);
     }
 
-    public ConstraintList getConstraintList(Moed moed) {
-        ConstraintList cl = new ConstraintList();
+    public Map<Integer, ConstraintList.Constraint> getConstraintList(Moed moed) {
+        Map<Integer, ConstraintList.Constraint> cl = new HashMap<>();
         for (int courseId: courses.keySet()) {
             ConstraintList.Constraint constraint = constraints.get(moed).getConstraint(courseId);
             if (constraint != null) {
-                try {
-                    cl.setConstraint(courseId, constraint.start, constraint.end);
-                } catch (InvalidConstraint ignored) {}
+                cl.put(courseId, new ConstraintList.Constraint(constraint.start, constraint.end));
             }
         }
         return cl;
