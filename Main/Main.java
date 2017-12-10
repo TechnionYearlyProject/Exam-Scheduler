@@ -1,3 +1,5 @@
+import db.Database;
+import db.exception.InvalidDatabase;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,6 +32,13 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+        Database database = new Database();
+        try {
+            database.loadSemester(2017, "winter");
+        } catch (InvalidDatabase e) {
+            e.printStackTrace();
+            return;
+        }
         launch(args);
     }
 }
