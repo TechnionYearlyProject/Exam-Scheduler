@@ -1,4 +1,4 @@
-package test.resources.db;
+package test.java.db;
 
 import db.Course;
 import org.junit.Before;
