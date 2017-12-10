@@ -1,5 +1,6 @@
 package db;
 
+import db.exception.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -242,6 +243,7 @@ public class Database {
     }
 
     private int compareDirs(String dir1, String dir2) {
+        // Compare semesters so that most recent semester will be first after ordering
         String[] dir1Attr = dir1.split("_");
         String[] dir2Attr = dir2.split("_");
         // If same year

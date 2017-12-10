@@ -1,6 +1,8 @@
 package db;
 
 
+import db.exception.*;
+
 import java.util.*;
 
 
@@ -96,10 +98,12 @@ public class Semester {
 
     public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
         schedules.get(moed).setStartDate(start);
+        // Schedules are already updated
     }
 
     public void setEndDate(Moed moed, Calendar end) throws InvalidSchedule {
         schedules.get(moed).setEndDate(end);
+        // Schedules are already updated
     }
 
     public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,
