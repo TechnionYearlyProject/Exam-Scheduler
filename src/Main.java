@@ -23,7 +23,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("בחירת סמסטר");
         Scene scene = new Scene(root,800,500);
-        primaryStage.getIcons().add(new Image("resources/Technion-logo2.png"));
+        primaryStage.getIcons().add(new Image("GUI/resources/Technion-logo2.png"));
         SemesterPickingController control = myLoader.getController();
         control.setPrevStage(primaryStage);
         primaryStage.setScene(scene);
