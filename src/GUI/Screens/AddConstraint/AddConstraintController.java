@@ -1,10 +1,13 @@
-package GUI.Screens.AddConstraint;
+package Screens.AddConstraint;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -19,16 +22,14 @@ public class AddConstraintController implements Initializable {
     @FXML
     private JFXTextField courseIDChoice;
     @FXML
-    private JFXComboBox<String> courseTypeChoice;
-    @FXML
     private JFXButton addButton;
     @FXML
     private JFXButton cancelButton;
     private List<String> courseNameList = new ArrayList<>();
     private String courseName;
     private String courseID;
-    private String courseType;
     private Stage stage;
+
     public AddConstraintController(Stage stage){
         courseNameList.add("Algorithms");
         courseNameList.add("Yearly Project");
@@ -37,9 +38,6 @@ public class AddConstraintController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         courseNameList.forEach(name->courseNameChoice.getItems().add(name));
-        courseTypeChoice.getItems().add(0,"מבחן בוקר 9:30");
-        courseTypeChoice.getItems().add(1,"מבחן צהריים 13:00");
-        courseTypeChoice.getItems().add(2,"מבחן ערב 17:30");
         cancelButton.setOnMouseClicked(e->onPrevButtonClick());
         addButton.setOnMouseClicked(e->onNextButtonClick());
     }
@@ -48,11 +46,18 @@ public class AddConstraintController implements Initializable {
         stage.close();
     }
     private void onNextButtonClick(){
-        //add error msgs
         courseName = courseNameChoice.getValue();
         courseID = courseIDChoice.getText();
-        courseType = courseTypeChoice.getValue();
-        stage.close();
+        if (courseName == null || courseName.equals("") || courseID == null || courseID.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "אנא בחר/י שם ומספר קורס", ButtonType.OK);
+            alert.setHeaderText("");
+            alert.setTitle("שגיאה");
+            alert.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            alert.showAndWait();
+        }
+        else {
+            stage.close();
+        }
     }
 
     public String getCourseName() {
@@ -61,10 +66,6 @@ public class AddConstraintController implements Initializable {
 
     public String getCourseID() {
         return courseID;
-    }
-
-    public String getCourseType() {
-        return courseType;
     }
 }
 

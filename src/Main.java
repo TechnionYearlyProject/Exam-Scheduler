@@ -14,14 +14,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader myLoader = new FXMLLoader(getClass().getResource("/Screens/SemesterPicking/semesterPicking.fxml"));
+        FXMLLoader myLoader = new FXMLLoader(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
         SemesterPickingController controller = new SemesterPickingController();
         controller.setPrevStage(primaryStage);
         myLoader.setController(controller);
         Parent root = myLoader.load();
         //Parent root = myLoader.load(getClass().getResource("GUI/Screens/SemesterPicking/semesterPicking.fxml"));
         root.getStylesheets().add(getClass().getResource("/Screens/SemesterPicking/semesterPicking.css").toExternalForm());
-
 
         primaryStage.setTitle("בחירת סמסטר");
         Scene scene = new Scene(root,800,500);

@@ -1,7 +1,8 @@
-package GUI.Screens.Calendar;
+package Screens.Calendar;
 
-import GUI.Screens.AddConstraint.AddConstraintController;
+import Screens.AddConstraint.AddConstraintController;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,25 +23,24 @@ import java.time.YearMonth;
  */
 public class AnchorPaneNode extends AnchorPane {
 
-    // Date associated with this pane
     private LocalDate date;
-    private VBox view = new VBox();
-    /**
-     * Create a anchor pane node. Date is not assigned in the constructor.
-     * @param children children of the anchor pane
-     */
+    private VBox view;
+    private void displayCourse(String courseName,String courseID){
+        view = (VBox)this.getChildren().get(2);
+        StackPane stack = new StackPane();
+        Rectangle rect1 = new Rectangle(this.getLayoutX(), this.getLayoutY(), 171, 26);
+        rect1.setStyle("-fx-fill: #0369cd; -fx-stroke: black");
+        stack.setPrefSize(85,12.22);
+        Text text = new Text(courseName + "-" + courseID);
+        text.setStyle("-fx-fill: white");
+        stack.getChildren().addAll(rect1,text);
+        view.getChildren().add(stack);
+    }
     AnchorPaneNode(Node... children) {
         super(children);
-/*        StackPane pane1 = new StackPane();
-        pane1.setPrefSize(85,28.33);
-        StackPane pane2 = new StackPane();
-        pane2.setPrefSize(85,28.33);
-        StackPane pane3 = new StackPane();
-        pane3.setPrefSize(85,28.33);
-        VBox vbox = new VBox(pane1,pane2,pane3);*/
         this.setOnMouseClicked(e->{
             Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Screens/AddConstraint/addConstraint.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Screens/AddConstraint/addConstraint.fxml"));
             stage.setTitle("הוספת קורס");
             AddConstraintController controller = new AddConstraintController(stage);
             loader.setController(controller);
@@ -52,47 +52,10 @@ public class AnchorPaneNode extends AnchorPane {
             stage.showAndWait();
             String courseName = controller.getCourseName();
             String courseID = controller.getCourseID();
-            String courseType = controller.getCourseType();
-
-            view = (VBox)this.getChildren().get(1);
-            view.setVisible(true);
-            Rectangle rect1 = new Rectangle(this.getLayoutX(), this.getLayoutY(), 85, 28.33);
-/*        this.getScene().getRoot().get*/
-            rect1.setFill(Color.BLUE);
-            rect1.setVisible(true);
-            //StackPane stack = (StackPane)view.getChildren().get(0);
-            StackPane stack = new StackPane();
-            stack.setPrefSize(85,28.33);
-            stack.getChildren().addAll(rect1,new Text(courseID));
-            stack.setVisible(true);
-            view.getChildren().add(stack);
-            view.setVisible(true);
+            if(courseName!=null && courseID!=null){
+                displayCourse(courseName,courseID);
+            }
         });
-    }
-/*    public void addDates(LocalDate date){
-        view.getChildren().forEach(e->((InnerNode)e).addDate(date));
-    }
-    private VBox getView(){
-        return view;
-    }*/
-    private void addPreExam(){
-/*        Button button = new Button("236363 ממן");
-        view.getChildren().add(button);*/
-        view = (VBox)this.getChildren().get(1);
-        view.setVisible(true);
-        StackPane stack = new StackPane();
-        Rectangle rect1 = new Rectangle(this.getLayoutX(), this.getLayoutY(), 85, 28.33);
-/*        this.getScene().getRoot().get*/
-        rect1.setFill(Color.BLUE);
-        rect1.setVisible(true);
-        stack.getChildren().addAll(rect1,new Text("236363"));
-        stack.setVisible(true);
-        view.getChildren().addAll(null,stack);
-        view.setVisible(true);
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     void setDate(LocalDate date) {

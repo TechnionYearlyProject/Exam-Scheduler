@@ -1,7 +1,7 @@
-package GUI.Screens.SemesterPicking;
-import GUI.Screens.Calendar.CalendarController;
-import GUI.Screens.Calendar.FullCalendarView;
-import GUI.Screens.SEMESTER;
+package Screens.SemesterPicking;
+import Screens.Calendar.CalendarController;
+import Screens.Calendar.FullCalendarView;
+import Screens.SEMESTER;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.fxml.FXML;
@@ -21,9 +21,9 @@ import java.net.URL;
 import java.time.YearMonth;
 import java.util.ResourceBundle;
 
-import static GUI.Screens.SEMESTER.SEMESTER_A;
-import static GUI.Screens.SEMESTER.SEMESTER_B;
-import static GUI.Screens.SEMESTER.SEMESTER_K;
+import static Screens.SEMESTER.SEMESTER_A;
+import static Screens.SEMESTER.SEMESTER_B;
+import static Screens.SEMESTER.SEMESTER_K;
 
 
 public class SemesterPickingController implements Initializable {
@@ -38,12 +38,6 @@ public class SemesterPickingController implements Initializable {
     @FXML private JFXButton nextButton;
     @FXML private JFXButton prevButton;
 
-    /*    public SemesterPickingController(Stage prevStage){
-        this.prevStage = prevStage;
-        for(Integer i=2010;i<2020;i++){
-            yearChoice.getItems().add(i.toString());
-        }
-    }*/
     public void setPrevStage(Stage prevStage){
         this.prevStage = prevStage;
     }
@@ -51,7 +45,7 @@ public class SemesterPickingController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for(Integer i=2010;i<2020;i++){
-            yearChoice.getItems().add(i.toString()); 
+            yearChoice.getItems().add(i.toString());
         }
         nextButton.setOnAction(e->onNextButtonClick());
         prevButton.setOnAction(e->onPrevButtonClick());
@@ -66,11 +60,11 @@ public class SemesterPickingController implements Initializable {
     private void onPrevButtonClick(){
         Stage stage = new Stage();
         stage.setTitle("מסך כניסה");
-        stage.getIcons().add(new Image("GUI/resources/Technion-logo2.png"));
+        stage.getIcons().add(new Image("resources/Technion-logo2.png"));
 
         Pane myPane = null;
         try {
-            myPane = FXMLLoader.load(getClass().getResource("/GUI/Screens/Login/login.fxml"));
+            myPane = FXMLLoader.load(getClass().getResource("/Screens/Login/login.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,8 +101,8 @@ public class SemesterPickingController implements Initializable {
         System.out.println("wantedSemester is " + wantedSemester);
 
         Stage stage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/Screens/Calendar/fullCalendar.fxml"));
-        stage.setTitle("Full Calendar FXML Example");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Screens/Calendar/fullCalendar.fxml"));
+        stage.setTitle("לוח שנה");
         CalendarController calendarController = new CalendarController(wantedYear, wantedSemester);
         calendarController.setPrevStage(stage);
         loader.setController(calendarController);
@@ -117,10 +111,9 @@ public class SemesterPickingController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Get the calendarController and add the calendar view to it
-        //CalendarController calendarController = loader.getController();
         calendarController.calendarPane.getChildren().add(new FullCalendarView(YearMonth.now()).getView());
         prevStage.close();
+        stage.getIcons().add(new Image("resources/Technion-logo2.png"));
         stage.show();
     }
 }

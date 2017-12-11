@@ -12,91 +12,91 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" stylesheets="@semesterPicking.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <VBox fx:id="topBar" prefHeight="84.0" prefWidth="800.0" stylesheets="@semesterPicking.css" BorderPane.alignment="CENTER">
-         <Region prefHeight="200.0" prefWidth="200.0" />
-         <HBox prefHeight="100.0" prefWidth="200.0">
-            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="בחירת סמסטר" textAlignment="CENTER" wrappingWidth="224.5029296875">
-               <font>
-                  <Font name="Arial" size="39.0" />
-               </font>
-            </Text>
-            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-         </HBox>
-         <Region prefHeight="200.0" prefWidth="200.0" />
-      </VBox>
-   </top>
-   <bottom>
-      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <Region prefHeight="100.0" prefWidth="115.0" HBox.hgrow="ALWAYS" />
-         <VBox>
-             <HBox>
-               <JFXButton id="nextButton" fx:id="nextButton" buttonType="RAISED" prefHeight="56.0" prefWidth="121.0" ripplerFill="#827beb" stylesheets="@semesterPicking.css" text="הבא" textFill="WHITE">
-                  <font>
-                     <Font name="Arial" size="24.0" />
-                  </font>
-               </JFXButton>
-                 <Region HBox.hgrow="ALWAYS" />
-               <JFXButton id="prevButton" fx:id="prevButton" buttonType="RAISED" prefHeight="56.0" prefWidth="121.0" ripplerFill="#847dee" text="הקודם">
-                  <font>
-                     <Font name="Arial" size="24.0" />
-                  </font>
-               </JFXButton>
-             </HBox>
-            <Region minHeight="-Infinity" prefHeight="10.0" prefWidth="600.0" VBox.vgrow="ALWAYS" />
-         </VBox>
-         <Region prefHeight="100.0" prefWidth="115.0" HBox.hgrow="ALWAYS" />
-      </HBox>
-   </bottom>
-   <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <Region prefHeight="252.0" prefWidth="800.0" VBox.vgrow="ALWAYS" />
-          <HBox prefHeight="241.0" prefWidth="800.0">
-              <Region prefHeight="189.0" prefWidth="314.0" HBox.hgrow="ALWAYS" />
-              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="אנא בחר/י את הסמסטר הרצוי" wrappingWidth="349.91796875">
-                 <font>
-                     <Font name="Arial" size="30.0" />
-                 </font>
-              </Text>
-              <Region prefHeight="50.0" prefWidth="173.0" HBox.hgrow="ALWAYS" />
-          </HBox>
-          <HBox prefHeight="250.0" prefWidth="800.0">
-              <Region prefHeight="64.0" prefWidth="665.0" />
-            <JFXComboBox fx:id="yearChoice" prefHeight="36.0" prefWidth="235.0" style="-fx-font: 30px \&quot;Serif\&quot;; -fx-border-color: #000000;" />
-              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="שנה: " wrappingWidth="66.7392578125">
-                 <font>
-                     <Font name="Arial" size="30.0" />
-                 </font>
-              </Text>
-              <Region prefHeight="60.0" prefWidth="319.0" HBox.hgrow="ALWAYS" />
-          </HBox>
-          <HBox prefHeight="353.0" prefWidth="800.0">
-              <Region prefHeight="127.0" prefWidth="639.0" />
-              <VBox prefHeight="157.0" prefWidth="486.0">
-                  <fx:define>
-                      <ToggleGroup fx:id="semesterToggleGroup" />
-                  </fx:define>
-               <JFXRadioButton id="radioButtonA" fx:id="radioButtonA" nodeOrientation="RIGHT_TO_LEFT" prefHeight="32.0" prefWidth="174.0" stylesheets="@semesterPicking.css" text="סמסטר א">
-                  <font>
-                     <Font name="Arial" size="28.0" />
-                  </font>
-                  <toggleGroup>
-                     <ToggleGroup fx:id="semesterToggleGroup" />
-                  </toggleGroup>
-               </JFXRadioButton>
-               <JFXRadioButton fx:id="radioButtonB" layoutX="10.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="32.0" prefWidth="174.0" stylesheets="@semesterPicking.css" text="סמסטר ב" toggleGroup="$semesterToggleGroup">
-                  <font>
-                     <Font name="Arial" size="28.0" />
-                  </font>
-               </JFXRadioButton>
-               <JFXRadioButton fx:id="radioButtonK" layoutX="10.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="32.0" prefWidth="174.0" text="סמסטר קיץ" toggleGroup="$semesterToggleGroup">
-                  <font>
-                     <Font name="Arial" size="28.0" />
-                  </font>
-               </JFXRadioButton>
-              </VBox>
-          </HBox>
-      </VBox>
-   </center>
+    <top>
+        <VBox fx:id="topBar" prefHeight="84.0" prefWidth="800.0" stylesheets="@semesterPicking.css" BorderPane.alignment="CENTER">
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="בחירת סמסטר" textAlignment="CENTER" wrappingWidth="224.5029296875">
+                    <font>
+                        <Font name="Arial" size="39.0" />
+                    </font>
+                </Text>
+                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+        </VBox>
+    </top>
+    <bottom>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <Region prefHeight="100.0" prefWidth="115.0" HBox.hgrow="ALWAYS" />
+            <VBox>
+                <HBox>
+                    <JFXButton id="nextButton" fx:id="nextButton" buttonType="RAISED" prefHeight="56.0" prefWidth="121.0" ripplerFill="#827beb" stylesheets="@semesterPicking.css" text="הבא" textFill="WHITE">
+                        <font>
+                            <Font name="Arial" size="24.0" />
+                        </font>
+                    </JFXButton>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <JFXButton id="prevButton" fx:id="prevButton" buttonType="RAISED" prefHeight="56.0" prefWidth="121.0" ripplerFill="#847dee" text="הקודם">
+                        <font>
+                            <Font name="Arial" size="24.0" />
+                        </font>
+                    </JFXButton>
+                </HBox>
+                <Region minHeight="-Infinity" prefHeight="10.0" prefWidth="600.0" VBox.vgrow="ALWAYS" />
+            </VBox>
+            <Region prefHeight="100.0" prefWidth="115.0" HBox.hgrow="ALWAYS" />
+        </HBox>
+    </bottom>
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <Region prefHeight="252.0" prefWidth="800.0" VBox.vgrow="ALWAYS" />
+            <HBox prefHeight="241.0" prefWidth="800.0">
+                <Region prefHeight="189.0" prefWidth="314.0" HBox.hgrow="ALWAYS" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="אנא בחר/י את הסמסטר הרצוי" wrappingWidth="349.91796875">
+                    <font>
+                        <Font name="Arial" size="30.0" />
+                    </font>
+                </Text>
+                <Region prefHeight="50.0" prefWidth="173.0" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <HBox prefHeight="250.0" prefWidth="800.0">
+                <Region prefHeight="64.0" prefWidth="665.0" />
+                <JFXComboBox fx:id="yearChoice" prefHeight="36.0" prefWidth="235.0" style="-fx-font: 30px \&quot;Serif\&quot;; -fx-border-color: #000000;" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="שנה: " wrappingWidth="66.7392578125">
+                    <font>
+                        <Font name="Arial" size="30.0" />
+                    </font>
+                </Text>
+                <Region prefHeight="60.0" prefWidth="319.0" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <HBox prefHeight="353.0" prefWidth="800.0">
+                <Region prefHeight="127.0" prefWidth="639.0" />
+                <VBox prefHeight="157.0" prefWidth="486.0">
+                    <fx:define>
+                        <ToggleGroup fx:id="semesterToggleGroup" />
+                    </fx:define>
+                    <JFXRadioButton id="radioButtonA" fx:id="radioButtonA" nodeOrientation="RIGHT_TO_LEFT" prefHeight="32.0" prefWidth="174.0" stylesheets="@semesterPicking.css" text="סמסטר א">
+                        <font>
+                            <Font name="Arial" size="28.0" />
+                        </font>
+                        <toggleGroup>
+                            <ToggleGroup fx:id="semesterToggleGroup" />
+                        </toggleGroup>
+                    </JFXRadioButton>
+                    <JFXRadioButton fx:id="radioButtonB" layoutX="10.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="32.0" prefWidth="174.0" stylesheets="@semesterPicking.css" text="סמסטר ב" toggleGroup="$semesterToggleGroup">
+                        <font>
+                            <Font name="Arial" size="28.0" />
+                        </font>
+                    </JFXRadioButton>
+                    <JFXRadioButton fx:id="radioButtonK" layoutX="10.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="32.0" prefWidth="174.0" text="סמסטר קיץ" toggleGroup="$semesterToggleGroup">
+                        <font>
+                            <Font name="Arial" size="28.0" />
+                        </font>
+                    </JFXRadioButton>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
 </BorderPane>
