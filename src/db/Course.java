@@ -29,6 +29,10 @@ public class Course {
         programs.put(program, semester);
     }
 
+    public int studyProgramSize(){
+        return programs.size();
+    }
+
     public void removeStudyProgram(String program) {
         programs.remove(program);
     }
