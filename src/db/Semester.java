@@ -96,6 +96,18 @@ public class Semester {
         return list;
     }
 
+    public List<Course> getCourseBySemester(int i) {
+        List<Course> list = new ArrayList<>();
+        for (String program: programs) {
+            for (Course course : courses.values()) {
+                if (course.getStudyProgramSemester(program) == i) {
+                    list.add(new Course(course)); // Copy ctor perform deep copy
+                }
+            }
+        }
+        return list;
+    }
+
     private void updateConstraints(Moed moed) {
         for (int courseId: courses.keySet()) {
             ConstraintList.Constraint c = constraints.get(moed).getConstraint(courseId);
