@@ -19,10 +19,10 @@ public class Semester {
         }
     }
 
-    private Map<Integer, Course> courses;
-    private Set<String> programs;
-    private Map<Moed, Schedule> schedules;
-    private Map<Moed, ConstraintList> constraints;
+    Map<Integer, Course> courses;
+    Set<String> programs;
+    Map<Moed, Schedule> schedules;
+    Map<Moed, ConstraintList> constraints;
 
     public Semester() {
         courses = new HashMap<>();

@@ -1,15 +1,18 @@
 package db;
 
 import db.exception.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -21,7 +24,8 @@ public class Database {
     private String baseDirectory;
     private String sep;
     private Map<String, Semester> semesters;
-    private DocumentBuilder parser;
+    private DocumentBuilder builder;
+    private Transformer transformer;
     private SimpleDateFormat dateParser, hourParser;
 
     public Database() {
@@ -29,10 +33,13 @@ public class Database {
         semesters = new HashMap<>();
         System.out.println(baseDirectory);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        TransformerFactory tFactory = TransformerFactory.newInstance();
         try {
-            parser = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
+            builder = factory.newDocumentBuilder();
+            transformer = tFactory.newTransformer();
+        } catch (ParserConfigurationException | TransformerConfigurationException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         if (System.getProperty("os.name").contains("Windows")) {
             sep = "\\";
@@ -51,12 +58,23 @@ public class Database {
         File XMLFile = new File(filePath);
         Document XMLTree;
         try {
-            XMLTree = parser.parse(XMLFile);
+            XMLTree = builder.parse(XMLFile);
         } catch (SAXException | IOException e) {
             throw new InvalidDatabase( e.toString());
         }
         assert XMLTree != null;
         return XMLTree;
+    }
+
+    private void writeXMLFile(String filePath, Document document) {
+        DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(new File(filePath));
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     private Semester parseSemester(String path) throws InvalidDatabase {
@@ -256,6 +274,22 @@ public class Database {
         return -(dir1Attr[0].compareTo(dir2Attr[0]));
     }
 
+    private void writeSemester(String path, Semester semester) {
+        writeStudyPrograms(path + sep + "study_programs.xml", semester);
+    }
+
+    private void writeStudyPrograms(String filePath, Semester semester) {
+        Document document = builder.newDocument();
+        Element programs = document.createElement("programs");
+        for (String program: semester.programs) {
+            Element programElement = document.createElement("program");
+            Text programText = document.createTextNode(program);
+            programElement.appendChild(programText);
+            programs.appendChild(programElement);
+        }
+        writeXMLFile(filePath, document);
+    }
+
     public Semester createSemester(int year, String sem) throws SemesterAlreadyExist, InvalidDatabase {
         String semesterName = year + "_" + sem;
         if (semesters.containsKey(semesterName)) {
@@ -319,5 +353,12 @@ public class Database {
             return null;
         }
         return semesters.get(semesterDir);
+    }
+
+    public void saveSemester(int year, String sem) {
+        String semesterDir = getSemesterDir(year, sem);
+        String path = baseDirectory + sep + "db" + sep + semesterDir;
+        Semester semester = semesters.get(semesterDir);
+        writeSemester(path, semester);
     }
 }
