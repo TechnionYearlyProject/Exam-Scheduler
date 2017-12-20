@@ -282,6 +282,7 @@ public class Database {
         }
         writeStudyPrograms(path + sep + "study_programs.xml", semester);
         writeCourses(path + sep + "courses.xml", semester);
+        writeSchedules(path + sep + "scheduleA.xml", path + sep + "scheduleB.xml", semester);
     }
 
     private void writeStudyPrograms(String filePath, Semester semester) {
@@ -327,6 +328,68 @@ public class Database {
         }
         document.appendChild(courses);
         writeXMLFile(filePath, document);
+    }
+
+    private Element createDateElement(Document doc, String name, Calendar date) {
+        Element element = doc.createElement(name);
+        String str;
+        if (date != null) {
+            str = dateParser.format(date.getTime());
+        } else {
+            str = "None";
+        }
+        Text text = doc.createTextNode(str);
+        element.appendChild(text);
+        return element;
+    }
+
+    private void writeSchedules(String filePath1, String filePath2, Semester semester) {
+        Map<Semester.Moed, Document> docs = new HashMap<>();
+        Map<Semester.Moed, String> paths = new HashMap<>();
+        docs.put(Semester.Moed.MOED_A, builder.newDocument());
+        docs.put(Semester.Moed.MOED_B, builder.newDocument());
+        paths.put(Semester.Moed.MOED_A, filePath1);
+        paths.put(Semester.Moed.MOED_B, filePath2);
+        for (Map.Entry<Semester.Moed, Document> entry: docs.entrySet()) {
+            Semester.Moed moed = entry.getKey();
+            Document document = entry.getValue();
+            Element schedule = document.createElement("schedule");
+
+            // Start date node
+            Element startDate = createDateElement(document, "start_date", semester.schedules.get(moed).start);
+            schedule.appendChild(startDate);
+
+            // End date node
+            Element endDate = createDateElement(document, "end_date", semester.schedules.get(moed).end);
+            schedule.appendChild(endDate);
+
+            // Date ordering
+            Map<String, Map<String, Integer>> dates = new HashMap<>();
+            for (Map.Entry<Integer, Calendar> dateEntry: semester.schedules.get(moed).schedule.entrySet()){
+                String dateStr = dateParser.format(dateEntry.getValue().getTime());
+                String hourStr = hourParser.format(dateEntry.getValue().getTime());
+                if (!dates.containsKey(dateStr)) {
+                    dates.put(dateStr, new HashMap<>());
+                }
+                dates.get(dateStr).put(hourStr, dateEntry.getKey());
+            }
+
+            // Date nodes
+            for (Map.Entry<String, Map<String, Integer>> entry1: dates.entrySet()) {
+                Element dateElement = document.createElement("day");
+                dateElement.setAttribute("date", entry1.getKey());
+                for(Map.Entry<String, Integer> entry2: entry1.getValue().entrySet()) {
+                    Element examElement = document.createElement("exam");
+                    examElement.setAttribute("hour", entry2.getKey());
+                    Text examText = document.createTextNode(Integer.toString(entry2.getValue()));
+                    examElement.appendChild(examText);
+                    dateElement.appendChild(examElement);
+                }
+                schedule.appendChild(dateElement);
+            }
+            document.appendChild(schedule);
+            writeXMLFile(paths.get(moed), document);
+        }
     }
 
     public Semester createSemester(int year, String sem) throws SemesterAlreadyExist, InvalidDatabase {
