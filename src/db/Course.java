@@ -6,7 +6,7 @@ import java.util.Map;
 public class Course {
     public int id;
     public String name;
-    private Map<String, Integer> programs;
+    Map<String, Integer> programs;
 
     public Course(int id, String name) {
         this.id = id;

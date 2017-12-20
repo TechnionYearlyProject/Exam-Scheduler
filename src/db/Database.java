@@ -276,6 +276,7 @@ public class Database {
 
     private void writeSemester(String path, Semester semester) {
         writeStudyPrograms(path + sep + "study_programs.xml", semester);
+        writeCourses(path + sep + "courses.xml", semester);
     }
 
     private void writeStudyPrograms(String filePath, Semester semester) {
@@ -286,6 +287,37 @@ public class Database {
             Text programText = document.createTextNode(program);
             programElement.appendChild(programText);
             programs.appendChild(programElement);
+        }
+        writeXMLFile(filePath, document);
+    }
+
+    private void writeCourses(String filePath, Semester semester) {
+        Document document = builder.newDocument();
+        Element courses = document.createElement("courses");
+        for (Course course: semester.courses.values())  {
+            Element courseElement = document.createElement("course");
+
+            // Course ID node
+            Element courseIdElement = document.createElement("course_id");
+            Text courseIdText = document.createTextNode(Integer.toString(course.id));
+            courseIdElement.appendChild(courseIdText);
+            courseElement.appendChild(courseIdElement);
+
+            // Name node
+            Element courseNameElement = document.createElement("name");
+            Text courseNameText = document.createTextNode(course.name);
+            courseNameElement.appendChild(courseNameText);
+            courseElement.appendChild(courseNameElement);
+
+            // Study program nodes
+            for (Map.Entry<String, Integer> entry: course.programs.entrySet()) {
+                Element studyProgramElement = document.createElement("semester");
+                studyProgramElement.setAttribute("program", entry.getKey());
+                Text studyProgramText = document.createTextNode(Integer.toString(entry.getValue()));
+                studyProgramElement.appendChild(studyProgramText);
+                courseElement.appendChild(studyProgramElement);
+            }
+            courses.appendChild(courseElement);
         }
         writeXMLFile(filePath, document);
     }
