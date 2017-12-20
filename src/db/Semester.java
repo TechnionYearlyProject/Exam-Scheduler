@@ -111,6 +111,9 @@ public class Semester {
     private void updateConstraints(Moed moed) {
         for (int courseId: courses.keySet()) {
             ConstraintList.Constraint c = constraints.get(moed).getConstraint(courseId);
+//            if (c == null) {
+//                continue;
+//            }
             boolean update = false;
             if (c.start.before(schedules.get(moed).start)) {
                 update = true;
@@ -131,15 +134,21 @@ public class Semester {
     }
 
     public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
+        boolean wasNull = schedules.get(moed).start == null;
         schedules.get(moed).setStartDate(start);
         // Schedules are already updated
-        updateConstraints(moed);
+        if (!wasNull) {
+            updateConstraints(moed);
+        }
     }
 
     public void setEndDate(Moed moed, Calendar end) throws InvalidSchedule {
+        boolean wasNull = schedules.get(moed).end == null;
         schedules.get(moed).setEndDate(end);
         // Schedules are already updated
-        updateConstraints(moed);
+        if (!wasNull) {
+            updateConstraints(moed);
+        }
     }
 
     public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,

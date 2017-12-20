@@ -10,7 +10,7 @@ import java.util.*;
 public class Schedule {
     public Calendar start;
     public Calendar end;
-    private Map<Integer, Calendar> schedule;
+    Map<Integer, Calendar> schedule;
 
     public Schedule() {
         this.start = null;

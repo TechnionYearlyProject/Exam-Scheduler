@@ -7,10 +7,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
@@ -31,12 +28,13 @@ public class Database {
     public Database() {
         baseDirectory = System.getProperty("user.dir");
         semesters = new HashMap<>();
-        System.out.println(baseDirectory);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         TransformerFactory tFactory = TransformerFactory.newInstance();
         try {
             builder = factory.newDocumentBuilder();
             transformer = tFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         } catch (ParserConfigurationException | TransformerConfigurationException e) {
             e.printStackTrace();
             System.exit(1);
@@ -184,7 +182,7 @@ public class Database {
                     throw new InvalidDatabase("Schedule '" + moed.str + "' end date is before start date");
                 }
             } else {
-                return;
+                continue;
             }
             NodeList days = root.getElementsByTagName("day");
             for (int i = 0; i < days.getLength(); i++) {
@@ -275,6 +273,13 @@ public class Database {
     }
 
     private void writeSemester(String path, Semester semester) {
+        File directory = new File(path);
+        if (!directory.exists()) {
+            directory.mkdir();
+        } else if (!directory.isDirectory()) {
+            // TODO Decide what to do
+            System.exit(1);
+        }
         writeStudyPrograms(path + sep + "study_programs.xml", semester);
         writeCourses(path + sep + "courses.xml", semester);
     }
@@ -288,6 +293,7 @@ public class Database {
             programElement.appendChild(programText);
             programs.appendChild(programElement);
         }
+        document.appendChild(programs);
         writeXMLFile(filePath, document);
     }
 
@@ -319,6 +325,7 @@ public class Database {
             }
             courses.appendChild(courseElement);
         }
+        document.appendChild(courses);
         writeXMLFile(filePath, document);
     }
 
@@ -327,7 +334,6 @@ public class Database {
         if (semesters.containsKey(semesterName)) {
             throw new SemesterAlreadyExist();
         }
-        System.out.println(baseDirectory);
         String path = baseDirectory + sep + "db";
         String[] directories = new File(path).list();
         assert directories != null;

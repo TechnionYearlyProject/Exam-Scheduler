@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConstraintList {
-    private Map<Integer, Constraint> constraints;
+    Map<Integer, Constraint> constraints;
 
     static class Constraint {
         public Calendar start;
