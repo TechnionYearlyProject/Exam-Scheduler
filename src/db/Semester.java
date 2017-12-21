@@ -109,25 +109,23 @@ public class Semester {
     }
 
     private void updateConstraints(Moed moed) {
-        for (int courseId: courses.keySet()) {
-            ConstraintList.Constraint c = constraints.get(moed).getConstraint(courseId);
-//            if (c == null) {
-//                continue;
-//            }
-            boolean update = false;
-            if (c.start.before(schedules.get(moed).start)) {
-                update = true;
-                c.start = schedules.get(moed).start;
-            }
-            if (c.end.after(schedules.get(moed).end)) {
-                update = true;
-                c.end = schedules.get(moed).end;
-            }
-            if (update) {
-                try {
-                    constraints.get(moed).setConstraint(courseId, c.start, c.end);
-                } catch (InvalidConstraint e) {
-                    constraints.get(moed).removeConstraint(courseId);
+        for (int courseId: constraints.get(moed).constraints.keySet()) {
+            for (ConstraintList.Constraint c: constraints.get(moed).getConstraints(courseId)) {
+                ConstraintList.Constraint old = new ConstraintList.Constraint(c.start, c.end);
+                boolean update = false;
+                if (c.start.before(schedules.get(moed).start)) {
+                    update = true;
+                    c.start = schedules.get(moed).start;
+                }
+                if (c.end.after(schedules.get(moed).end)) {
+                    update = true;
+                    c.end = schedules.get(moed).end;
+                }
+                if (update) {
+                    constraints.get(moed).removeConstraint(courseId, old.start, old.end);
+                    try {
+                        constraints.get(moed).addConstraint(courseId, c.start, c.end);
+                    } catch (InvalidConstraint | OverlappingConstraints ignored) {}
                 }
             }
         }
@@ -177,8 +175,8 @@ public class Semester {
         return schedule;
     }
 
-    public void setConstraint(int courseId, Moed moed, Calendar start, Calendar end) throws UninitializedSchedule,
-            DateOutOfSchedule, InvalidConstraint, CourseUnknown {
+    public void addConstraint(int courseId, Moed moed, Calendar start, Calendar end) throws UninitializedSchedule,
+            DateOutOfSchedule, InvalidConstraint, CourseUnknown, OverlappingConstraints {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
@@ -188,21 +186,22 @@ public class Semester {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        constraints.get(moed).setConstraint(courseId, start, end);
+        constraints.get(moed).addConstraint(courseId, start, end);
     }
 
-    public void removeConstraint(int courseId, Moed moed) {
-        constraints.get(moed).removeConstraint(courseId);
+    public void removeConstraint(int courseId, Moed moed, Calendar start, Calendar end) {
+        constraints.get(moed).removeConstraint(courseId, start, end);
     }
 
-    public Map<Integer, ConstraintList.Constraint> getConstraintList(Moed moed) {
-        Map<Integer, ConstraintList.Constraint> cl = new HashMap<>();
-        for (int courseId: courses.keySet()) {
-            ConstraintList.Constraint constraint = constraints.get(moed).getConstraint(courseId);
-            if (constraint != null) {
-                cl.put(courseId, new ConstraintList.Constraint(constraint.start, constraint.end));
-            }
+    public List<ConstraintList.Constraint> getConstraintList(Moed moed, int courseId) {
+        return constraints.get(moed).getConstraints(courseId);
+    }
+
+    public Map<Integer, List<ConstraintList.Constraint>> getConstraintLists(Moed moed) {
+        Map<Integer, List<ConstraintList.Constraint>> map = new HashMap<>();
+        for (int courseId: constraints.get(moed).constraints.keySet()) {
+            map.put(courseId, constraints.get(moed).getConstraints(courseId));
         }
-        return cl;
+        return map;
     }
 }

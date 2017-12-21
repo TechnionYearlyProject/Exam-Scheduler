@@ -235,12 +235,12 @@ public class Database {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     Element constraintElement = (Element) n;
                     int courseId = Integer.parseInt(constraintElement.getElementsByTagName("course_id").item(0).getTextContent());
-                    String startDateStr = root.getElementsByTagName("start_date").item(0).getTextContent();
-                    String endDateStr = root.getElementsByTagName("end_date").item(0).getTextContent();
+                    String startDateStr = constraintElement.getElementsByTagName("start_date").item(0).getTextContent();
+                    String endDateStr = constraintElement.getElementsByTagName("end_date").item(0).getTextContent();
                     Calendar startDate = stringToDate(startDateStr, moed);
                     Calendar endDate = stringToDate(endDateStr, moed);
                     try {
-                        semester.setConstraint(courseId, moed, startDate, endDate);
+                        semester.addConstraint(courseId, moed, startDate, endDate);
                     } catch (InvalidConstraint e) {
                         throw new InvalidDatabase("Course '" + courseId + "' has invalid constraint date : '" +
                                 startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
@@ -252,6 +252,9 @@ public class Database {
                     } catch (DateOutOfSchedule e) {
                         throw new InvalidDatabase("Course '" + courseId + "' constraint is out of the schedule dates : '" +
                                 startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
+                    } catch (OverlappingConstraints overlappingConstraints) {
+                        throw new InvalidDatabase("Course '" + courseId + "' has overlapping constraint : '" +
+                                startDateStr + " - " + endDateStr + "' in schedule '" + moed.str + "'");
                     }
                 }
             }
