@@ -286,6 +286,7 @@ public class Database {
         writeStudyPrograms(path + sep + "study_programs.xml", semester);
         writeCourses(path + sep + "courses.xml", semester);
         writeSchedules(path + sep + "scheduleA.xml", path + sep + "scheduleB.xml", semester);
+        writeConstraints(path + sep + "constraintsA.xml", path + sep + "constraintsB.xml", semester);
     }
 
     private void writeStudyPrograms(String filePath, Semester semester) {
@@ -391,6 +392,41 @@ public class Database {
                 schedule.appendChild(dateElement);
             }
             document.appendChild(schedule);
+            writeXMLFile(paths.get(moed), document);
+        }
+    }
+
+    private void writeConstraints(String filePath1, String filePath2, Semester semester) {
+        Map<Semester.Moed, Document> docs = new HashMap<>();
+        Map<Semester.Moed, String> paths = new HashMap<>();
+        docs.put(Semester.Moed.MOED_A, builder.newDocument());
+        docs.put(Semester.Moed.MOED_B, builder.newDocument());
+        paths.put(Semester.Moed.MOED_A, filePath1);
+        paths.put(Semester.Moed.MOED_B, filePath2);
+        for (Map.Entry<Semester.Moed, Document> entry: docs.entrySet()) {
+            Semester.Moed moed = entry.getKey();
+            Document document = entry.getValue();
+            Element constraints = document.createElement("constraints");
+
+            for (int courseId: semester.constraints.get(moed).constraints.keySet()) {
+                for (ConstraintList.Constraint constraint: semester.constraints.get(moed).constraints.get(courseId)) {
+                    Element constraintElement = document.createElement("constraint");
+
+                    Element courseIdElement = document.createElement("course_id");
+                    Text courseIdText = document.createTextNode(Integer.toString(courseId));
+                    courseIdElement.appendChild(courseIdText);
+                    constraintElement.appendChild(courseIdElement);
+
+                    Element startDate = createDateElement(document, "start_date", constraint.start);
+                    constraintElement.appendChild(startDate);
+
+                    Element endDate = createDateElement(document, "end_date", constraint.end);
+                    constraintElement.appendChild(endDate);
+
+                    constraints.appendChild(constraintElement);
+                }
+            }
+            document.appendChild(constraints);
             writeXMLFile(paths.get(moed), document);
         }
     }
