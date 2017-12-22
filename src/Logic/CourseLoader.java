@@ -22,17 +22,17 @@ public class CourseLoader {
         //updating conflictList for each Course.
         setCoursesConflicts();
         //updating constraints for each course.
-        setCoursesConstraints(cL);
+        //setCoursesConstraints(cL);
     }
 
-    private void setCoursesConstraints(ConstraintList cL) {
-        for (Map.Entry<Integer, List<Constraint>> entry : cL.constraints.entrySet()) {
-            List<Constraint> ls = entry.getValue();
-
-            Logic.Course course = courses.get(entry.getKey());
-            course.addConstraint(ls);
-        }
-    }
+//    private void setCoursesConstraints(ConstraintList cL) {
+//        for (Map.Entry<Integer, List<Constraint>> entry : cL.constraints.entrySet()) {
+//            List<Constraint> ls = entry.getValue();
+//
+//            Logic.Course course = courses.get(entry.getKey());
+//            course.addConstraint(ls);
+//        }
+//    }
 
     private void setCoursesConflicts() {
         for (Map.Entry<String, Semester> entry: semesters.entrySet()) {
