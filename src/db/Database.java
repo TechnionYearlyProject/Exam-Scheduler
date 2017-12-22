@@ -48,6 +48,23 @@ public class Database {
         hourParser = new SimpleDateFormat("HH:mm");
     }
 
+    public Map<Integer,Course> getCourses() {
+        Map<Integer,Course> courses = new HashMap<>();
+        for (Map.Entry<String, Semester> entry : semesters.entrySet()) {
+            for (Course c:entry.getValue().getCourseCollection()) {
+                courses.put(c.id,new Course(c));
+            }
+        }
+        return courses;
+    }
+
+    //added by ucf.
+    //mainly used for loading courses. (class CourseLoader)
+    public Map<String, Semester> getSemesters(){
+        return new HashMap<>(semesters);//TODO:CHECK
+
+    }
+
     private String getSemesterDir(int year, String semester) {
         return Integer.toString(year) + '_' + semester;
     }
