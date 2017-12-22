@@ -47,7 +47,13 @@ public class Course {
         if(constraints.contains(c)){
             return;
         }
-        constraints.add(new Constraint(c.getStart(),c.getEnd()));
+        constraints.add(new Constraint(c.start,c.end));
+    }
+
+    void addConstraint(List<Constraint> ls){
+        for (Constraint c: ls) {
+            addConstraint(c);
+        }
     }
 
     void removeConstraint(Constraint c){
