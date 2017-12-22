@@ -1,9 +1,8 @@
 package Logic;
 
-import db.ConstraintList;
+import db.*;
 import db.Course;
-import db.Database;
-import db.Semester;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,7 @@ public class CourseLoader {
     private Map<Integer,Logic.Course> courses;//<courseID,Course>
     private Map<Integer,db.Course> dbCourses;
     private Map<String, Semester> semesters;
-    public CourseLoader(Database database, ConstraintList cL){
+    public CourseLoader(Database database, ConstraintList cL) {
         this.db = db;
         semesters = db.getSemesters();
         courses = new HashMap<>();
@@ -22,7 +21,17 @@ public class CourseLoader {
         buildLogicCourses();
         //updating conflictList for each Course.
         setCoursesConflicts();
-        //TODO: add constraints for eachCourse;
+        //updating constraints for each course.
+        setCoursesConstraints(cL);
+    }
+
+    private void setCoursesConstraints(ConstraintList cL) {
+        for (Map.Entry<Integer, List<Constraint>> entry : cL.constraints.entrySet()) {
+            List<Constraint> ls = entry.getValue();
+
+            Logic.Course course = courses.get(entry.getKey());
+            course.addConstraint(ls);
+        }
     }
 
     private void setCoursesConflicts() {
