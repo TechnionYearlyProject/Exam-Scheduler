@@ -6,7 +6,7 @@ import db.exception.OverlappingConstraints;
 import java.util.*;
 
 public class ConstraintList {
-    Map<Integer, List<Constraint>> constraints;
+    public Map<Integer, List<Constraint>> constraints;
 
     public ConstraintList() {
         constraints = new HashMap<>();
