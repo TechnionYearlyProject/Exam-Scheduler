@@ -3,8 +3,8 @@ package db;
 import java.util.Calendar;
 
 public class Constraint implements Comparable<Constraint>{
-    Calendar start;
-    Calendar end;
+    public Calendar start;
+    public Calendar end;
 
     public Constraint(Calendar start, Calendar end) {
         this.start = (Calendar) start.clone();
