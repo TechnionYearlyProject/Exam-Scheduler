@@ -60,6 +60,9 @@ public class CourseLoader {
         }
     }
 
+    /*
+     * Logic.Course map. all the relevant data to the algorithm is here.
+     */
     public Map<Integer,Logic.Course> getCourses(){
         return this.courses;
     }
