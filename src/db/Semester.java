@@ -110,8 +110,8 @@ public class Semester {
 
     private void updateConstraints(Moed moed) {
         for (int courseId: constraints.get(moed).constraints.keySet()) {
-            for (ConstraintList.Constraint c: constraints.get(moed).getConstraints(courseId)) {
-                ConstraintList.Constraint old = new ConstraintList.Constraint(c.start, c.end);
+            for (Constraint c: constraints.get(moed).getConstraints(courseId)) {
+                Constraint old = new Constraint(c.start, c.end);
                 boolean update = false;
                 if (c.start.before(schedules.get(moed).start)) {
                     update = true;
@@ -193,12 +193,12 @@ public class Semester {
         constraints.get(moed).removeConstraint(courseId, start, end);
     }
 
-    public List<ConstraintList.Constraint> getConstraintList(Moed moed, int courseId) {
+    public List<Constraint> getConstraintList(Moed moed, int courseId) {
         return constraints.get(moed).getConstraints(courseId);
     }
 
-    public Map<Integer, List<ConstraintList.Constraint>> getConstraintLists(Moed moed) {
-        Map<Integer, List<ConstraintList.Constraint>> map = new HashMap<>();
+    public Map<Integer, List<Constraint>> getConstraintLists(Moed moed) {
+        Map<Integer, List<Constraint>> map = new HashMap<>();
         for (int courseId: constraints.get(moed).constraints.keySet()) {
             map.put(courseId, constraints.get(moed).getConstraints(courseId));
         }
