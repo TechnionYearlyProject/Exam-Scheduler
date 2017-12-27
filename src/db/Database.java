@@ -426,7 +426,7 @@ public class Database {
             Element constraints = document.createElement("constraints");
 
             for (int courseId: semester.constraints.get(moed).constraints.keySet()) {
-                for (ConstraintList.Constraint constraint: semester.constraints.get(moed).constraints.get(courseId)) {
+                for (Constraint constraint: semester.constraints.get(moed).constraints.get(courseId)) {
                     Element constraintElement = document.createElement("constraint");
 
                     Element courseIdElement = document.createElement("course_id");
