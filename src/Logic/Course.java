@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Course {
+public class Course implements Comparable<Course>{
     private int courseID;
     private String courseName;
     private Map<Integer,String> conflictCourses;
-    private boolean isLast, isFirst, isRequired;//TODO: maybe change to other name
+    private boolean isLast, isFirst, isRequired;
     private int daysBefore;
-    //private int points;
+    //private double points;
     private ArrayList<Constraint> constraints;
 
     /*
@@ -26,10 +26,8 @@ public class Course {
         isLast = o.isLast;
         isFirst = o.isFirst;
         daysBefore = o.daysBefore;
-        conflictCourses = new HashMap<>();
-        constraints = new ArrayList<>();
-        constraints.addAll(o.getConstraints());
-        conflictCourses = o.getConflictCourses();
+        constraints = new ArrayList<>(o.getConstraints());
+        conflictCourses = new HashMap<>(o.getConflictCourses());
     }
 
     Course(String courseName, int courseID, boolean isRequired){
@@ -133,5 +131,10 @@ public class Course {
             return false;
         }
         return this == o || (o instanceof Course && courseID == ((Course)o).courseID);
+    }
+
+    @Override
+    public int compareTo(Course o) {
+        return 0;
     }
 }
