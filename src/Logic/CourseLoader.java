@@ -23,7 +23,7 @@ public class CourseLoader {
         setCoursesConflicts();
         //updating constraints for each course.
         setCoursesConstraints(cL);
-        //sortCourses();
+        sortCourses();
     }
 
     private void setCoursesConstraints(ConstraintList cL) {
@@ -68,14 +68,14 @@ public class CourseLoader {
         return this.courses;
     }
 
-//    public List<Logic.Course> getSortedCourses(){
-//        return this.sortedCoursesList;
-//    }
-//
-//    private void sortCourses(){
-//        for (Map.Entry<Integer, Logic.Course> entry: courses.entrySet()) {
-//            sortedCoursesList.add(new Logic.Course(entry.getValue()));
-//        }
-//        Collections.sort(sortedCoursesList);
-//    }
+    public List<Logic.Course> getSortedCourses(){
+        return this.sortedCoursesList;
+    }
+
+    private void sortCourses(){
+        for (Map.Entry<Integer, Logic.Course> entry: courses.entrySet()) {
+            sortedCoursesList.add(new Logic.Course(entry.getValue()));
+        }
+        Collections.sort(sortedCoursesList);
+    }
 }
