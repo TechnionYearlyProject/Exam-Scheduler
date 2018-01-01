@@ -129,9 +129,10 @@ public class Database {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element courseElement = (Element) n;
                 int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent());
+                double weight = Double.parseDouble(courseElement.getElementsByTagName("weight").item(0).getTextContent());
                 String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
                 try {
-                    semester.addCourse(courseID, name);
+                    semester.addCourse(courseID, name, weight);
                 } catch (CourseAlreadyExist e) {
                     throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
                 }
@@ -337,6 +338,12 @@ public class Database {
             courseNameElement.appendChild(courseNameText);
             courseElement.appendChild(courseNameElement);
 
+            // Weight node
+            Element courseWeightElement = document.createElement("weight");
+            Text courseWeightText = document.createTextNode(Double.toString(course.weight));
+            courseWeightElement.appendChild(courseWeightText);
+            courseElement.appendChild(courseWeightElement);
+
             // Study program nodes
             for (Map.Entry<String, Integer> entry: course.programs.entrySet()) {
                 Element studyProgramElement = document.createElement("semester");
@@ -475,7 +482,7 @@ public class Database {
             }
             for (Course course: courses) {
                 try {
-                    semester.addCourse(course.id, course.name);
+                    semester.addCourse(course.id, course.name, course.weight);
                     for (String program: programs) {
                         int programSemester = course.getStudyProgramSemester(program);
                         try {

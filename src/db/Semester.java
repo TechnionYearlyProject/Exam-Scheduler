@@ -55,11 +55,11 @@ public class Semester {
         return list;
     }
 
-    public void addCourse(int courseId, String name) throws CourseAlreadyExist {
+    public void addCourse(int courseId, String name, double weight) throws CourseAlreadyExist {
         if (courses.containsKey(courseId)) {
             throw new CourseAlreadyExist();
         }
-        Course course = new Course(courseId, name);
+        Course course = new Course(courseId, name, weight);
         courses.put(courseId, course);
     }
 
