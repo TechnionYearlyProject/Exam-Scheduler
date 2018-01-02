@@ -1,5 +1,6 @@
 import db.Database;
 import db.exception.InvalidDatabase;
+import db.exception.SemesterFileMissing;
 import db.exception.SemesterNotFound;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +38,7 @@ public class Main extends Application {
         Database database = new Database();
         try {
             database.loadSemester(2017, "winter");
-        } catch (InvalidDatabase | SemesterNotFound e) {
+        } catch (InvalidDatabase | SemesterNotFound | SemesterFileMissing e) {
             e.printStackTrace();
             return;
         }

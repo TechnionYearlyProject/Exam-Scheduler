@@ -44,6 +44,7 @@ public class Database {
         } else {
             sep = "/";
         }
+        baseDirectory = baseDirectory + sep + "db";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
         hourParser = new SimpleDateFormat("HH:mm");
     }
@@ -92,16 +93,33 @@ public class Database {
         }
     }
 
-    private Semester parseSemester(String path) throws InvalidDatabase, SemesterNotFound {
+    private void checkXMLFiles(Collection<String> filePaths) throws SemesterFileMissing {
+        for (String filePath: filePaths) {
+            File f = new File(filePath);
+            if (!f.isFile()) {
+                throw new SemesterFileMissing("Missing file in semester: " + filePath);
+            }
+        }
+    }
+
+    private Semester parseSemester(String path) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         File dir = new File(path);
-        if (!dir.exists() || !dir.isDirectory()) {
+        if (!dir.isDirectory()) {
             throw new SemesterNotFound();
         }
+        Map<String, String> XMLFiles = new HashMap<>();
+        XMLFiles.put("study_programs", path + sep + "study_programs.xml");
+        XMLFiles.put("courses", path + sep + "courses.xml");
+        XMLFiles.put("scheduleA", path + sep + "scheduleA.xml");
+        XMLFiles.put("scheduleB", path + sep + "scheduleB.xml");
+        XMLFiles.put("constraintsA", path + sep + "constraintsA.xml");
+        XMLFiles.put("constraintsB", path + sep + "constraintsB.xml");
+        checkXMLFiles(XMLFiles.values());
         Semester semester = new Semester();
-        parseStudyPrograms(path + sep + "study_programs.xml", semester);
-        parseCourses(path + sep + "courses.xml", semester);
-        parseSchedules(path + sep + "scheduleA.xml", path + sep + "scheduleB.xml", semester);
-        parseConstraints(path + sep + "constraintsA.xml", path + sep + "constraintsB.xml", semester);
+        parseStudyPrograms(XMLFiles.get("study_programs"), semester);
+        parseCourses(XMLFiles.get("courses"), semester);
+        parseSchedules(XMLFiles.get("scheduleA"), XMLFiles.get("scheduleB"), semester);
+        parseConstraints(XMLFiles.get("constraintsA"), XMLFiles.get("constraintsB"), semester);
         return semester;
     }
 
@@ -464,11 +482,10 @@ public class Database {
         if (semesters.containsKey(semesterName)) {
             throw new SemesterAlreadyExist();
         }
-        String path = baseDirectory + sep + "db";
-        String[] directories = new File(path).list();
+        String[] directories = new File(baseDirectory).list();
         assert directories != null;
         List<String> pathList = Arrays.stream(directories)
-                .filter(dir -> new File(path, dir).isDirectory())
+                .filter(dir -> new File(baseDirectory, dir).isDirectory())
                 .sorted(this::compareDirs)
                 .collect(Collectors.toList());
         if (pathList.contains(semesterName)) {
@@ -479,7 +496,7 @@ public class Database {
             Semester baseSemester = null;
             try {
                 baseSemester = loadSemester(pathList.get(0));
-            } catch (SemesterNotFound ignored) {}
+            } catch (SemesterNotFound | SemesterFileMissing ignored) {}
             assert baseSemester != null; // Must exist since pathList contains at least one element
             List<String> programs = baseSemester.getStudyProgramCollection();
             List<Course> courses = baseSemester.getCourseCollection();
@@ -506,14 +523,14 @@ public class Database {
         return semester;
     }
 
-    private Semester loadSemester(String directory) throws InvalidDatabase, SemesterNotFound {
+    private Semester loadSemester(String directory) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         String[] dirSplit = directory.split("_");
         return loadSemester(Integer.parseInt(dirSplit[0]), dirSplit[1]);
     }
 
-    public Semester loadSemester(int year, String sem) throws InvalidDatabase, SemesterNotFound {
+    public Semester loadSemester(int year, String sem) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         String semesterDir = getSemesterDir(year, sem);
-        String path = baseDirectory + sep + "db" + sep + semesterDir;
+        String path = baseDirectory + sep + semesterDir;
         Semester semester = parseSemester(path);
         semesters.put(semesterDir, semester);
         return semester;
