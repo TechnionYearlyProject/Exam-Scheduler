@@ -12,7 +12,7 @@ public class CourseTest {
 
     @Before
     public void initCourse() {
-        c = new Course(123456, "abcdef");
+        c = new Course(123456, "abcdef", 3);
     }
 
     @Test

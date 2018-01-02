@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <programs>
-	<program>מסלול כללי ארבע-שנתי</program>
-	<program>מסלול כללי תלת-שנתי</program>
-	<program>הנדסת תוכנה</program>
+    <program>מסלול כללי ארבע-שנתי</program>
+    <program>הנדסת תוכנה</program>
+    <program>מסלול כללי תלת-שנתי</program>
 </programs>
