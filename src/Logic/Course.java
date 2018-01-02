@@ -8,11 +8,10 @@ import java.util.*;
 import static java.lang.Math.floor;
 
 public class Course implements Comparable<Course>{
-    private int courseID;
+    private int courseID,daysBefore;
     private String courseName;
     private Map<Integer,String> conflictCourses;
     private boolean isLast, isFirst, isRequired;
-    private int daysBefore;
     private double creditPoints;
     private ArrayList<Constraint> constraints;
 
@@ -127,6 +126,9 @@ public class Course implements Comparable<Course>{
 
 
     void setDaysBefore(int daysBefore) {
+        if(daysBefore < 1){
+            return;//TODO? MAYBE THROW EXCEPTION
+        }
         this.daysBefore = daysBefore;
     }
     int getDaysBefore(){
@@ -197,13 +199,12 @@ public class Course implements Comparable<Course>{
     }
 
     private int compareCoursesByNumberOfConflicts(Course o) {
-        /*if (getNumOfConflictCourses() > o.getNumOfConflictCourses()) {
+        if (getNumOfConflictCourses() > o.getNumOfConflictCourses()) {
             return -1;
         } else if (getNumOfConflictCourses() < o.getNumOfConflictCourses()) {
             return 1;
         } else {
-            return 0;
-        }*/
-        return Integer.compare(o.getNumOfConflictCourses(), getNumOfConflictCourses());
+            return Integer.compare(o.daysBefore, daysBefore);
+        }
     }
 }
