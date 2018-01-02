@@ -2,8 +2,10 @@ package Logic;
 
 import db.*;
 import db.Course;
+import javafx.util.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CourseLoader {
     private Database db;
@@ -40,10 +42,10 @@ public class CourseLoader {
             String program = entry.getKey();
             Semester s = entry.getValue();
             List<Course> semesterCourses = s.getCourseCollection();
-
+            List<Pair<Integer,String>> l = semesterCourses.stream().map(a->new Pair<>(a.id,a.name)).collect(Collectors.toList());
             for (Course c:s.getCourseCollection()) {
                 Logic.Course current = courses.get(c.id);
-                current.addConflictCourses(semesterCourses);
+                current.addConflictCourses(l);
                 //reference no need to re-Put.
             }
         }
@@ -56,8 +58,8 @@ public class CourseLoader {
             if(c.studyProgramSize() > 0){
                 isRequired = true;
             }
-            Logic.Course current =  new Logic.Course(c.name,c.id,isRequired);
-            courses.put(c.id,current);
+            Logic.Course current =  new Logic.Course(c.name,c.id,isRequired,c.weight);
+            courses.put(current.getCourseID(),current);
         }
     }
 
