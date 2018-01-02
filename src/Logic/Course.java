@@ -1,11 +1,11 @@
 package Logic;
 
 import db.Constraint;
+import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static java.lang.Math.floor;
 
 public class Course implements Comparable<Course>{
     private int courseID;
@@ -13,11 +13,11 @@ public class Course implements Comparable<Course>{
     private Map<Integer,String> conflictCourses;
     private boolean isLast, isFirst, isRequired;
     private int daysBefore;
-    //private double points;
+    private double creditPoints;
     private ArrayList<Constraint> constraints;
 
     /*
-     * Logic.Course copy c'tor performing deepCopy.
+     * Logic.Course copy c0'tor performing deepCopy.
      */
     public Course(Course o) {
         courseID = o.courseID;
@@ -26,6 +26,7 @@ public class Course implements Comparable<Course>{
         isLast = o.isLast;
         isFirst = o.isFirst;
         daysBefore = o.daysBefore;
+        creditPoints = o.creditPoints;
         constraints = new ArrayList<>(o.getConstraints());
         conflictCourses = new HashMap<>(o.getConflictCourses());
     }
@@ -33,7 +34,7 @@ public class Course implements Comparable<Course>{
     /*
      * number of credit points will be added here..
      */
-    Course(String courseName, int courseID, boolean isRequired){
+    Course(String courseName, int courseID, boolean isRequired, double cPoints){
         conflictCourses = new HashMap<>();
         constraints = new ArrayList<>();
         this.courseID = courseID;
@@ -41,12 +42,13 @@ public class Course implements Comparable<Course>{
         this.isLast = false;
         this.isFirst = false;
         this.isRequired = isRequired;
-        this.daysBefore = 4;//TODO: what is the real value?
+        this.creditPoints = cPoints;
+        this.daysBefore = (int)floor(creditPoints);
     }
 
     /*
      * Adding new constraint to the constraints list.
-     * @Param c: the Constraint to add.
+     * @Param c0: the Constraint to add.
      */
     void addConstraint(Constraint c){
         if(constraints.contains(c)){
@@ -67,7 +69,7 @@ public class Course implements Comparable<Course>{
 
     /*
      * Remove constraint from the constraints list. if there is such constraint it won't affect the list.
-     * @Param c: the Constraint to remove.
+     * @Param c0: the Constraint to remove.
      */
     void removeConstraint(Constraint c){
         constraints.remove(c);
@@ -90,7 +92,7 @@ public class Course implements Comparable<Course>{
 
     /*
      * Remove the course from the conflict courses list. if there is no course with such id, the list won't be effected.
-     * @Param c: the id of the course to remove.
+     * @Param c0: the id of the course to remove.
      */
     void removeConflictCourse(int c){
         conflictCourses.remove(c);
@@ -101,9 +103,9 @@ public class Course implements Comparable<Course>{
      * if one of the courses is already defined, it won't be defined twice.
      * @Param courses: list of courses to define as conflicts.
      */
-    void addConflictCourses(List<db.Course> courses){
-        for (db.Course c: courses) {
-            addConflictCourse(c.id,c.name);
+    void addConflictCourses(List<Pair<Integer,String>> courses){
+        for (Pair c: courses) {
+            addConflictCourse((int)c.getKey(),(String)c.getValue());
         }
     }
 
@@ -148,15 +150,18 @@ public class Course implements Comparable<Course>{
     void setAsRequired(boolean isRequired){this.isRequired = isRequired;}
     boolean isRequired(){return isRequired;}
 
+    double getCreditPoints(){
+        return creditPoints;
+    }
+
     Map<Integer,String> getConflictCourses(){
        return new HashMap<>(conflictCourses);
 
     }
 
     ArrayList<Constraint> getConstraints(){
-        ArrayList<Constraint> cconstraints = new ArrayList<>();
-        cconstraints.addAll(this.constraints);
-        return cconstraints;
+        Collections.sort(constraints);
+        return new ArrayList<>(constraints);
     }
 
     /*
