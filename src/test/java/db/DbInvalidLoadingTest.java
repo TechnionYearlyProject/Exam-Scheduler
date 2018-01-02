@@ -1,22 +1,18 @@
 package test.java.db;
 
 import db.Database;
-import db.Semester;
-import db.exception.InvalidDatabase;
 import db.exception.SemesterFileMissing;
 import db.exception.SemesterNotFound;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
-public class DbInvalidLoadingTests {
+public class DbInvalidLoadingTest {
 
     public static Database db;
     public static String baseDir;
