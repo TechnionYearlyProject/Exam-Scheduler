@@ -197,12 +197,13 @@ public class Course implements Comparable<Course>{
     }
 
     private int compareCoursesByNumberOfConflicts(Course o) {
-        if (getNumOfConflictCourses() > o.getNumOfConflictCourses()) {
+        /*if (getNumOfConflictCourses() > o.getNumOfConflictCourses()) {
             return -1;
         } else if (getNumOfConflictCourses() < o.getNumOfConflictCourses()) {
             return 1;
         } else {
             return 0;
-        }
+        }*/
+        return Integer.compare(o.getNumOfConflictCourses(), getNumOfConflictCourses());
     }
 }
