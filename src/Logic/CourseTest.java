@@ -10,11 +10,11 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class CourseTest {
-    static Course c0 = new Course("yearly project",234311,true,3);
-    static Course c1 = new Course("OS",234123,true,4.5);
-    static Course c2 = new Course("ALGO",234247,true,3);
-    static Course c3 = new Course("OOP",236703,true,3);
-    static Course c4 = new Course("Software Design",236700,false,3);
+    private static Course c0 = new Course("yearly project",234311,true,3);
+    private static Course c1 = new Course("OS",234123,true,4.5);
+    private static Course c2 = new Course("ALGO",234247,true,3);
+    private static Course c3 = new Course("OOP",236703,true,3);
+    private static Course c4 = new Course("Software Design",236700,false,3);
 
     @Test
     public void simpleTest(){
