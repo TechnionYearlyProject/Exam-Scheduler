@@ -18,8 +18,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Database {
-    private String baseDirectory;
-    private String sep;
+    public String baseDirectory;
+    public String sep;
     private Map<String, Semester> semesters;
     private DocumentBuilder builder;
     private Transformer transformer;
@@ -92,7 +92,11 @@ public class Database {
         }
     }
 
-    private Semester parseSemester(String path) throws InvalidDatabase {
+    private Semester parseSemester(String path) throws InvalidDatabase, SemesterNotFound {
+        File dir = new File(path);
+        if (!dir.exists() || !dir.isDirectory()) {
+            throw new SemesterNotFound();
+        }
         Semester semester = new Semester();
         parseStudyPrograms(path + sep + "study_programs.xml", semester);
         parseCourses(path + sep + "courses.xml", semester);
@@ -472,7 +476,11 @@ public class Database {
         }
         Semester semester = new Semester();
         if (pathList.size() > 0) {
-            Semester baseSemester = loadSemester(pathList.get(0));
+            Semester baseSemester = null;
+            try {
+                baseSemester = loadSemester(pathList.get(0));
+            } catch (SemesterNotFound ignored) {}
+            assert baseSemester != null; // Must exist since pathList contains at least one element
             List<String> programs = baseSemester.getStudyProgramCollection();
             List<Course> courses = baseSemester.getCourseCollection();
             for (String program: programs) {
@@ -498,12 +506,12 @@ public class Database {
         return semester;
     }
 
-    private Semester loadSemester(String directory) throws InvalidDatabase {
+    private Semester loadSemester(String directory) throws InvalidDatabase, SemesterNotFound {
         String[] dirSplit = directory.split("_");
         return loadSemester(Integer.parseInt(dirSplit[0]), dirSplit[1]);
     }
 
-    public Semester loadSemester(int year, String sem) throws InvalidDatabase {
+    public Semester loadSemester(int year, String sem) throws InvalidDatabase, SemesterNotFound {
         String semesterDir = getSemesterDir(year, sem);
         String path = baseDirectory + sep + "db" + sep + semesterDir;
         Semester semester = parseSemester(path);
