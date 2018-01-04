@@ -1,45 +1,42 @@
-import db.Database;
-import db.exception.InvalidDatabase;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Screens.SemesterPicking.SemesterPickingController;
+import javafx.scene.Scene;
+import GUI.Components.*;
+import javafx.scene.text.Font;
 
-import java.io.File;
+
+import java.time.LocalDate;
+import java.util.Locale;
 
 public class Main extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+        Super super1 = new Super();
 
-        FXMLLoader myLoader = new FXMLLoader(getClass().getResource("Screens/SemesterPicking/semesterPicking.fxml"));
-        SemesterPickingController controller = new SemesterPickingController();
-        controller.setPrevStage(primaryStage);
-        myLoader.setController(controller);
-        Parent root = myLoader.load();
-        //Parent root = myLoader.load(getClass().getResource("GUI/Screens/SemesterPicking/semesterPicking.fxml"));
-        root.getStylesheets().add(getClass().getResource("/Screens/SemesterPicking/semesterPicking.css").toExternalForm());
-
-        primaryStage.setTitle("בחירת סמסטר");
-        Scene scene = new Scene(root,800,500);
-        primaryStage.getIcons().add(new Image(new File("src/GUI/resources/Technion-logo2.png").toURI().toString()));
-        SemesterPickingController control = myLoader.getController();
-        control.setPrevStage(primaryStage);
+        /*VBox vbox = new VBox();
+        LocalDate start = LocalDate.of(2018, 01, 01);
+        LocalDate end = LocalDate.of(2018, 03, 01);
+        Schedule schedule = new Schedule(start,end);
+        schedule.addTest(start,"קומבי");
+        vbox.getChildren().addAll(new Picker("תאריך התחלה:"),schedule );*/
+        AnchorPane pane = new AnchorPane();
+        pane.setStyle("-fx-background-image: url(\"/GUI/resources/background.jpg\")");
+        pane.getChildren().add(super1);
+        Scene scene = new Scene(pane,1366,768);
+        primaryStage.setTitle("Exam Scheduler");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
 
-    public static void main(String[] args) {
-        Database database = new Database();
-        try {
-            database.loadSemester(2017, "winter");
-        } catch (InvalidDatabase e) {
-            e.printStackTrace();
-            return;
-        }
-        launch(args);
-    }
 }
