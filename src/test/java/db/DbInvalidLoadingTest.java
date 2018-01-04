@@ -1,6 +1,7 @@
 package test.java.db;
 
 import db.Database;
+import db.exception.InvalidDatabase;
 import db.exception.SemesterFileMissing;
 import db.exception.SemesterNotFound;
 import org.junit.Before;
@@ -87,6 +88,51 @@ public class DbInvalidLoadingTest {
             } catch (Exception e) {
                 fail("Unexpected exception: " + e.toString());
             }
+        }
+    }
+
+    @Test
+    public void loadInvalidSemesterTest() {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        try {
+            // course with missing name
+            db.loadSemester(2010, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Invalid XML file courses.xml :";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // schedule with missing end date
+            db.loadSemester(2010, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Invalid XML file scheduleB.xml :";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // constraint with unknown element
+            db.loadSemester(2011, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Invalid XML file constraintsA.xml :";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // course with duplicate element
+            db.loadSemester(2011, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Invalid XML file courses.xml :";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
         }
     }
 }
