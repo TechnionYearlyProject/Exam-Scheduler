@@ -4,12 +4,17 @@ import db.exception.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -24,10 +29,13 @@ public class Database {
     private DocumentBuilder builder;
     private Transformer transformer;
     private SimpleDateFormat dateParser, hourParser;
+    private Map<String, Validator> validators;
+    private String XSDFilesDir;
 
     public Database() {
         baseDirectory = System.getProperty("user.dir");
         semesters = new HashMap<>();
+        validators = new HashMap<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         TransformerFactory tFactory = TransformerFactory.newInstance();
         try {
@@ -44,6 +52,7 @@ public class Database {
         } else {
             sep = "/";
         }
+        XSDFilesDir = baseDirectory + sep + "src" + sep + "db" + sep + "xsd";
         baseDirectory = baseDirectory + sep + "db";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
         hourParser = new SimpleDateFormat("HH:mm");
@@ -70,8 +79,44 @@ public class Database {
         return Integer.toString(year) + '_' + semester;
     }
 
-    private Document loadXMLFile(String filePath) throws InvalidDatabase {
+    private String getXSDFileFromXML(String filename) throws InvalidDatabase {
+        if (filename.endsWith("A.xml") || filename.endsWith("B.xml")) {
+            return filename.substring(0, filename.length() - 5) + ".xsd";
+        }
+        return filename.substring(0, filename.length() - 4) + ".xsd";
+    }
+
+    private Validator getValidator(String path) throws InvalidDatabase {
+        if (!validators.containsKey(path)) {
+            File XSDFile = new File(path);
+            SchemaFactory sFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            try {
+                Schema schema = sFactory.newSchema(XSDFile);
+                Validator validator = schema.newValidator();
+                validators.put(path, validator);
+            } catch (SAXException e) {
+                throw new InvalidDatabase( e.toString());
+            }
+        }
+        return validators.get(path);
+    }
+
+    private File validateXMLFile(String filePath) throws InvalidDatabase {
         File XMLFile = new File(filePath);
+        String XSDFilename = getXSDFileFromXML(XMLFile.getName());
+        Validator v = getValidator(XSDFilesDir + sep + XSDFilename);
+        try {
+            v.validate(new StreamSource(XMLFile));
+        } catch (SAXException e) {
+            throw new InvalidDatabase("Invalid XML file " + XMLFile.getName() + " :\n" + e.toString());
+        } catch (IOException e) {
+            throw new InvalidDatabase(e.toString());
+        }
+        return XMLFile;
+    }
+
+    private Document loadXMLFile(String filePath) throws InvalidDatabase {
+        File XMLFile = validateXMLFile(filePath);
         Document XMLTree;
         try {
             XMLTree = builder.parse(XMLFile);
