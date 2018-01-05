@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -12,6 +13,7 @@ import GUI.Components.*;
 import javafx.scene.text.Font;
 
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -24,21 +26,18 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Super super1 = new Super();
-
-        /*VBox vbox = new VBox();
-        LocalDate start = LocalDate.of(2018, 01, 01);
-        LocalDate end = LocalDate.of(2018, 03, 01);
-        Schedule schedule = new Schedule(start,end);
-        schedule.addTest(start,"קומבי");
-        vbox.getChildren().addAll(new Picker("תאריך התחלה:"),schedule );*/
-        VBox pane = new VBox();
-        pane.setAlignment(Pos.TOP_RIGHT);
-        pane.setStyle("-fx-background-image: url(\"/GUI/resources/background.jpg\")");
-        pane.getChildren().add(super1);
-        Scene scene = new Scene(pane,1366,768);
+        VBox vbox = new VBox();
+        vbox.setStyle("-fx-background-image: url(\"/GUI/resources/background2.png\")");
+        vbox.setAlignment(Pos.TOP_RIGHT);
+        vbox.getChildren().add(super1);
+        ScrollPane pane = new ScrollPane();
+        pane.setContent(vbox);
+        Scene scene = new Scene(pane);
         primaryStage.setTitle("Exam Scheduler");
         primaryStage.setScene(scene);
         primaryStage.show();
+        System.out.println(pane.getHeight());
+        System.out.println(pane.getWidth());
     }
 
 

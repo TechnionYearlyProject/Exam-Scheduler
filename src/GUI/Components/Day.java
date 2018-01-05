@@ -63,7 +63,7 @@ public class Day extends VBox{
         this.setSpacing(2);
         this.getChildren().add(hbox);
         this.getChildren().add(tests);
-        this.setPrefWidth(75);
+        this.setPrefWidth(90);
         this.setPrefHeight(100);
         this.setStyle("-fx-background-color: white");
 
@@ -88,8 +88,8 @@ public class Day extends VBox{
         });
     }
     public void Block() {
-        this.setStyle("-fx-background-color: lightgray");
-        tests.setStyle("-fx-background-color: lightgray");
+        this.setStyle("-fx-background-color: #ECEFF1");
+        tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
     }
     public void Enable() {
@@ -98,8 +98,8 @@ public class Day extends VBox{
         isBlocked = false;
     }
     public void Disable() {
-        this.setStyle("-fx-background-color: lightgray");
-        tests.setStyle("-fx-background-color: lightgray");
+        this.setStyle("-fx-background-color: #ECEFF1");
+        tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
         this.setDisable(true);
     }

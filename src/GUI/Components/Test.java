@@ -29,14 +29,14 @@ public class Test extends Label{
         this.setPadding(new Insets(0,3,0,0));
         this.setAlignment(Pos.CENTER_RIGHT);
         //this.setPadding(new Insets(2,0,0,2));
-        this.setPrefWidth(73);
+        this.setPrefWidth(86);
         this.setPrefHeight(16);
         this.setStyle("-fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+ getCourseColor(course.getCourseID()));
     }
 
     String getCourseColor(int course_int)
     {
-        // int cant handle 0 digit 
+        // int cant handle 0 digit
         String course_str = Integer.toString(course_int);
         for (int i=0; i<start_digits.size();i++)
             if (course_str.startsWith(start_digits.get(i)))
