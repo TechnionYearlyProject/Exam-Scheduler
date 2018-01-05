@@ -1,4 +1,5 @@
 package GUI.Components;
+import Logic.Course;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -91,7 +92,7 @@ public class Schedule extends GridPane{
         this.setPadding(new Insets(1,1,1,1));
         this.setMaxWidth(450);
     }
-    public void addTest(LocalDate date, String course)
+    public void addTest(LocalDate date, Course course)
     {
         days.get(date).addTest(course);
     }

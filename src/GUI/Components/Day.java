@@ -1,4 +1,5 @@
 package GUI.Components;
+import Logic.Course;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -68,7 +69,9 @@ public class Day extends VBox{
 
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent mouse_event) {addTest("קומבי");}
+            public void handle(MouseEvent mouse_event) {
+                addTest(new Course("קומבי", 234123, true, 3.0 ));
+            }
         });
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
             @Override
@@ -100,7 +103,7 @@ public class Day extends VBox{
         isBlocked = true;
         this.setDisable(true);
     }
-    public void addTest(String name) {
-        tests.getChildren().add(new Test(name));
+    public void addTest(Course course) {
+        tests.getChildren().add(new Test(course));
     }
 }
