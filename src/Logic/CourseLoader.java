@@ -12,7 +12,7 @@ public class CourseLoader {
     private Map<String, Semester> semesters;
     private ArrayList<Logic.Course> sortedCoursesList;
     public CourseLoader(Database database, ConstraintList cL) {
-        this.db = db;
+        this.db = database;
         semesters = db.getSemesters();
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
