@@ -6,11 +6,13 @@ import java.util.Map;
 public class Course {
     public int id;
     public String name;
+    public double weight;
     Map<String, Integer> programs;
 
-    public Course(int id, String name) {
+    public Course(int id, String name, double weight) {
         this.id = id;
         this.name = name;
+        this.weight = weight;
         programs = new HashMap<>();
     }
 

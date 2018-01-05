@@ -4,12 +4,17 @@ import db.exception.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -18,16 +23,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Database {
-    private String baseDirectory;
-    private String sep;
+    public String baseDirectory;
+    public String sep;
     private Map<String, Semester> semesters;
     private DocumentBuilder builder;
     private Transformer transformer;
     private SimpleDateFormat dateParser, hourParser;
+    private Map<String, Validator> validators;
+    private String XSDFilesDir;
 
     public Database() {
         baseDirectory = System.getProperty("user.dir");
         semesters = new HashMap<>();
+        validators = new HashMap<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         TransformerFactory tFactory = TransformerFactory.newInstance();
         try {
@@ -44,6 +52,8 @@ public class Database {
         } else {
             sep = "/";
         }
+        XSDFilesDir = baseDirectory + sep + "src" + sep + "db" + sep + "xsd";
+        baseDirectory = baseDirectory + sep + "db";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
         hourParser = new SimpleDateFormat("HH:mm");
     }
@@ -69,8 +79,44 @@ public class Database {
         return Integer.toString(year) + '_' + semester;
     }
 
-    private Document loadXMLFile(String filePath) throws InvalidDatabase {
+    private String getXSDFileFromXML(String filename) throws InvalidDatabase {
+        if (filename.endsWith("A.xml") || filename.endsWith("B.xml")) {
+            return filename.substring(0, filename.length() - 5) + ".xsd";
+        }
+        return filename.substring(0, filename.length() - 4) + ".xsd";
+    }
+
+    private Validator getValidator(String path) throws InvalidDatabase {
+        if (!validators.containsKey(path)) {
+            File XSDFile = new File(path);
+            SchemaFactory sFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            try {
+                Schema schema = sFactory.newSchema(XSDFile);
+                Validator validator = schema.newValidator();
+                validators.put(path, validator);
+            } catch (SAXException e) {
+                throw new InvalidDatabase( e.toString());
+            }
+        }
+        return validators.get(path);
+    }
+
+    private File validateXMLFile(String filePath) throws InvalidDatabase {
         File XMLFile = new File(filePath);
+        String XSDFilename = getXSDFileFromXML(XMLFile.getName());
+        Validator v = getValidator(XSDFilesDir + sep + XSDFilename);
+        try {
+            v.validate(new StreamSource(XMLFile));
+        } catch (SAXException e) {
+            throw new InvalidDatabase("Invalid XML file " + XMLFile.getName() + " :\n" + e.toString());
+        } catch (IOException e) {
+            throw new InvalidDatabase(e.toString());
+        }
+        return XMLFile;
+    }
+
+    private Document loadXMLFile(String filePath) throws InvalidDatabase {
+        File XMLFile = validateXMLFile(filePath);
         Document XMLTree;
         try {
             XMLTree = builder.parse(XMLFile);
@@ -92,12 +138,33 @@ public class Database {
         }
     }
 
-    private Semester parseSemester(String path) throws InvalidDatabase {
+    private void checkXMLFiles(Collection<String> filePaths) throws SemesterFileMissing {
+        for (String filePath: filePaths) {
+            File f = new File(filePath);
+            if (!f.isFile()) {
+                throw new SemesterFileMissing("Missing file in semester: " + filePath);
+            }
+        }
+    }
+
+    private Semester parseSemester(String path) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
+        File dir = new File(path);
+        if (!dir.isDirectory()) {
+            throw new SemesterNotFound();
+        }
+        Map<String, String> XMLFiles = new HashMap<>();
+        XMLFiles.put("study_programs", path + sep + "study_programs.xml");
+        XMLFiles.put("courses", path + sep + "courses.xml");
+        XMLFiles.put("scheduleA", path + sep + "scheduleA.xml");
+        XMLFiles.put("scheduleB", path + sep + "scheduleB.xml");
+        XMLFiles.put("constraintsA", path + sep + "constraintsA.xml");
+        XMLFiles.put("constraintsB", path + sep + "constraintsB.xml");
+        checkXMLFiles(XMLFiles.values());
         Semester semester = new Semester();
-        parseStudyPrograms(path + sep + "study_programs.xml", semester);
-        parseCourses(path + sep + "courses.xml", semester);
-        parseSchedules(path + sep + "scheduleA.xml", path + sep + "scheduleB.xml", semester);
-        parseConstraints(path + sep + "constraintsA.xml", path + sep + "constraintsB.xml", semester);
+        parseStudyPrograms(XMLFiles.get("study_programs"), semester);
+        parseCourses(XMLFiles.get("courses"), semester);
+        parseSchedules(XMLFiles.get("scheduleA"), XMLFiles.get("scheduleB"), semester);
+        parseConstraints(XMLFiles.get("constraintsA"), XMLFiles.get("constraintsB"), semester);
         return semester;
     }
 
@@ -129,9 +196,10 @@ public class Database {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element courseElement = (Element) n;
                 int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent());
+                double weight = Double.parseDouble(courseElement.getElementsByTagName("weight").item(0).getTextContent());
                 String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
                 try {
-                    semester.addCourse(courseID, name);
+                    semester.addCourse(courseID, name, weight);
                 } catch (CourseAlreadyExist e) {
                     throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
                 }
@@ -337,6 +405,12 @@ public class Database {
             courseNameElement.appendChild(courseNameText);
             courseElement.appendChild(courseNameElement);
 
+            // Weight node
+            Element courseWeightElement = document.createElement("weight");
+            Text courseWeightText = document.createTextNode(Double.toString(course.weight));
+            courseWeightElement.appendChild(courseWeightText);
+            courseElement.appendChild(courseWeightElement);
+
             // Study program nodes
             for (Map.Entry<String, Integer> entry: course.programs.entrySet()) {
                 Element studyProgramElement = document.createElement("semester");
@@ -453,11 +527,10 @@ public class Database {
         if (semesters.containsKey(semesterName)) {
             throw new SemesterAlreadyExist();
         }
-        String path = baseDirectory + sep + "db";
-        String[] directories = new File(path).list();
+        String[] directories = new File(baseDirectory).list();
         assert directories != null;
         List<String> pathList = Arrays.stream(directories)
-                .filter(dir -> new File(path, dir).isDirectory())
+                .filter(dir -> new File(baseDirectory, dir).isDirectory())
                 .sorted(this::compareDirs)
                 .collect(Collectors.toList());
         if (pathList.contains(semesterName)) {
@@ -465,7 +538,11 @@ public class Database {
         }
         Semester semester = new Semester();
         if (pathList.size() > 0) {
-            Semester baseSemester = loadSemester(pathList.get(0));
+            Semester baseSemester = null;
+            try {
+                baseSemester = loadSemester(pathList.get(0));
+            } catch (SemesterNotFound | SemesterFileMissing ignored) {}
+            assert baseSemester != null; // Must exist since pathList contains at least one element
             List<String> programs = baseSemester.getStudyProgramCollection();
             List<Course> courses = baseSemester.getCourseCollection();
             for (String program: programs) {
@@ -475,7 +552,7 @@ public class Database {
             }
             for (Course course: courses) {
                 try {
-                    semester.addCourse(course.id, course.name);
+                    semester.addCourse(course.id, course.name, course.weight);
                     for (String program: programs) {
                         int programSemester = course.getStudyProgramSemester(program);
                         try {
@@ -491,14 +568,14 @@ public class Database {
         return semester;
     }
 
-    private Semester loadSemester(String directory) throws InvalidDatabase {
+    private Semester loadSemester(String directory) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         String[] dirSplit = directory.split("_");
         return loadSemester(Integer.parseInt(dirSplit[0]), dirSplit[1]);
     }
 
-    public Semester loadSemester(int year, String sem) throws InvalidDatabase {
+    public Semester loadSemester(int year, String sem) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         String semesterDir = getSemesterDir(year, sem);
-        String path = baseDirectory + sep + "db" + sep + semesterDir;
+        String path = baseDirectory + sep + semesterDir;
         Semester semester = parseSemester(path);
         semesters.put(semesterDir, semester);
         return semester;

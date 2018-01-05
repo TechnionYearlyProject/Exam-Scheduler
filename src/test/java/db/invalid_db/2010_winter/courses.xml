@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <courses>
     <course>
-        <course_id>234114</course_id>
         <name>מבוא למדעי המחשב מ</name>
         <weight>3.5</weight>
         <semester program="מסלול כללי ארבע-שנתי">1</semester>
