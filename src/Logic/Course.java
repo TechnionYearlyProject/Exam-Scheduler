@@ -33,7 +33,7 @@ public class Course implements Comparable<Course>{
     /*
      * number of credit points will be added here..
      */
-    Course(String courseName, int courseID, boolean isRequired, double cPoints){
+    public Course(String courseName, int courseID, boolean isRequired, double cPoints){
         conflictCourses = new HashMap<>();
         constraints = new ArrayList<>();
         this.courseID = courseID;
