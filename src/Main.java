@@ -1,6 +1,7 @@
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -30,7 +31,8 @@ public class Main extends Application {
         Schedule schedule = new Schedule(start,end);
         schedule.addTest(start,"קומבי");
         vbox.getChildren().addAll(new Picker("תאריך התחלה:"),schedule );*/
-        AnchorPane pane = new AnchorPane();
+        VBox pane = new VBox();
+        pane.setAlignment(Pos.TOP_RIGHT);
         pane.setStyle("-fx-background-image: url(\"/GUI/resources/background.jpg\")");
         pane.getChildren().add(super1);
         Scene scene = new Scene(pane,1366,768);

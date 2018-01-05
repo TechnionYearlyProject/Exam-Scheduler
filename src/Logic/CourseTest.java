@@ -1,4 +1,4 @@
-package Logic;
+/*package Logic;
 
 import javafx.util.Pair;
 import org.junit.Test;
@@ -88,4 +88,4 @@ public class CourseTest {
     public void requiredCoursesWithNoConflictsWithDifferentDaysBeforeConsideredDifferent(){
         assertEquals(-1,c1.compareTo(c0));
     }
-}
+}*/

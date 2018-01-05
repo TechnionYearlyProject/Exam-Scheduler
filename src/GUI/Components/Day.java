@@ -66,7 +66,10 @@ public class Day extends VBox{
         this.setPrefHeight(100);
         this.setStyle("-fx-background-color: white");
 
-
+        this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouse_event) {addTest("קומבי");}
+        });
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouse_event) {

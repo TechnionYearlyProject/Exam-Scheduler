@@ -21,6 +21,7 @@ public class Test extends Label{
     static ArrayList<String> colors = new ArrayList<String>(Arrays.asList("#D32F2F","#7B1FA2","#303F9F","#0288D1","#00796B","#689F38","#FBC02D","#F57C00"));
     static Random randomizer = new Random();
     public Test(String name) {
+        this.setFont(Font.font(12.5));
         this.setTextFill(Paint.valueOf("white"));
         this.setText(name);
         this.setPadding(new Insets(0,3,0,0));
@@ -28,6 +29,6 @@ public class Test extends Label{
         //this.setPadding(new Insets(2,0,0,2));
         this.setPrefWidth(73);
         this.setPrefHeight(16);
-        this.setStyle("-fx-background-radius: 3 3 3 3; -fx-background-color: "+colors.get(randomizer.nextInt(colors.size())));
+        this.setStyle("-fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+colors.get(randomizer.nextInt(colors.size())));
     }
 }
