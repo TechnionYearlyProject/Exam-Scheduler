@@ -32,7 +32,7 @@ public class Day extends VBox{
         label.setPrefWidth(60);
         label.setPrefHeight(15);
 
-        Image image = new Image("/GUI/resources/lock_day.png");
+        Image image = new Image("/lock_day.png");
         lock_label = new Label();
         lock_label.setGraphic(new ImageView(image));
         lock_label.setMinHeight(20);
