@@ -1,4 +1,4 @@
-/*package test.java.db;
+package test.java.db;
 
 import db.Database;
 import db.exception.InvalidDatabase;
@@ -16,7 +16,7 @@ import static junit.framework.TestCase.fail;
 public class DbInvalidLoadingTest {
 
     public static Database db;
-    public static String baseDir;
+    private static String baseDir;
 
     @Before
     public void initDb() {
@@ -135,5 +135,102 @@ public class DbInvalidLoadingTest {
             fail("Unexpected exception: " + e.toString());
         }
     }
+
+    @Test
+    public void loadBadSemesterTest() {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        try {
+            // Dupplicate study programs
+            db.loadSemester(2012, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Duplicate study program in database: ";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Dupplicate course IDs
+            db.loadSemester(2012, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Duplicate course in database: ";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Course with unknown study program
+            db.loadSemester(2013, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            String message = "Course 'test' contains unknown program study: ";
+            assertEquals(true, e.getMessage().startsWith(message));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Bad date
+            db.loadSemester(2013, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Schedule 'A' contains invalid date : '2017'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // End date before start date
+            db.loadSemester(2014, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Schedule 'A' end date is before start date", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Schedule without end date
+            db.loadSemester(2014, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Start/End date missing in schedule A", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Invalid exam hour
+            db.loadSemester(2015, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Schedule 'A' contains invalid hour : '1300'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Unknown course in schedule
+            db.loadSemester(2015, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Schedule 'A' contain unknown course : '123456'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Invalid exam hour
+            db.loadSemester(2016, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Course '104166' has invalid schedule date : '2017-03-03' in schedule 'A'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Invalid exam hour
+            db.loadSemester(2016, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Course '104031' scheduled to an already taken date : '2017-01-03 09:00' in schedule 'A'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+    }
 }
-*/

@@ -79,7 +79,7 @@ public class Database {
         return Integer.toString(year) + '_' + semester;
     }
 
-    private String getXSDFileFromXML(String filename) throws InvalidDatabase {
+    private String getXSDFileFromXML(String filename) {
         if (filename.endsWith("A.xml") || filename.endsWith("B.xml")) {
             return filename.substring(0, filename.length() - 5) + ".xsd";
         }
@@ -180,7 +180,7 @@ public class Database {
                 try {
                     semester.addStudyProgram(programName);
                 } catch (StudyProgramAlreadyExist e) {
-                    throw new InvalidDatabase("Duplicate study program] in database: '" + programName + "'");
+                    throw new InvalidDatabase("Duplicate study program in database: '" + programName + "'");
                 }
             }
         }
@@ -243,7 +243,7 @@ public class Database {
             date.set(Calendar.HOUR, tmp.get(Calendar.HOUR_OF_DAY));
             date.set(Calendar.MINUTE, tmp.get(Calendar.MINUTE));
         } catch (ParseException e) {
-            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid hour : " + hourStr + "'");
+            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid hour : '" + hourStr + "'");
         }
     }
 
