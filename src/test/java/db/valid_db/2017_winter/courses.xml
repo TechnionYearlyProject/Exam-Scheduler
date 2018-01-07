@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<courses>
+    <course>
+        <course_id>234114</course_id>
+        <name>מבוא למדעי המחשב מ</name>
+        <weight>3.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">1</semester>
+        <semester program="הנדסת תוכנה">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+    </course>
+    <course>
+        <course_id>234145</course_id>
+        <name>מערכות ספרתיות</name>
+        <weight>3.0</weight>
+        <semester program="הנדסת תוכנה">1</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+    </course>
+    <course>
+        <course_id>104166</course_id>
+        <name>אלגברה א</name>
+        <weight>5.0</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+    </course>
+    <course>
+        <course_id>104031</course_id>
+        <name>חשבון אינפיניטסימלי 1מ</name>
+        <weight>5.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+    </course>
+</courses>

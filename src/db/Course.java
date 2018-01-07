@@ -19,6 +19,7 @@ public class Course {
     public Course(Course other) {
         id = other.id;
         name = other.name;
+        weight = other.weight;
         programs = new HashMap<>();
         for (Map.Entry<String, Integer> entry: other.programs.entrySet()) {
             String program = entry.getKey();
