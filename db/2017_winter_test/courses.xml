@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<courses>
+    <course>
+        <course_id>234111 </course_id>
+        <name>מבוא למדעי המחשב </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234112 </course_id>
+        <name>מבוא למחשב - שפת סי </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234114 </course_id>
+        <name>מבוא למדעי המחשב מ' </name>
+        <weight>4</weight>
+        <semester program="מסלול כללי ארבע-שנתי">1</semester>
+        <semester program="מסלול כללי תלת-שנתי">1</semester>
+        <semester program="הנדסת תוכנה">1</semester>
+        <semester program="מערכות מידע">1</semester>
+        <semester program="הנדסת מחשבים">1</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">1</semester>
+    </course>
+    <course>
+        <course_id>234117 </course_id>
+        <name>מבוא למדעי המחשב ח' </name>
+        <weight>4</weight>
+        <semester program="הנדסת מחשבים">1</semester>
+    </course>
+    <course>
+        <course_id>234118 </course_id>
+        <name>ארגון ותכנות המחשב </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <semester program="הנדסת תוכנה">2</semester>
+        <semester program="מערכות מידע">2</semester>
+        <semester program="הנדסת מחשבים">2</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">2</semester>
+    </course>
+    <course>
+        <course_id>234122 </course_id>
+        <name>מבוא לתכנות מערכות </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <semester program="הנדסת תוכנה">2</semester>
+        <semester program="מערכות מידע">2</semester>
+        <semester program="הנדסת מחשבים">2</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">2</semester>
+    </course>
+    <course>
+        <course_id>234123 </course_id>
+        <name>מערכות הפעלה </name>
+        <weight>4.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">4</semester>
+        <semester program="מסלול כללי תלת-שנתי">4</semester>
+        <semester program="הנדסת תוכנה">4</semester>
+        <semester program="מערכות מידע">4</semester>
+        <semester program="הנדסת מחשבים">5</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">4</semester>
+    </course>
+    <course>
+        <course_id>234125 </course_id>
+        <name>אלגוריתמים נומריים </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">5</semester>
+        <semester program="מסלול כללי תלת-שנתי">5</semester>
+        <semester program="הנדסת תוכנה">6</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">7</semester>
+    </course>
+    <course>
+        <course_id>234127 </course_id>
+        <name>מבוא למחשב בשפת מטלאב </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234141 </course_id>
+        <name>קומבינטוריקה למדעי המחשב </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <semester program="הנדסת תוכנה">2</semester>
+        <semester program="מערכות מידע">2</semester>
+        <semester program="הנדסת מחשבים">2</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">2</semester>
+    </course>
+    <course>
+        <course_id>234145 </course_id>
+        <name>מערכות ספרתיות </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">1</semester>
+        <semester program="מסלול כללי תלת-שנתי">1</semester>
+        <semester program="הנדסת תוכנה">1</semester>
+        <semester program="מערכות מידע">1</semester>
+        <semester program="הנדסת מחשבים">1</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">1</semester>
+    </course>
+    <course>
+        <course_id>234218 </course_id>
+        <name>מבני נתונים 1 </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">3</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <semester program="הנדסת תוכנה">3</semester>
+        <semester program="מערכות מידע">3</semester>
+        <semester program="הנדסת מחשבים">3</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">3</semester>
+    </course>
+    <course>
+        <course_id>234247 </course_id>
+        <name>אלגוריתמים 1 </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">4</semester>
+        <semester program="מסלול כללי תלת-שנתי">4</semester>
+        <semester program="הנדסת תוכנה">4</semester>
+        <semester program="מערכות מידע">4</semester>
+        <semester program="הנדסת מחשבים">4</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">4</semester>
+    </course>
+    <course>
+        <course_id>234262 </course_id>
+        <name>תכן לוגי </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">3</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <semester program="הנדסת תוכנה">3</semester>
+        <semester program="הנדסת מחשבים">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">3</semester>
+    </course>
+    <course>
+        <course_id>234267 </course_id>
+        <name>מבנה מחשבים ספרתיים </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">4</semester>
+        <semester program="הנדסת תוכנה">4</semester>
+        <semester program="הנדסת מחשבים">4</semester>
+    </course>
+    <course>
+        <course_id>234293 </course_id>
+        <name>לוגיקה ותורת הקבוצות למדעי המחשב </name>
+        <weight>4</weight>
+        <semester program="מסלול כללי ארבע-שנתי">3</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <semester program="הנדסת תוכנה">3</semester>
+        <semester program="מערכות מידע">3</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">3</semester>
+    </course>
+    <course>
+        <course_id>234311 </course_id>
+        <name>פרויקט שנתי בהנדסת תוכנה-שלב א </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234313 </course_id>
+        <name>פרויקט תעשיתי </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234319 </course_id>
+        <name>שפות תכנות </name>
+        <weight>3</weight>
+       <semester program="הנדסת תוכנה">3</semester>
+    </course>
+    <course>
+        <course_id>234322 </course_id>
+        <name>מערכות אחסון מידע </name>
+        <weight>3</weight>
+        <semester program="הנדסת תוכנה">5</semester>
+        <semester program="מערכות מידע">5</semester>
+    </course>
+    <course>
+        <course_id>234325 </course_id>
+        <name>גרפיקה ממוחשבת </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234326 </course_id>
+        <name>פרויקט בגרפיקה ממוחשבת ה' </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>234329 </course_id>
+        <name>פרויקט  בעיבוד וניתוח תמונות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236200 </course_id>
+        <name>עיבוד מידע סטטיסטי </name>
+        <weight>4</weight>
+    </course>
+    <course>
+        <course_id>236268 </course_id>
+        <name>ארכיטקטורת מעבדים בגישה בונה </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236304 </course_id>
+        <name>לוגיקה למדעי המחשב 2 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236309 </course_id>
+        <name>מבוא לתורת הצפינה </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236313 </course_id>
+        <name>תורת הסיבוכיות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236315 </course_id>
+        <name>שיטות אלגבריות במדעי המחשב </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236323 </course_id>
+        <name>פרויקט בעיבוד נתונים מ </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236328 </course_id>
+        <name>פרויקט בגרפיקה ממוחשבת מ </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236332 </course_id>
+        <name>האינטרנט של הדברים - טכנולוגיות ויישומים </name>
+        <weight>2</weight>
+    </course>
+    <course>
+        <course_id>236333 </course_id>
+        <name>פרויקט באינטרנט של הדברים </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236334 </course_id>
+        <name>מבוא לרשתות מחשבים </name>
+        <weight>3</weight>
+        <semester program="הנדסת תוכנה">5</semester>
+        <semester program="הנדסת תוכנה">6</semester>
+        <semester program="מערכות מידע">5</semester>
+    </course>
+    <course>
+        <course_id>236336 </course_id>
+        <name>פתרון נומרי של משוואות דיפ חלקיות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236340 </course_id>
+        <name>פרויקט בתקשורת מחשבים </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236341 </course_id>
+        <name>תקשורת באינטרנט </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236342 </course_id>
+        <name>מבוא לאימות תוכנה </name>
+        <weight>3</weight>
+        <semester program="הנדסת תוכנה">5</semester>
+        <semester program="הנדסת תוכנה">6</semester>
+    </course>
+    <course>
+        <course_id>236343 </course_id>
+        <name>תורת החישוביות </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">5</semester>
+        <semester program="מסלול כללי תלת-שנתי">5</semester>
+        <semester program="הנדסת תוכנה">5</semester>
+        <semester program="מערכות מידע">6</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">5</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">5</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">7</semester>
+    </course>
+    <course>
+        <course_id>236349 </course_id>
+        <name>פרויקט באבטחת מידע </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236350 </course_id>
+        <name>הגנה במערכות מתוכנתות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236351 </course_id>
+        <name>מערכות מבוזרות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236353 </course_id>
+        <name>אוטומטים ושפות פורמליות </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">4</semester>
+        <semester program="מסלול כללי תלת-שנתי">4</semester>
+        <semester program="הנדסת תוכנה">4</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">5</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">4</semester>
+    </course>
+    <course>
+        <course_id>236360 </course_id>
+        <name>תורת הקומפילציה </name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">5</semester>
+        <semester program="מסלול כללי תלת-שנתי">5</semester>
+        <semester program="הנדסת תוכנה">5</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">6</semester>
+    </course>
+    <course>
+        <course_id>236363 </course_id>
+        <name>מערכות מסד נתונים </name>
+        <weight>3</weight>
+        <semester program="מערכות מידע">4</semester>
+    </course>
+    <course>
+        <course_id>236370 </course_id>
+        <name>תכנות מקבילי ומבוזר </name>
+        <weight>3</weight>
+        <semester program="הנדסת תוכנה">5</semester>
+    </course>
+    <course>
+        <course_id>236371 </course_id>
+        <name>פרויקט בתכנות מקבילי ומבוזר </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236381 </course_id>
+        <name>פרויקט ב-וי.אל.אס.אי. ב' </name>
+        <weight>4</weight>
+    </course>
+    <course>
+        <course_id>236499 </course_id>
+        <name>פרויקט בחומות אש </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236501 </course_id>
+        <name>מבוא לבינה מלאכותית </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236503 </course_id>
+        <name>פרויקט תכנות מתקדם במדעי המחשב 1 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236508 </course_id>
+        <name>קריפטוגרפיה וסיבוכיות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236521 </course_id>
+        <name>אלגוריתמי קירוב </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236523 </course_id>
+        <name>מבוא לביואינפורמטיקה </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236524 </course_id>
+        <name>פרויקט בביואינפורמטיקה </name>
+        <weight>2.5</weight>
+    </course>
+    <course>
+        <course_id>236601 </course_id>
+        <name>נושאים מתקדמים במ"מ 1 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236602 </course_id>
+        <name>נושאים מתקדמים במ"מ 2 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236603 </course_id>
+        <name>נושאים מתקדמים במ"מ 3 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236604 </course_id>
+        <name>נושאים מתקדמים במ"מ 4 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236605 </course_id>
+        <name>נושאים מתקדמים במ"מ 5 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236607 </course_id>
+        <name>נושאים מתקדמים במ"מ 7 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236646 </course_id>
+        <name>נושאים מתקדמים בתאוריה של מדעי המחשב ה </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236703 </course_id>
+        <name>תכנות מונחה עצמים </name>
+        <weight>3</weight>
+        <semester program="הנדסת תוכנה">4</semester>
+    </course>
+    <course>
+        <course_id>236716 </course_id>
+        <name>מודלים גיאומטריים במערכות תיב"מ </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236754 </course_id>
+        <name>פרויקט במערכות נבונות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236757 </course_id>
+        <name>פרויקט במערכות לומדות </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236801 </course_id>
+        <name>סמינר במדעי המחשב 1 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236802 </course_id>
+        <name>סמינר במדעי המחשב 2 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236803 </course_id>
+        <name>סמינר במדעי המחשב 3 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236804 </course_id>
+        <name>סמינר במדעי המחשב 4 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236805 </course_id>
+        <name>סמינר במדעי המחשב 5 </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236818 </course_id>
+        <name>סמינר בביואינפורמטיקה </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236826 </course_id>
+        <name>סמינר במסדי נתונים </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236832 </course_id>
+        <name>סמינר בתכנות מקבילי </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236860 </course_id>
+        <name>עיבוד תמונות דיגיטלי </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236861 </course_id>
+        <name>ראיה חישובית גאומטרית </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236862 </course_id>
+        <name>ייצוגים דלילים ויתירים ויישומיהם בעיבוד תמונות ואותות </name>
+        <weight>2</weight>
+    </course>
+    <course>
+        <course_id>236873 </course_id>
+        <name>ראיה ממוחשבת </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236874 </course_id>
+        <name>פרויקט בראיה ממוחשבת </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>236927 </course_id>
+        <name>מבוא לרובוטיקה </name>
+        <weight>3</weight>
+    </course>
+    <course>
+        <course_id>238902 </course_id>
+        <name>סמינריון מחקר בקומבינטוריקה ותורת הגרפים </name>
+        <weight>3</weight>
+    </course>
+</courses>
