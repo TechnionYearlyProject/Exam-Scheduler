@@ -79,7 +79,7 @@ public class Database {
         return Integer.toString(year) + '_' + semester;
     }
 
-    private String getXSDFileFromXML(String filename) throws InvalidDatabase {
+    private String getXSDFileFromXML(String filename) {
         if (filename.endsWith("A.xml") || filename.endsWith("B.xml")) {
             return filename.substring(0, filename.length() - 5) + ".xsd";
         }
@@ -180,7 +180,7 @@ public class Database {
                 try {
                     semester.addStudyProgram(programName);
                 } catch (StudyProgramAlreadyExist e) {
-                    throw new InvalidDatabase("Duplicate study program] in database: '" + programName + "'");
+                    throw new InvalidDatabase("Duplicate study program in database: '" + programName + "'");
                 }
             }
         }
@@ -195,7 +195,7 @@ public class Database {
             Node n = courses.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element courseElement = (Element) n;
-                int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent());
+                int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent().trim());
                 double weight = Double.parseDouble(courseElement.getElementsByTagName("weight").item(0).getTextContent());
                 String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
                 try {
@@ -243,7 +243,7 @@ public class Database {
             date.set(Calendar.HOUR, tmp.get(Calendar.HOUR_OF_DAY));
             date.set(Calendar.MINUTE, tmp.get(Calendar.MINUTE));
         } catch (ParseException e) {
-            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid hour : " + hourStr + "'");
+            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid hour : '" + hourStr + "'");
         }
     }
 
@@ -295,9 +295,6 @@ public class Database {
                             } catch (DateOutOfSchedule e) {
                                 throw new InvalidDatabase("Course '" + courseId + "' has invalid schedule date : '" +
                                         dateStr + "' in schedule '" + moed.str + "'");
-                            } catch (ScheduleDateAlreadyTaken e) {
-                                throw new InvalidDatabase("Course '" + courseId + "' scheduled to an already taken date : '" +
-                                        dateStr + " " + hourStr + "' in schedule '" + moed.str + "'");
                             }
                         }
                     }
@@ -337,7 +334,7 @@ public class Database {
                     } catch (DateOutOfSchedule e) {
                         throw new InvalidDatabase("Course '" + courseId + "' constraint is out of the schedule dates : '" +
                                 startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
-                    } catch (OverlappingConstraints overlappingConstraints) {
+                    } catch (OverlappingConstraints e) {
                         throw new InvalidDatabase("Course '" + courseId + "' has overlapping constraint : '" +
                                 startDateStr + " - " + endDateStr + "' in schedule '" + moed.str + "'");
                     }

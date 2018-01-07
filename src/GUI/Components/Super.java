@@ -33,7 +33,7 @@ public class Super extends VBox{
         image_box.setAlignment(Pos.TOP_RIGHT);
         image_box.setSpacing(10);
         image_box.setPadding(new Insets(10, 10, 10, 10));
-        Image image = new Image("/GUI/resources/technion_logo.png");
+        Image image = new Image("/technion_logo.png");
         Label image_label = new Label();
         image_label.setGraphic(new ImageView(image));
         image_box.getChildren().addAll(title_box, image_label);
@@ -44,6 +44,7 @@ public class Super extends VBox{
         CustomButton clean_button = new CustomButton("ניקוי", "/GUI/resources/clean_icon.png",()->cleanFunction());
         CustomButton save_button = new CustomButton("שמור", "/GUI/resources/save_icon.png",null);
         CustomButton export_button = new CustomButton("ייצוא", "/GUI/resources/export_icon.png",null);
+
 
         hbox.getChildren().addAll(export_button, clean_button, save_button, schedule_button);
         title.setStyle("-fx-font-size: 30pt");

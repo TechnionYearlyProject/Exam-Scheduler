@@ -56,18 +56,12 @@ public class Schedule {
         updateSchedules();
     }
 
-    public void scheduleCourse(int courseId, Calendar date) throws DateOutOfSchedule, UninitializedSchedule,
-            ScheduleDateAlreadyTaken {
+    public void scheduleCourse(int courseId, Calendar date) throws DateOutOfSchedule, UninitializedSchedule {
         if (undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
         if (date.before(start) || date.after(end)) {
             throw new DateOutOfSchedule();
-        }
-        for (Calendar cal: schedule.values()) {
-            if (date.equals(cal)) {
-                throw new ScheduleDateAlreadyTaken();
-            }
         }
         schedule.put(courseId, (Calendar) date.clone());
     }
