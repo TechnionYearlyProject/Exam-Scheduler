@@ -295,9 +295,6 @@ public class Database {
                             } catch (DateOutOfSchedule e) {
                                 throw new InvalidDatabase("Course '" + courseId + "' has invalid schedule date : '" +
                                         dateStr + "' in schedule '" + moed.str + "'");
-                            } catch (ScheduleDateAlreadyTaken e) {
-                                throw new InvalidDatabase("Course '" + courseId + "' scheduled to an already taken date : '" +
-                                        dateStr + " " + hourStr + "' in schedule '" + moed.str + "'");
                             }
                         }
                     }
@@ -337,7 +334,7 @@ public class Database {
                     } catch (DateOutOfSchedule e) {
                         throw new InvalidDatabase("Course '" + courseId + "' constraint is out of the schedule dates : '" +
                                 startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
-                    } catch (OverlappingConstraints overlappingConstraints) {
+                    } catch (OverlappingConstraints e) {
                         throw new InvalidDatabase("Course '" + courseId + "' has overlapping constraint : '" +
                                 startDateStr + " - " + endDateStr + "' in schedule '" + moed.str + "'");
                     }
