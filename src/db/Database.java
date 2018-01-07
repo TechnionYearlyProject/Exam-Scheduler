@@ -195,7 +195,7 @@ public class Database {
             Node n = courses.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element courseElement = (Element) n;
-                int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent());
+                int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent().trim());
                 double weight = Double.parseDouble(courseElement.getElementsByTagName("weight").item(0).getTextContent());
                 String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
                 try {

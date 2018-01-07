@@ -24,7 +24,9 @@ public class CourseLoader {
         //updating conflictList for each Course.
         setCoursesConflicts();
         //updating constraints for each course.
-        setCoursesConstraints(cL);
+        if (cL != null){
+            setCoursesConstraints(cL);
+        }
         sortCourses();
     }
 
