@@ -223,14 +223,5 @@ public class DbInvalidLoadingTest {
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }
-        try {
-            // Invalid exam hour
-            db.loadSemester(2016, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Course '104031' scheduled to an already taken date : '2017-01-03 09:00' in schedule 'A'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
     }
 }

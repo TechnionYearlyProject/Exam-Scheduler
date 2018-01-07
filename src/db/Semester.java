@@ -150,7 +150,7 @@ public class Semester {
     }
 
     public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,
-            UninitializedSchedule, ScheduleDateAlreadyTaken {
+            UninitializedSchedule {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
