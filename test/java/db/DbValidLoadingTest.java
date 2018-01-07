@@ -1,4 +1,4 @@
-package test.java.db;
+package java.db;
 
 import db.Course;
 import db.Database;
