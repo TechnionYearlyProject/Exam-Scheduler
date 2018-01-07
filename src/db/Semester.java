@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Semester {
 
-    enum Moed {
+    public enum Moed {
         MOED_A("A"),
         MOED_B("B");
 
@@ -129,6 +129,20 @@ public class Semester {
                 }
             }
         }
+    }
+
+    public Calendar getStartDate(Moed moed) {
+        if (schedules.get(moed).start == null) {
+            return null;
+        }
+        return (Calendar) schedules.get(moed).start.clone();
+    }
+
+    public Calendar getEndDate(Moed moed) {
+        if (schedules.get(moed).end == null) {
+            return null;
+        }
+        return (Calendar) schedules.get(moed).end.clone();
     }
 
     public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
