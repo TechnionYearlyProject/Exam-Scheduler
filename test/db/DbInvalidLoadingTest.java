@@ -1,4 +1,4 @@
-package java.db;
+package db;
 
 import db.Database;
 import db.exception.InvalidDatabase;
@@ -21,8 +21,7 @@ public class DbInvalidLoadingTest {
     @Before
     public void initDb() {
         db = new Database();
-        baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2)
-                + "src" + db.sep + "test" + db.sep + "java" + db.sep + "db";
+        baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db";
     }
 
     @Test
