@@ -223,5 +223,50 @@ public class DbInvalidLoadingTest {
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }
+        try {
+            // Invalid constraint dates
+            db.loadSemester(2016, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Course '104031' has invalid constraint date : '2017-02-01/2017-01-03' in schedule 'A'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Overlapping constraint dates
+            db.loadSemester(2001, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Course '104031' has overlapping constraint : '2017-01-02 - 2017-01-07' in schedule 'A'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Constraints on schedule without start/end dates
+            db.loadSemester(2001, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Start/End date missing in schedule B", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Unknown course in constraints
+            db.loadSemester(2002, "winter");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Constraint List 'A' contain unknown course : '123456'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            // Constraint dates out of schedule dates
+            db.loadSemester(2002, "spring");
+            fail("Should have thrown InvalidDatabase exception");
+        } catch (InvalidDatabase e) {
+            assertEquals("Course '123456' constraint is out of the schedule dates : '2017-01-04/2017-03-07' in schedule 'A'", e.getMessage());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
     }
 }
