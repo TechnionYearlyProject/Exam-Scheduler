@@ -2,6 +2,8 @@ package GUI.Components;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,8 +14,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 public class Super extends VBox{
+    Major major;
+
     public Super() {
-        Major major = new Major();
+        major = new Major();
         VBox title_box = new VBox();
         title_box.setAlignment(Pos.TOP_RIGHT);
 
@@ -36,10 +40,10 @@ public class Super extends VBox{
 
         HBox hbox = new HBox();
         hbox.setSpacing(10);
-        CustomButton schedule_button = new CustomButton("שיבוץ", "/GUI/resources/schedule_icon.png");
-        CustomButton clean_button = new CustomButton("ניקוי", "/GUI/resources/clean_icon.png");
-        CustomButton save_button = new CustomButton("שמור", "/GUI/resources/save_icon.png");
-        CustomButton export_button = new CustomButton("ייצוא", "/GUI/resources/export_icon.png");
+        CustomButton schedule_button = new CustomButton("שיבוץ", "/GUI/resources/schedule_icon.png",null);
+        CustomButton clean_button = new CustomButton("ניקוי", "/GUI/resources/clean_icon.png",()->cleanFunction());
+        CustomButton save_button = new CustomButton("שמור", "/GUI/resources/save_icon.png",null);
+        CustomButton export_button = new CustomButton("ייצוא", "/GUI/resources/export_icon.png",null);
 
         hbox.getChildren().addAll(export_button, clean_button, save_button, schedule_button);
         title.setStyle("-fx-font-size: 30pt");
@@ -47,7 +51,18 @@ public class Super extends VBox{
         this.getChildren().addAll(image_box, major, hbox);
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
-        this.setPadding(new Insets(20, 10, 20, 20));
+        this.setPadding(new Insets(5, 5, 10, 10));
         this.setMaxWidth(1536);
+
+    }
+    public void cleanFunction()
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "האם אתה בטוח שברצונך לנקות?", ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            major = new Major();
+            this.getChildren().remove(1);
+            this.getChildren().add(1, major);
+        }
     }
 }

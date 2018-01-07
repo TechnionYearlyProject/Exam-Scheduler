@@ -35,37 +35,37 @@ public class Schedule extends GridPane{
             vbox.setPrefWidth(75);
             vbox.setAlignment(Pos.CENTER_RIGHT);
             Label label = new Label(weekdays.get(i));
-            label.setPadding(new Insets(2,4,0,0));
+            label.setPadding(new Insets(2,10,0,0));
             label.setFont(Font.font(17));
             //label.setStyle("-fx-font-weight: bold");
             vbox.getChildren().add(label);
             this.add(vbox, i,0);
         }
-        LocalDate current = input_start.minusDays(input_start.getDayOfWeek().ordinal()+1);
-        // what happens when start and end is in the same week
+        LocalDate current;
+        if (input_start.getDayOfWeek().name() == "SUNDAY")
+            current = start;
+        else
+            current = input_start.minusDays(input_start.getDayOfWeek().ordinal()+1);
 
-        if (input_start.getDayOfWeek().name() != "SUNDAY") {
-            for (int i = 5; i >= 0; i--, current = current.plusDays(1)) {
-                if (current.isBefore(input_start)) {
+        for (int i = 5; i >= 0; i--, current = current.plusDays(1)) {
+            if (current.isBefore(input_start)) {
+                Day day = new Day(current);
+                day.Disable();
+                this.add(day, i, 1);
+            } else {
+                if (!current.isAfter(input_finish)) {
+                    Day day = new Day(current);
+                    days.put(current, day);
+                    this.add(day, i, 1);
+                } else {
                     Day day = new Day(current);
                     day.Disable();
                     this.add(day, i, 1);
-                } else {
-                    if (!current.isAfter(input_finish)) {
-                        Day day = new Day(current);
-                        days.put(current, day);
-                        this.add(day, i, 1);
-                    } else {
-                        Day day = new Day(current);
-                        day.Disable();
-                        this.add(day, i, 1);
-                    }
                 }
             }
-            current = current.plusDays(1);
         }
+        current = current.plusDays(1);
         int i=2;
-
         while (!current.isAfter(input_finish))
         {
             for (int j=5;j>=0;j--) {

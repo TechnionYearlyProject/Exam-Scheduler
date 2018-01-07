@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
@@ -29,7 +30,7 @@ public class Day extends VBox{
         //label.setStyle("-fx-font-weight: bold");
         label.setPadding(new Insets(2,0,0,2));
         label.setFont(Font.font(14));
-        label.setPrefWidth(60);
+        label.setPrefWidth(75);
         label.setPrefHeight(15);
 
         Image image = new Image("/GUI/resources/lock_day.png");
@@ -46,6 +47,8 @@ public class Day extends VBox{
         lock_label.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouse_event) {
+                if (mouse_event.getButton()!= MouseButton.PRIMARY)
+                    return;
                 if (isBlocked)
                     Enable();
                 else
