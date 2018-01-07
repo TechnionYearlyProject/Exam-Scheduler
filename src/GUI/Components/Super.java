@@ -29,17 +29,17 @@ public class Super extends VBox{
         image_box.setAlignment(Pos.TOP_RIGHT);
         image_box.setSpacing(10);
         image_box.setPadding(new Insets(10, 10, 10, 10));
-        Image image = new Image("/GUI/resources/technion_logo.png");
+        Image image = new Image("/technion_logo.png");
         Label image_label = new Label();
         image_label.setGraphic(new ImageView(image));
         image_box.getChildren().addAll(title_box, image_label);
 
         HBox hbox = new HBox();
         hbox.setSpacing(10);
-        CustomButton schedule_button = new CustomButton("שיבוץ", "/GUI/resources/schedule_icon.png");
-        CustomButton clean_button = new CustomButton("ניקוי", "/GUI/resources/clean_icon.png");
-        CustomButton save_button = new CustomButton("שמור", "/GUI/resources/save_icon.png");
-        CustomButton export_button = new CustomButton("ייצוא", "/GUI/resources/export_icon.png");
+        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png");
+        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png");
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png");
+        CustomButton export_button = new CustomButton("ייצוא", "/export_icon.png");
 
         hbox.getChildren().addAll(export_button, clean_button, save_button, schedule_button);
         title.setStyle("-fx-font-size: 30pt");
