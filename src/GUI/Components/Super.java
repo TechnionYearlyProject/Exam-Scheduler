@@ -40,10 +40,10 @@ public class Super extends VBox{
 
         HBox hbox = new HBox();
         hbox.setSpacing(10);
-        CustomButton schedule_button = new CustomButton("שיבוץ", "/GUI/resources/schedule_icon.png",null);
-        CustomButton clean_button = new CustomButton("ניקוי", "/GUI/resources/clean_icon.png",()->cleanFunction());
-        CustomButton save_button = new CustomButton("שמור", "/GUI/resources/save_icon.png",null);
-        CustomButton export_button = new CustomButton("ייצוא", "/GUI/resources/export_icon.png",null);
+        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png",null);
+        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png",()->cleanFunction());
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",null);
+        CustomButton export_button = new CustomButton("ייצוא", "/export_icon.png",null);
 
 
         hbox.getChildren().addAll(export_button, clean_button, save_button, schedule_button);
