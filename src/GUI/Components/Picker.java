@@ -26,10 +26,11 @@ public class Picker extends HBox{
         //this.is_set = false;
         this.setAlignment(Pos.TOP_RIGHT);
         Label label = new Label(title);
-        label.setPrefWidth(110);
+        label.setPrefWidth(140);
         label.setAlignment(Pos.CENTER_RIGHT);
+        label.setStyle("-fx-font-weight: bold; -fx-font-size: 13pt");
         picker = new DatePicker();
-        picker.getStylesheets().add("GUI/resources/metro.css");
+        picker.getStylesheets().add("/metro.css");
         /*picker.setOnAction(event -> {
             date = picker.getValue();
             is_set = true;
