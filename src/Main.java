@@ -1,4 +1,5 @@
 
+import GUI.Components.Dialog;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -36,6 +37,8 @@ public class Main extends Application {
         primaryStage.setTitle("Exam Scheduler");
         primaryStage.setScene(scene);
         primaryStage.show();
+        Dialog dlg = new Dialog();
+
         System.out.println(pane.getHeight());
         System.out.println(pane.getWidth());
     }
