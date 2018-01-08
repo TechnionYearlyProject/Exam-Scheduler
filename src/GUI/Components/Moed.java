@@ -23,6 +23,8 @@ public class Moed extends VBox{
         start_set = false;
         end_set = false;
         Label label = new Label(title);
+        label.setStyle("-fx-font-weight: bold; -fx-font-size: 14pt; -fx-underline: true;");
+
         Picker picker1 = new Picker("תאריך התחלה:");
         Picker picker2 = new Picker("תאריך סיום:");
         if (title == "מועד א'")

@@ -9,12 +9,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public class Major extends HBox {
+public class Manager extends HBox {
     Moed A;
     Moed B;
     ListView<String> chosenCoursesView;
@@ -26,7 +24,7 @@ public class Major extends HBox {
         chosenCoursesToAdd = coursesView.getSelectionModel().getSelectedItems();
         chosenCourseNames.addAll(chosenCoursesToAdd);
     }
-    public Major() {
+    public Manager() {
         A = new Moed("מועד א'");
         B = new Moed("מועד ב'");
         chosenCourseNames = FXCollections.observableArrayList();
@@ -35,6 +33,7 @@ public class Major extends HBox {
         courseNames = FXCollections.observableArrayList(
                 "קומבי", "מערכות הפעלה", "מתם", "ממשקי אדם-מחשב", "מבוא למדעי המחשב", "פרויקט שנתי א'");
         coursesView = new ListView<>(courseNames);
+        coursesView.setPrefWidth(400);
         Text courseTitle = new Text("הוספת קורסים");
 
         Button addCourse = new Button("הוספה");

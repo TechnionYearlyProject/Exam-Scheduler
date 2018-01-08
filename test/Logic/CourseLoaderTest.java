@@ -6,6 +6,7 @@ import db.Semester;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -24,13 +25,22 @@ public class CourseLoaderTest {
     @Test
     public void getCourses() throws Exception {
         List<Course> courses = semester.getCourseCollection();
+        List<Integer> coursesIds = new LinkedList<>();
         for (Course course: courses) {
-            System.out.println(course.id);
+            coursesIds.add(course.id);
         }
-        System.out.println("+++++++++++++++++++++HERE++++++++++++++++");
         loader = new CourseLoader(db, null);
+        Logic.Course prev = null;
         for (Logic.Course course: loader.getSortedCourses()) {
-            System.out.println(course.getCourseID() + " " + course.getNumOfConflictCourses());
+            assert(coursesIds.contains(course.getCourseID()));
+            int conflicts = course.getNumOfConflictCourses();
+            assert(conflicts >= 0 && conflicts <=30); //There is no way to
+            if (prev != null){
+                //List of courses need to be sorted in descending order by num of conflicts
+                assert(prev.getNumOfConflictCourses() >= conflicts);
+            }
+            prev = course;
+            // course to have more conflicts in our db
         }
     }
 

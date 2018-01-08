@@ -119,7 +119,33 @@ public class DbValidLoadingTest {
         assertEquals(endDateA, semester.getEndDate(Semester.Moed.MOED_A));
         assertEquals(startDateB, semester.getStartDate(Semester.Moed.MOED_B));
         assertEquals(endDateB, semester.getEndDate(Semester.Moed.MOED_B));
+        Map<Integer, Calendar> schedulesRef = new HashMap<>();
+        schedulesRef.put(104166, parse("2017-01-03 13:00", hourParser));
+        schedulesRef.put(104031, parse("2017-01-03 09:00", hourParser));
+        schedulesRef.put(234114, parse("2017-01-07 09:00", hourParser));
+        assertEquals(0, semester.getSchedule(Semester.Moed.MOED_B).size());
+        assertEquals(schedulesRef.size(), semester.getSchedule(Semester.Moed.MOED_A).size());
+        for (int courseId: semester.getSchedule(Semester.Moed.MOED_A).keySet()) {
+            assertEquals(schedulesRef.get(courseId), semester.getSchedule(Semester.Moed.MOED_A).get(courseId));
+        }
 
         // Check constraints
+        for (int courseId: coursesRef) {
+            assertEquals(null, semester.getConstraintList(Semester.Moed.MOED_B, courseId));
+        }
+        List<Constraint> constraintsRef = new ArrayList<>();
+        constraintsRef.add(new Constraint(parse("2017-01-01", dateParser), parse("2017-01-03", dateParser)));
+        constraintsRef.add(new Constraint(parse("2017-01-04", dateParser), parse("2017-01-07", dateParser)));
+        assertEquals(constraintsRef.size(), semester.getConstraintList(Semester.Moed.MOED_A, 104031).size());
+        for (Constraint ref: constraintsRef) {
+            boolean check = false;
+            for (Constraint constrait: semester.getConstraintList(Semester.Moed.MOED_A, 104031)) {
+                if (constrait.start.equals(ref.start) && constrait.end.equals(ref.end)) {
+                    check = true;
+                    break;
+                }
+            }
+            assertEquals(true, check);
+        }
     }
 }

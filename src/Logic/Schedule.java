@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 public class Schedule {
     ArrayList<Day> schedulable_days;
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied) throws IllegalRange {
+        if (occupied == null){
+            occupied = new HashSet<LocalDate>();
+        }
         if (!end.isAfter(begin))
             throw new IllegalRange();
         schedulable_days = new ArrayList<Day>();
@@ -31,17 +34,18 @@ public class Schedule {
     public void assignCourse(Course course, int index) {
         int course_id = course.getCourseID();
         (schedulable_days.get(index)).insertCourse(course_id,0);
-        int dist = -1;
         int days_before = -1*course.getDaysBefore();
-        while (dist>=days_before) {
-            (schedulable_days.get(index+dist)).insertCourse(course_id,dist);
-            dist--;
+        index = index + days_before;
+        if (index < 0){
+            days_before += (index);
+            index = 0;
         }
-        dist=1;
-        while (index+dist<schedulable_days.size()) {
-            (schedulable_days.get(index+dist)).insertCourse(course_id,dist);
-            dist++;
+        while (index < schedulable_days.size()){
+            schedulable_days.get(index).insertCourse(course_id, days_before);
+            days_before++;
+            index++;
         }
+
     }
 
     public void produceSchedule(Database db, ConstraintList cl){
