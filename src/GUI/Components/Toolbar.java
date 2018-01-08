@@ -15,7 +15,7 @@ public class Toolbar extends HBox{
     Wrapper parent;
     public Toolbar(Wrapper new_parent) {
         parent = new_parent;
-        Text main_title = new Text("מערכת שיבוץ מבחנים");
+        Text main_title = new Text("מערכת שיבוץ לוח מבחנים");
         main_title.setTextAlignment(TextAlignment.RIGHT);
         main_title.setStyle("-fx-font-size: 34pt; -fx-font-weight: bold");
 
