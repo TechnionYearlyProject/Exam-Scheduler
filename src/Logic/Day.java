@@ -15,4 +15,10 @@ public class Day {
     public LocalDate getDate() {
         return date;
     }
+    public Integer getDistance(int course_id) {
+        return courses.get(course_id);
+    }
+    public int getNumOfCourses(){
+        return courses.size();
+    }
 }

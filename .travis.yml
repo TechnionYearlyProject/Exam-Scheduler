@@ -1,6 +1,10 @@
 language: java
 
+script: "mvn test -fae"
 script: "mvn cobertura:cobertura"
 
 after_success:
+  scripts/print_test_results.sh
   - bash <(curl -s https://codecov.io/bash) -t 25e754f3-4a2b-48b4-9772-9c6dacbad92a
+after_failure:
+  scripts/print_test_results.sh
