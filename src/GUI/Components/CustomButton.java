@@ -34,7 +34,7 @@ public class CustomButton extends HBox {
         this.setMaxWidth(150);
         this.setSpacing(15);
         this.setAlignment(Pos.CENTER);
-        this.setStyle("-fx-background-radius: 6 6 6 6; -fx-background-color: #607D8B");
+        this.setStyle("-fx-background-radius: 6 6 6 6;  -fx-background-color: #607D8B");
 
 
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
