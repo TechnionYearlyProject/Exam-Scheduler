@@ -34,12 +34,18 @@ public class AlertBox {
 		HBox hbox_title = new HBox();
 		hbox_title.setPadding(new Insets(15, 15, 0, 15)); //0 on bottom
 		String temp;
-		if (type == AlertType.ERROR)
+		if (type == AlertType.ERROR) {
 			temp = "שגיאה";
-		else if (type == AlertType.INFO)
+			stage.getIcons().add(new Image("/error_icon.png"));
+		}
+		else if (type == AlertType.INFO) {
 			temp = "מידע";
-		else
+			stage.getIcons().add(new Image("/info_icon.png"));
+		}
+		else {
 			temp = "אישור";
+			stage.getIcons().add(new Image("/confirm_icon.png"));
+		}
 		Label title_label = new Label(temp);
 		title_label.setFont(Font.font(18));
 		title_label.setAlignment(Pos.CENTER_RIGHT);
