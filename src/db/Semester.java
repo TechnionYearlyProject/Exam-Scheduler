@@ -218,4 +218,14 @@ public class Semester {
         }
         return map;
     }
+
+    public List<Course> getCoursesByProgramAndSemester(String program, int semesterNum) {
+        List<Course> l = new ArrayList<>();
+        for (Course course: courses.values()) {
+            if (course.getStudyProgramSemester(program) == semesterNum) {
+                l.add(new Course(course));
+            }
+        }
+        return l;
+    }
 }
