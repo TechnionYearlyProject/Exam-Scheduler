@@ -40,10 +40,7 @@ public class Toolbar extends HBox{
     }
     public void cleanFunction()
     {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "האם אתה בטוח שברצונך לנקות?", ButtonType.YES, ButtonType.CANCEL);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
-            parent.refreshManager();
-        }
+        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->parent.refreshManager());
+
     }
 }
