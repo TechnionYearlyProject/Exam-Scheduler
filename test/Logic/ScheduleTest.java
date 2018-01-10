@@ -78,9 +78,48 @@ public class ScheduleTest {
     }
 
     @Test
-    public void produceSchedule() throws Exception {
+    public void produceSchedule() throws Exception { //this is test for legal schedule
         schedule.produceSchedule(db, null);
-        //TODO: Add legality checks
+        for (Course course: loader.getSortedCourses()){
+            assert(isCourseInSchedule(course.getCourseID()));
+            assert(isCourseConflictsRequirementsMet(course));
+        }
     }
 
+    @Test
+    public void produceScheduleWithIllegalData() throws Exception {
+        //TODO: assert that producing schedule with illegal data throws exception
+    }
+
+    private boolean isCourseInSchedule (int courseId) {
+        for (Day day: schedule.getSchedulableDays()){
+            Integer distance = day.getDistance(courseId);
+            if (distance == null){
+                continue;
+            }
+            if (distance == 0){
+                return (day.getDate().getDayOfWeek() != DayOfWeek.SATURDAY); //Exam must not be on Saturday (ofc, there is
+                //no Saturdays in schedulable days. TODO: check if day is locked (how?)
+            }
+        }
+        return false; //If got here- exam is not in schedule
+    }
+    private boolean isCourseConflictsRequirementsMet(Course course){
+        for (Day day: schedule.getSchedulableDays()){
+            Integer distance = day.getDistance(course.getCourseID());
+            if (distance == null || distance >= 0){ //As checks are symmetric,
+                continue;
+            } else {
+                for (Integer conflictId: course.getConflictCourses().keySet()){
+                    Integer conflictDistance = day.getDistance(conflictId);
+                    //as we write negative distance only for days we need for preparation, it is iilegal to
+                    //conflict courses to have negative distance in same day
+                    if (conflictDistance != null || (conflictDistance <= 0 || (conflictDistance - distance < course.getDaysBefore()))){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class Schedule {
     ArrayList<Day> schedulable_days;
+    public class CanNotBeScheduledException extends Exception{};
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied) throws IllegalRange {
         if (occupied == null){
             occupied = new HashSet<LocalDate>();
@@ -48,35 +49,50 @@ public class Schedule {
 
     }
 
-    public void produceSchedule(Database db, ConstraintList cl){
+    public void produceSchedule(Database db, ConstraintList cl) throws CanNotBeScheduledException{
         CourseLoader loader = new CourseLoader(db, cl);
         //sort courses by number of conflicts
         List<Course> courses = loader.getCourses().values().stream().sorted((course1, course2)->
             course1.getNumOfConflictCourses() - course2.getNumOfConflictCourses()).collect(Collectors.toList());
         //try to schedule courses in such way, that every day will be ~ same number of exams (is it true to do it?)
-        int uniformity = courses.size() / schedulable_days.size();
+        int uniformity = courses.size() / schedulable_days.size() + 1;
         for (Course course: courses){
-            Set<Integer> course_conflicts = course.getConflictCourses().keySet();
-            for (int i = 0; i < schedulable_days.size(); i++){
-                Day day = schedulable_days.get(i);
-                if (day.getNumOfCourses() > uniformity){
-                    continue; //TODO: if in the end there is possibility to schedule only to this day, we should shut our eyes on uniformity
+            try {
+                scheduleExamFor(course, uniformity);
+            } catch (CanNotBeScheduledException e){
+                scheduleExamFor(course, null);
+            }
+
+        }
+    }
+
+    private void scheduleExamFor(Course course, Integer uniformity) throws CanNotBeScheduledException{
+        Set<Integer> course_conflicts = course.getConflictCourses().keySet();
+        boolean scheduled = false;
+        for (int i = 0; i < schedulable_days.size(); i++){
+            Day day = schedulable_days.get(i);
+            if (uniformity != null && day.getNumOfCourses() > uniformity){
+                continue; //TODO: if in the end there is possibility to schedule only to this day, we should shut our eyes on uniformity
+            }
+            boolean can_schedule = true;
+            for (int course_id: course_conflicts){
+                Integer distance = day.getDistance(course_id);
+                if (distance == null){
+                    continue;
                 }
-                boolean can_schedule = true;
-                for (int course_id: course_conflicts){
-                    Integer distance = day.getDistance(course_id);
-                    if (distance == null){
-                        continue;
-                    }
-                    if (distance <= 0 || course.getDaysBefore() > distance){ //can't prepare to any of two courses
-                        can_schedule = false;
-                        break;
-                    }
-                }
-                if (can_schedule){
-                    assignCourse(course, i);
+                if (distance <= 0 || course.getDaysBefore() > distance){ //can't prepare to any of two courses
+                    can_schedule = false;
+                    break;
                 }
             }
+            if (can_schedule){
+                assignCourse(course, i);
+                scheduled = true;
+                break;
+            }
+        }
+        if (!scheduled){
+            throw new CanNotBeScheduledException();
         }
     }
 }
