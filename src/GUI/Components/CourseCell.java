@@ -64,6 +64,7 @@ public class CourseCell extends ListCell<String> {
             event.consume();
         });
 
+
     }
 
     @Override

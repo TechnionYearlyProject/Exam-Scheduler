@@ -28,7 +28,6 @@ public class Day extends VBox{
     public Day(LocalDate input_date) {
         isBlocked = false;
         label = new Label(input_date.format(disp_date));
-        //label.setStyle("-fx-font-weight: bold");
         label.setPadding(new Insets(2,0,0,2));
         label.setFont(Font.font(14));
         label.setPrefWidth(75);
@@ -59,7 +58,6 @@ public class Day extends VBox{
         });
         hbox = new HBox();
         hbox.getChildren().addAll(label,lock_label);
-
         tests = new VBox();
         tests.setSpacing(1);
         tests.setStyle("-fx-background-color: white");

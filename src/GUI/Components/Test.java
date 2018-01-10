@@ -23,15 +23,15 @@ public class Test extends Label{
     static ArrayList<String> start_digits = new ArrayList<String>(Arrays.asList("234","236","10","11","09","12","13","04","03"));
 
     public Test(Course course) {
-        this.setFont(Font.font(12.5));
         this.setTextFill(Paint.valueOf("white"));
         this.setText(course.getCourseName());
         this.setPadding(new Insets(0,3,0,0));
         this.setAlignment(Pos.CENTER_RIGHT);
-        //this.setPadding(new Insets(2,0,0,2));
         this.setPrefWidth(86);
         this.setPrefHeight(16);
-        this.setStyle("-fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+ getCourseColor(course.getCourseID()));
+        this.setMaxHeight(16);
+
+        this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+ getCourseColor(course.getCourseID()));
     }
 
     String getCourseColor(int course_int)
