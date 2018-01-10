@@ -4,43 +4,34 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 import java.time.LocalDate;
 
 public class Manager extends HBox {
     Moed A;
     Moed B;
-    ListView<String> chosenCoursesView;
-    ListView<String> coursesView;
-    ObservableList<String> courseNames;
-    ObservableList<String> chosenCourseNames;
-    private void addCourse(){
-        ObservableList<String> chosenCoursesToAdd;
-        chosenCoursesToAdd = coursesView.getSelectionModel().getSelectedItems();
-        chosenCourseNames.addAll(chosenCoursesToAdd);
-    }
     public Manager() {
         A = new Moed("מועד א'");
         B = new Moed("מועד ב'");
-        chosenCourseNames = FXCollections.observableArrayList();
-        chosenCoursesView = new ListView<>(chosenCourseNames);
-        chosenCoursesView.setMaxHeight(150);
-        courseNames = FXCollections.observableArrayList(
-                "קומבי", "מערכות הפעלה", "מתם", "ממשקי אדם-מחשב", "מבוא למדעי המחשב", "פרויקט שנתי א'");
-        coursesView = new ListView<>(courseNames);
-        coursesView.setPrefWidth(400);
-        Text courseTitle = new Text("הוספת קורסים");
+        ObservableList<String> courseNames = FXCollections.observableArrayList(
+                "קומבי-234141",
+                "מערכות הפעלה-234123",
+                "מתם-234122",
+                "חישוביות-236343",
+                "מבוא למדעי המחשב-234114",
+                "פרויקט שנתי א'-234311");
+        ListView<String> courseListView = new ListView<>(courseNames);
+        VBox courseInterface = new VBox(courseListView);
 
-        Button addCourse = new Button("הוספה");
-        addCourse.setOnMouseClicked(e->addCourse());
-        HBox courseControls = new HBox(addCourse);
+        courseListView.setCellFactory(param -> new CourseCell());
 
-        VBox courseInterface = new VBox(chosenCoursesView,courseTitle,courseControls,coursesView);
         this.getChildren().addAll(B,A,courseInterface);
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);

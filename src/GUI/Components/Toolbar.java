@@ -15,7 +15,7 @@ public class Toolbar extends HBox{
     Wrapper parent;
     public Toolbar(Wrapper new_parent) {
         parent = new_parent;
-        Text main_title = new Text("מערכת שיבוץ מבחנים");
+        Text main_title = new Text("מערכת שיבוץ לוח מבחנים");
         main_title.setTextAlignment(TextAlignment.RIGHT);
         main_title.setStyle("-fx-font-size: 34pt; -fx-font-weight: bold");
 
@@ -40,10 +40,7 @@ public class Toolbar extends HBox{
     }
     public void cleanFunction()
     {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "האם אתה בטוח שברצונך לנקות?", ButtonType.YES, ButtonType.CANCEL);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
-            parent.refreshManager();
-        }
+        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->parent.refreshManager());
+
     }
 }
