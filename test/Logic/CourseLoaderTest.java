@@ -29,7 +29,7 @@ public class CourseLoaderTest {
         for (Course course: courses) {
             coursesIds.add(course.id);
         }
-        loader = new CourseLoader(db, null);
+        loader = new CourseLoader(semester, null);
         Logic.Course prev = null;
         for (Logic.Course course: loader.getSortedCourses()) {
             assert(coursesIds.contains(course.getCourseID()));

@@ -23,7 +23,7 @@ public class ScheduleTest {
         db = new Database();
         db.loadSemester(2017, "winter_test");
         semester = db.getSemester(2017, "winter_test");
-        loader = new CourseLoader(db, null);
+        loader = new CourseLoader(semester, null);
         schedule = new Schedule(LocalDate.of(2018, 2, 2), LocalDate.of(2018, 3, 12), null);
     }
 
@@ -66,7 +66,7 @@ public class ScheduleTest {
             int counter = -course.getDaysBefore();
             int index = counter + (course.getCourseID() % EXAMS_DAYS);
             if (index < 0){
-                counter += index;
+                counter += (-index);
                 index = 0;
             }
             while (index < EXAMS_DAYS){
@@ -79,10 +79,19 @@ public class ScheduleTest {
 
     @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        schedule.produceSchedule(db, null);
+        schedule.produceSchedule(semester, null);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(course));
+        }
+        //Print schedule (just for interest)
+        for(Day day: schedule.getSchedulableDays()){
+            System.out.println("============  Day " + day.getDate().toString());
+            for (Integer courseId: day.courses.keySet()){
+                if(day.courses.get(courseId) == 0) {
+                    System.out.println(courseId);
+                }
+            }
         }
     }
 
@@ -114,7 +123,9 @@ public class ScheduleTest {
                     Integer conflictDistance = day.getDistance(conflictId);
                     //as we write negative distance only for days we need for preparation, it is iilegal to
                     //conflict courses to have negative distance in same day
-                    if (conflictDistance != null || (conflictDistance <= 0 || (conflictDistance - distance < course.getDaysBefore()))){
+                    if (conflictDistance != null && (conflictDistance <= 0 || (conflictDistance - distance < course.getDaysBefore()))){
+                        System.out.println("The course: " + course.getCourseID() + " conflicts with: " + conflictId + " distances "+
+                        distance + ": " + conflictDistance);
                         return false;
                     }
                 }

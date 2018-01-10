@@ -46,4 +46,8 @@ public class Course {
         }
         return programs.get(program);
     }
+
+    public Map<String, Integer> getPrograms() {
+        return programs;
+    }
 }

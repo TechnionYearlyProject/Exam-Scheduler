@@ -19,6 +19,12 @@ public class Day {
         return courses.get(course_id);
     }
     public int getNumOfCourses(){
-        return courses.size();
+        int size = 0;
+        for (Integer distance: courses.values()){
+            if (distance == 0){ //we are interested only in exams that are in this particular day
+                size++;
+            }
+        }
+        return size;
     }
 }

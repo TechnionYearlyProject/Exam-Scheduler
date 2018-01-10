@@ -2,6 +2,8 @@ package Logic;
 import Logic.Exceptions.IllegalRange;
 import db.ConstraintList;
 import db.Database;
+import db.Semester;
+
 import java.time.LocalDate;
 import java.time.DayOfWeek;
 import java.util.*;
@@ -38,7 +40,7 @@ public class Schedule {
         int days_before = -1*course.getDaysBefore();
         index = index + days_before;
         if (index < 0){
-            days_before += (index);
+            days_before += (-index);
             index = 0;
         }
         while (index < schedulable_days.size()){
@@ -49,20 +51,22 @@ public class Schedule {
 
     }
 
-    public void produceSchedule(Database db, ConstraintList cl) throws CanNotBeScheduledException{
-        CourseLoader loader = new CourseLoader(db, cl);
+    public void produceSchedule(Semester semester, ConstraintList cl) throws CanNotBeScheduledException{
+        CourseLoader loader = new CourseLoader(semester, cl);
         //sort courses by number of conflicts
-        List<Course> courses = loader.getCourses().values().stream().sorted((course1, course2)->
-            course1.getNumOfConflictCourses() - course2.getNumOfConflictCourses()).collect(Collectors.toList());
+        List<Course> courses = loader.getSortedCourses();
         //try to schedule courses in such way, that every day will be ~ same number of exams (is it true to do it?)
-        int uniformity = courses.size() / schedulable_days.size() + 1;
         for (Course course: courses){
-            try {
-                scheduleExamFor(course, uniformity);
-            } catch (CanNotBeScheduledException e){
-                scheduleExamFor(course, null);
+            boolean scheduled = false;
+            int uniformity = 1;
+            while (!scheduled){
+                try {
+                    scheduleExamFor(course, uniformity);
+                    scheduled = true;
+                } catch (CanNotBeScheduledException e){
+                    uniformity++;
+                }
             }
-
         }
     }
 
@@ -72,7 +76,7 @@ public class Schedule {
         for (int i = 0; i < schedulable_days.size(); i++){
             Day day = schedulable_days.get(i);
             if (uniformity != null && day.getNumOfCourses() > uniformity){
-                continue; //TODO: if in the end there is possibility to schedule only to this day, we should shut our eyes on uniformity
+                continue;
             }
             boolean can_schedule = true;
             for (int course_id: course_conflicts){
@@ -80,7 +84,7 @@ public class Schedule {
                 if (distance == null){
                     continue;
                 }
-                if (distance <= 0 || course.getDaysBefore() > distance){ //can't prepare to any of two courses
+                if (distance <= 0 || course.getDaysBefore() >= distance){ //can't prepare to any of two courses
                     can_schedule = false;
                     break;
                 }
