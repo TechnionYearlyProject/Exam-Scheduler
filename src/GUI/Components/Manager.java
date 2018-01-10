@@ -22,15 +22,16 @@ public class Manager extends HBox {
         B = new Moed("מועד ב'");
         ObservableList<String> courseNames = FXCollections.observableArrayList(
                 "קומבי-234141",
-                "מערכות הפעלה-234123",
-                "מתם-234122",
                 "חישוביות-236343",
-                "מבוא למדעי המחשב-234114",
-                "פרויקט שנתי א'-234311");
+                "חשבון אינפיניטסימלי 1מ'-104031",
+                "כימיה כללית-125001",
+                "הסתברות מ-094412",
+                "ביולוגיה 1-134058");
         ListView<String> courseListView = new ListView<>(courseNames);
         VBox courseInterface = new VBox(courseListView);
 
         courseListView.setCellFactory(param -> new CourseCell());
+        courseListView.setPrefWidth(395);
 
         this.getChildren().addAll(B,A,courseInterface);
         this.setAlignment(Pos.TOP_RIGHT);
