@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.geometry.Insets;
@@ -70,17 +71,28 @@ public class Day extends VBox{
         this.setPrefHeight(100);
         this.setStyle("-fx-background-color: white");
 
-        this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                addTest(new Course("קומבי", 234123, true, 3.0 ));
+        //this.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> addTest(new Course("קומבי", 234123, true, 3.0 )));
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
+        this.setOnDragDropped(event->{
+            /* data dropped */
+            System.out.println("onDragDropped");
+            /* if there is a string data on dragboard, read it and use it */
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                //label.setText(db.getString());
+                String courseName = db.getString().split("_")[0];
+                String courseNum = db.getString().split("_")[1];
+                addTest(new Course(courseName, Integer.parseInt(courseNum), true, 3.0 ));
+                success = true;
             }
-        });
-        this.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                lock_label.setVisible(true);
-            }
+            /*
+             * let the source know whether the string was successfully
+             * transferred and used
+             */
+            event.setDropCompleted(success);
+
+            event.consume();
         });
         this.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
             @Override
