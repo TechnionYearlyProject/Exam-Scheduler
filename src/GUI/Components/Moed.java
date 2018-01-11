@@ -65,5 +65,4 @@ public class Moed extends VBox{
         });
 
     }
-
 }

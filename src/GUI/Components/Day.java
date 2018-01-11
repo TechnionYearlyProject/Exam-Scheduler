@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 public class Day extends VBox{
@@ -25,7 +26,7 @@ public class Day extends VBox{
     Label label;
     VBox tests;
     Boolean isBlocked;
-    public Day(LocalDate input_date) {
+    public Day(LocalDate input_date, List<Course> courses) {
         isBlocked = false;
         label = new Label(input_date.format(disp_date));
         label.setPadding(new Insets(2,0,0,2));
@@ -62,6 +63,11 @@ public class Day extends VBox{
         tests.setSpacing(1);
         tests.setStyle("-fx-background-color: white");
         tests.setAlignment(Pos.TOP_CENTER);
+
+         if (courses != null)
+             for (Course course:courses)
+                 this.addTest(course);
+
         this.setSpacing(2);
         this.getChildren().add(hbox);
         this.getChildren().add(tests);
