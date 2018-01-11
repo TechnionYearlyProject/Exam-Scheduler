@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -15,29 +16,42 @@ import javafx.util.Callback;
 import java.time.LocalDate;
 
 public class Manager extends HBox {
-    Moed A;
-    Moed B;
+    private Moed A;
+    private Moed B;
     public Manager() {
         A = new Moed("מועד א'");
         B = new Moed("מועד ב'");
         ObservableList<String> courseNames = FXCollections.observableArrayList(
-                "קומבי-234141",
-                "חישוביות-236343",
-                "חשבון אינפיניטסימלי 1מ'-104031",
-                "כימיה כללית-125001",
-                "הסתברות מ-094412",
-                "ביולוגיה 1-134058");
+                "קומבינטוריקה למדעי המחשב-234141",
+                "מערכות הפעלה-234123",
+                "מבוא לתכנות מערכות-234122",
+                "מבוא לחישוביות-236343",
+                "מבוא למדעי המחשב-234114",
+                "פרויקט שנתי א'-234311",
+                "מערכות ספרתיות-044145"   ,
+                "ארגון ותכנות המחשב-234118",
+                "הסתברות מ'-094412",
+                "אלגברה מודרנית ח'-104034",
+                "מבני נתונים 1-234218",
+                "תכן לוגי-234262",
+                "לוגיקה ותורת הקבוצות-234293",
+                "אלגוריתמים 1-234247",
+                "מבנה מחשבים ספרתיים-234267",
+                "אוטומטים ושפות פורמליות-236353",
+                "אלגוריתמים נומריים-234125",
+                "תורת הקומפילציה-236360",
+                "חשבון אינפיניטסימלי 2מ'-104032");
         ListView<String> courseListView = new ListView<>(courseNames);
-        VBox courseInterface = new VBox(courseListView);
+        Region r = new Region();
+        r.setMinHeight(150);
+        VBox courseInterface = new VBox(r, courseListView);
 
         courseListView.setCellFactory(param -> new CourseCell());
-        courseListView.setPrefWidth(395);
 
         this.getChildren().addAll(B,A,courseInterface);
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
     }
-
     public void cleanData() {
         this.getChildren().remove(0);
         B = new Moed("מועד ב'");
@@ -46,6 +60,4 @@ public class Manager extends HBox {
         A = new Moed("מועד א'");
         this.getChildren().add(1, A);
     }
-
-
 }
