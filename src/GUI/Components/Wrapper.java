@@ -8,11 +8,11 @@ import javafx.scene.control.ScrollPane;
 
 public class Wrapper extends ScrollPane {
     Toolbar toolbar;
-    VBox vbox;
+    Manager manager;
     public Wrapper() {
-        Manager manager = new Manager();
+        manager = new Manager();
         toolbar = new Toolbar(this);
-        vbox = new VBox();
+        VBox vbox = new VBox();
         vbox.setStyle("-fx-background-image: url(\"/background.png\");");
         vbox.getChildren().addAll(toolbar, manager);
         vbox.setAlignment(Pos.TOP_CENTER);
@@ -21,9 +21,14 @@ public class Wrapper extends ScrollPane {
         this.setContent(vbox);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
-    public void refreshManager() {
-        vbox.getChildren().remove(1);
-        vbox.getChildren().add(1, new Manager());
+    public void cleanData() {
+        manager.cleanData();
+    }
+/*
+    public void saveAllData() {
+        manager.A.schedule.
 
     }
+    */
 }
+

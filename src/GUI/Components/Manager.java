@@ -37,4 +37,15 @@ public class Manager extends HBox {
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
     }
+
+    public void cleanData() {
+        this.getChildren().remove(0);
+        B = new Moed("מועד ב'");
+        this.getChildren().add(0, B);
+        this.getChildren().remove(1);
+        A = new Moed("מועד א'");
+        this.getChildren().add(1, A);
+    }
+
+
 }
