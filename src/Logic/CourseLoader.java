@@ -11,14 +11,13 @@ public class CourseLoader {
     private Database db;
     private Map<Integer,Logic.Course> courses;//<courseID,Course>
     private Map<Integer,db.Course> dbCourses;
-    private Map<String, Semester> semesters;
+    private Semester semester;
     private ArrayList<Logic.Course> sortedCoursesList;
-    public CourseLoader(Database database, ConstraintList cL) {
-        this.db = database;
-        semesters = db.getSemesters();
+    public CourseLoader(Semester semester, ConstraintList cL) {
+        this.semester = semester;
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
-        dbCourses = db.getCourses();
+        dbCourses = semester.getCourseCollection().stream().collect(Collectors.toMap(x-> x.id, x -> x));
         //building Logic CourseList.
         buildLogicCourses();
         //updating conflictList for each Course.
@@ -40,15 +39,13 @@ public class CourseLoader {
     }
 
     private void setCoursesConflicts() {
-        for (Map.Entry<String, Semester> entry: semesters.entrySet()) {
-            String program = entry.getKey();
-            Semester s = entry.getValue();
-            List<Course> semesterCourses = s.getCourseCollection();
-            List<Pair<Integer,String>> l = semesterCourses.stream().map(a->new Pair<>(a.id,a.name)).collect(Collectors.toList());
-            for (Course c:s.getCourseCollection()) {
-                Logic.Course current = courses.get(c.id);
-                current.addConflictCourses(l);
-                //reference no need to re-Put.
+        for (db.Course course: dbCourses.values()) {
+            Map<String, Integer> programsForSemester = course.getPrograms();
+            for (String program: programsForSemester.keySet()){
+                List<Pair<Integer,String>> l =
+                        semester.getCoursesByProgramAndSemester(program, programsForSemester.get(program)).
+                                stream().map(a->new Pair<>(a.id,a.name)).collect(Collectors.toList());
+                courses.get(course.id).addConflictCourses(l);
             }
         }
     }
