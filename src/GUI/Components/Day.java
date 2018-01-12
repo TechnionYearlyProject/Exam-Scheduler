@@ -3,6 +3,7 @@ import Logic.Course;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
@@ -111,7 +112,7 @@ public class Day extends VBox{
     public void addTest(Course course) {
         if(!displayedCourseIDs.contains(course.getCourseID())){
             displayedCourseIDs.add(course.getCourseID());
-            tests.getChildren().add(new Test(course));
+            tests.getChildren().add(new Test(course,true));
         }
     }
 }

@@ -1,19 +1,21 @@
 package GUI.Components;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+
+import java.lang.reflect.Field;
+import java.time.Duration;
 
 public class CourseCell extends ListCell<String> {
     private HBox hbox = new HBox();
@@ -23,6 +25,7 @@ public class CourseCell extends ListCell<String> {
     private Button button = new Button("(>)");
     private String lastItem;
 
+
     public CourseCell() {
         super();
         Pane pane = new Pane();
@@ -30,8 +33,6 @@ public class CourseCell extends ListCell<String> {
         hbox.getChildren().addAll(checkExamNeeded, pane, courseNum, courseName);
         HBox.setHgrow(pane, Priority.ALWAYS);
         checkExamNeeded.setOnMouseClicked(event-> System.out.println("here"));
-        button.setOnAction(event ->
-                System.out.println(lastItem + " : " + event));
         hbox.setOnDragDetected(event->{
             Dragboard db = hbox.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
