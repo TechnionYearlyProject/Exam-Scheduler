@@ -43,7 +43,7 @@ public class DbValidLoadingTest {
     }
 
     @Test
-    public void loadInexistantSemesterTest() {
+    public void loadValidDatabaseTest() {
         db.baseDirectory = baseDir + db.sep + "valid_db";
         try {
             db.loadSemester(2017, "winter");
