@@ -1,5 +1,6 @@
-package db;
+package db_test;
 
+import db.Constraint;
 import db.Course;
 import db.Database;
 import db.Semester;
@@ -26,7 +27,7 @@ public class DbValidLoadingTest {
     @Before
     public void initDb() {
         db = new Database();
-        baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db";
+        baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
         hourParser = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     }
