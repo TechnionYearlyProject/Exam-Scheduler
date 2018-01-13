@@ -15,6 +15,8 @@ import java.util.HashMap;
 
 public class Moed extends VBox{
     Schedule schedule;
+    Picker picker1;
+    Picker picker2;
     Boolean start_set;
     Boolean end_set;
     public Moed(String title) {
@@ -25,8 +27,8 @@ public class Moed extends VBox{
         Label label = new Label(title);
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 14pt; -fx-underline: true;");
 
-        Picker picker1 = new Picker("תאריך התחלה:");
-        Picker picker2 = new Picker("תאריך סיום:");
+        picker1 = new Picker("תאריך התחלה:");
+        picker2 = new Picker("תאריך סיום:");
         if (title == "מועד א'")
             schedule = new Schedule(LocalDate.now(),LocalDate.now().plusDays(30));
         else
@@ -38,8 +40,7 @@ public class Moed extends VBox{
             picker1.setDate(picker1.getPicker().getValue());
             if (start_set && end_set) {
                 if (!picker1.getPicker().getValue().isBefore(picker2.getPicker().getValue())) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "תאריכים לא חוקיים", ButtonType.OK);
-                    alert.showAndWait();
+                    AlertBox alert = new AlertBox(AlertType.ERROR, "תאריכים לא חוקיים" + "\n" + "אנא הזינו שוב תאריכים", null);
                 }
                 else {
                     this.getChildren().remove(3);
@@ -53,8 +54,7 @@ public class Moed extends VBox{
             picker2.setDate(picker2.getPicker().getValue());
             if (start_set && end_set) {
                 if (!picker1.getPicker().getValue().isBefore(picker2.getPicker().getValue())) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "תאריכים לא חוקיים", ButtonType.OK);
-                    alert.showAndWait();
+                    AlertBox alert = new AlertBox(AlertType.ERROR, "תאריכים לא חוקיים" + "\n" + "אנא הזינו שוב תאריכים", null);
                 }
                 else {
                     this.getChildren().remove(3);

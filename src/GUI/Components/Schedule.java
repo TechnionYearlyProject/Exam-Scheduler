@@ -49,16 +49,16 @@ public class Schedule extends GridPane{
 
         for (int i = 5; i >= 0; i--, current = current.plusDays(1)) {
             if (current.isBefore(input_start)) {
-                Day day = new Day(current);
+                Day day = new Day(current, null);
                 day.Disable();
                 this.add(day, i, 1);
             } else {
                 if (!current.isAfter(input_finish)) {
-                    Day day = new Day(current);
+                    Day day = new Day(current,null);
                     days.put(current, day);
                     this.add(day, i, 1);
                 } else {
-                    Day day = new Day(current);
+                    Day day = new Day(current,null);
                     day.Disable();
                     this.add(day, i, 1);
                 }
@@ -70,13 +70,13 @@ public class Schedule extends GridPane{
         {
             for (int j=5;j>=0;j--) {
                 if (current.isAfter(input_finish)) {
-                    Day day = new Day(current);
+                    Day day = new Day(current,null);
                     day.Disable();
                     this.add(day, j, i);
                     current = current.plusDays(1);
                     continue;
                 }
-                Day day = new Day(current);
+                Day day = new Day(current,null);
                 days.put(current,day);
                 this.add(day,j,i);
                 current = current.plusDays(1);

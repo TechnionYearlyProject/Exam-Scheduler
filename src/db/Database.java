@@ -519,7 +519,7 @@ public class Database {
         }
     }
 
-    public Semester createSemester(int year, String sem) throws SemesterAlreadyExist, InvalidDatabase {
+    public Semester createSemester(int year, String sem) throws SemesterAlreadyExist {
         String semesterName = year + "_" + sem;
         if (semesters.containsKey(semesterName)) {
             throw new SemesterAlreadyExist();
@@ -536,12 +536,23 @@ public class Database {
         Semester semester = new Semester();
         if (pathList.size() > 0) {
             Semester baseSemester = null;
+            boolean invalid = false;
             try {
                 baseSemester = loadSemester(pathList.get(0));
+            } catch (InvalidDatabase e) {
+                invalid = true;
             } catch (SemesterNotFound | SemesterFileMissing ignored) {}
-            assert baseSemester != null; // Must exist since pathList contains at least one element
-            List<String> programs = baseSemester.getStudyProgramCollection();
-            List<Course> courses = baseSemester.getCourseCollection();
+            List<String> programs;
+            List<Course> courses;
+            if (invalid) {
+                // Last semester is invalid, not importing from him
+                programs = new ArrayList<>();
+                courses = new ArrayList<>();
+            } else {
+                assert baseSemester != null;
+                programs = baseSemester.getStudyProgramCollection();
+                courses = baseSemester.getCourseCollection();
+            }
             for (String program: programs) {
                 try {
                     semester.addStudyProgram(program);

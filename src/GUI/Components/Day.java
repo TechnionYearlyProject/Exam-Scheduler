@@ -3,6 +3,7 @@ import Logic.Course;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
@@ -16,16 +17,19 @@ import javafx.scene.text.Font;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Day extends VBox{
-    static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
-    HBox hbox;
-    Label lock_label;
-    Label label;
-    VBox tests;
-    Boolean isBlocked;
-    public Day(LocalDate input_date) {
+    private static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
+    private HBox hbox;
+    private Label lock_label;
+    private Label label;
+    private VBox tests;
+    private Boolean isBlocked;
+    private List<Integer> displayedCourseIDs = new LinkedList<>();
+    public Day(LocalDate input_date, List<Course> courses) {
         isBlocked = false;
         label = new Label(input_date.format(disp_date));
         label.setPadding(new Insets(2,0,0,2));
@@ -44,17 +48,14 @@ public class Day extends VBox{
         lock_label.setPadding(new Insets(3,2,0,0));
         lock_label.setVisible(false);
 
-        lock_label.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                if (mouse_event.getButton()!= MouseButton.PRIMARY)
-                    return;
-                if (isBlocked)
-                    Enable();
-                else
-                    Block();
+        lock_label.addEventFilter(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton()!= MouseButton.PRIMARY)
+                return;
+            if (isBlocked)
+                Enable();
+            else
+                Block();
 
-            }
         });
         hbox = new HBox();
         hbox.getChildren().addAll(label,lock_label);
@@ -62,6 +63,11 @@ public class Day extends VBox{
         tests.setSpacing(1);
         tests.setStyle("-fx-background-color: white");
         tests.setAlignment(Pos.TOP_CENTER);
+
+         if (courses != null)
+             for (Course course:courses)
+                 this.addTest(course);
+
         this.setSpacing(2);
         this.getChildren().add(hbox);
         this.getChildren().add(tests);
@@ -69,43 +75,30 @@ public class Day extends VBox{
         this.setPrefHeight(100);
         this.setStyle("-fx-background-color: white");
 
-        //this.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> addTest(new Course("קומבי", 234123, true, 3.0 )));
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
         this.setOnDragDropped(event->{
-            /* data dropped */
-            System.out.println("onDragDropped");
-            /* if there is a string data on dragboard, read it and use it */
             Dragboard db = event.getDragboard();
             boolean success = false;
-            if (db.hasString()) {
-                //label.setText(db.getString());
+            if (db.hasString() && !isBlocked) {
                 String courseName = db.getString().split("_")[0];
                 String courseNum = db.getString().split("_")[1];
                 addTest(new Course(courseName, Integer.parseInt(courseNum), true, 3.0 ));
                 success = true;
             }
-            /*
-             * let the source know whether the string was successfully
-             * transferred and used
-             */
             event.setDropCompleted(success);
-
             event.consume();
         });
-        this.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                if (!isBlocked)
-                    lock_label.setVisible(false);
-            }
+        this.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event -> {
+            if (!isBlocked)
+                lock_label.setVisible(false);
         });
     }
-    public void Block() {
+    private void Block() {
         this.setStyle("-fx-background-color: #ECEFF1");
         tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
     }
-    public void Enable() {
+    private void Enable() {
         this.setStyle("-fx-background-color: white");
         tests.setStyle("-fx-background-color: white");
         isBlocked = false;
@@ -117,6 +110,9 @@ public class Day extends VBox{
         this.setDisable(true);
     }
     public void addTest(Course course) {
-        tests.getChildren().add(new Test(course));
+        if(!displayedCourseIDs.contains(course.getCourseID())){
+            displayedCourseIDs.add(course.getCourseID());
+            tests.getChildren().add(new Test(course,true));
+        }
     }
 }

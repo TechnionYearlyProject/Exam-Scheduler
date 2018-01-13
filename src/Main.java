@@ -15,10 +15,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Scene main_window = new Scene(new Wrapper());
         main_window.setOnDragOver(event -> {
-            /* data is dragged over the target */
-            System.out.println("onDragOver");
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-
             event.consume();
         });
         primaryStage.setTitle("Exam Scheduler");

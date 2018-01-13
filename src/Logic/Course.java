@@ -1,5 +1,6 @@
 package Logic;
 
+import Logic.Exceptions.IllegalDaysBefore;
 import db.Constraint;
 import javafx.util.Pair;
 
@@ -8,10 +9,10 @@ import java.util.*;
 import static java.lang.Math.floor;
 
 public class Course implements Comparable<Course>{
-    private int courseID,daysBefore;
+    private int daysBefore, courseID;
     private String courseName;
     private Map<Integer,String> conflictCourses;
-    private boolean isLast, isFirst, isRequired;
+    private boolean isLast, isFirst, isRequired, hasExam;
     private double creditPoints;
     private ArrayList<Constraint> constraints;
 
@@ -28,12 +29,13 @@ public class Course implements Comparable<Course>{
         creditPoints = o.creditPoints;
         constraints = new ArrayList<>(o.getConstraints());
         conflictCourses = new HashMap<>(o.getConflictCourses());
+        hasExam = o.hasExam;
     }
 
     /*
      * number of credit points will be added here..
      */
-    public Course(String courseName, int courseID, boolean isRequired, double cPoints){
+    public Course(String courseName, Integer courseID, boolean isRequired, double cPoints) {
         conflictCourses = new HashMap<>();
         constraints = new ArrayList<>();
         this.courseID = courseID;
@@ -43,6 +45,7 @@ public class Course implements Comparable<Course>{
         this.isRequired = isRequired;
         this.creditPoints = cPoints;
         this.daysBefore = (int)floor(creditPoints);
+        this.hasExam = true;
     }
 
     /*
@@ -79,7 +82,7 @@ public class Course implements Comparable<Course>{
      * @Param courseID: the ID of the course to be defined as conflict.
      * @Param courseName: the name of the course to be defined as conflict.
      */
-    void addConflictCourse(int courseID, String courseName){
+    void addConflictCourse(Integer courseID, String courseName){
         if(this.courseID == courseID){
             return;
         }
@@ -93,7 +96,7 @@ public class Course implements Comparable<Course>{
      * Remove the course from the conflict courses list. if there is no course with such id, the list won't be effected.
      * @Param c0: the id of the course to remove.
      */
-    void removeConflictCourse(int c){
+    void removeConflictCourse(Integer c){
         conflictCourses.remove(c);
     }
 
@@ -112,7 +115,7 @@ public class Course implements Comparable<Course>{
      * get the course id.
      * @return: id of the course.
      */
-    public int getCourseID() {
+    public Integer getCourseID() {
         return courseID;
     }
 
@@ -125,9 +128,9 @@ public class Course implements Comparable<Course>{
     }
 
 
-    void setDaysBefore(int daysBefore) {
+    void setDaysBefore(int daysBefore) throws IllegalDaysBefore {
         if(daysBefore < 1){
-            return;//TODO? MAYBE THROW EXCEPTION
+            throw new IllegalDaysBefore();
         }
         this.daysBefore = daysBefore;
     }
@@ -135,31 +138,38 @@ public class Course implements Comparable<Course>{
         return daysBefore;
     }
 
-    void setAsLast(boolean isLast){
-        if(isLast){this.isFirst = false;} //Course can't be as last and as first at the same time
-        this.isLast = isLast;
+
+    void setAsLast(boolean isLast) {
+        if (isLast) {
+            this.isFirst = false;
+        } //Course can't be as last and as first at the same time
     }
-    boolean isLast(){
+
+    public void setHasExam(boolean t){
+        hasExam = t;
+    }
+
+    public boolean hasExam(){
+        return hasExam;
+    }
+    public boolean isLast(){
         return isLast;
     }
 
-    void setAsFirst(boolean isFirst){
-        if(isFirst){this.isLast = false;} //Course can't be as last and as first at the same time
-        this.isFirst = isFirst;
+    void setAsFirst(boolean isFirst) {
+        if (isFirst) {
+            this.isLast = false;
+        } //Course can't be as last and as first at the same time
     }
-    boolean isFirst(){
+    public boolean isFirst(){
         return isFirst;
     }
 
     void setAsRequired(boolean isRequired){this.isRequired = isRequired;}
-    boolean isRequired(){return isRequired;}
-
-    double getCreditPoints(){
-        return creditPoints;
-    }
+    public boolean isRequired(){return isRequired;}
 
     Map<Integer,String> getConflictCourses(){
-       return new HashMap<>(conflictCourses);
+        return new HashMap<>(conflictCourses);
 
     }
 
@@ -184,7 +194,7 @@ public class Course implements Comparable<Course>{
         if (o == null) {
             return false;
         }
-        return this == o || (o instanceof Course && courseID == ((Course)o).courseID);
+        return this == o || (o instanceof Course && courseID == (((Course) o).courseID));
     }
 
     @Override
@@ -206,7 +216,7 @@ public class Course implements Comparable<Course>{
         } else if (getNumOfConflictCourses() < o.getNumOfConflictCourses()) {
             return 1;
         } else {
-            return Integer.compare(o.daysBefore, daysBefore);
+            return Integer.compare(o.daysBefore,daysBefore);
         }
     }
 }

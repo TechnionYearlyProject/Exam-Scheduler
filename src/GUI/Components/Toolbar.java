@@ -30,7 +30,7 @@ public class Toolbar extends HBox{
 
         CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png",null);
         CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png",()->cleanFunction());
-        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",null);
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",()->saveFunction());
         CustomButton export_button = new CustomButton("ייצוא", "/export_icon.png",null);
 
         //this.setPadding(new Insets(10, 10, 10, 10));
@@ -40,7 +40,11 @@ public class Toolbar extends HBox{
     }
     public void cleanFunction()
     {
-        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->parent.refreshManager());
+        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->parent.cleanData());
+    }
 
+    public void saveFunction()
+    {
+       // AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את המצב הנוכחי?", ()->parent.saveAllData());
     }
 }
