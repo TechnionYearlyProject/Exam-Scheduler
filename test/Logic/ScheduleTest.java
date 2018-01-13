@@ -79,7 +79,7 @@ public class ScheduleTest {
 
     @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        schedule.produceSchedule(semester, null);
+        schedule.produceSchedule(semester, null, null);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(course));
