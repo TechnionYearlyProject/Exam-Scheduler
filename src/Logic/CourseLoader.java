@@ -45,7 +45,8 @@ public class CourseLoader {
                 List<Pair<Integer,String>> l =
                         semester.getCoursesByProgramAndSemester(program, programsForSemester.get(program)).
                                 stream().map(a->new Pair<>(a.id,a.name)).collect(Collectors.toList());
-                courses.get(course.id).addConflictCourses(l);
+                courses.get(course.id).addConflictCourses(l); //we iterate over db.Courses but need to add conflict
+                                                              //to Logic.Course
             }
         }
     }

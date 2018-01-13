@@ -136,6 +136,7 @@ public class Course implements Comparable<Course>{
     }
 
     void setAsLast(boolean isLast){
+        if(isLast){this.isFirst = false;} //Course can't be as last and as first at the same time
         this.isLast = isLast;
     }
     boolean isLast(){
@@ -143,6 +144,7 @@ public class Course implements Comparable<Course>{
     }
 
     void setAsFirst(boolean isFirst){
+        if(isFirst){this.isLast = false;} //Course can't be as last and as first at the same time
         this.isFirst = isFirst;
     }
     boolean isFirst(){
