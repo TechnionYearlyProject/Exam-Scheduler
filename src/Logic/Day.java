@@ -27,4 +27,14 @@ public class Day {
         }
         return size;
     }
+
+    public ArrayList<Integer> getCoursesScheduledToTheDay(){
+        ArrayList<Integer> coursesScheduledToTheDay = new ArrayList<>();
+        for (Integer courseId: courses.keySet()){
+            if(courses.get(courseId) == 0){
+                coursesScheduledToTheDay.add(courseId);
+            }
+        }
+        return coursesScheduledToTheDay;
+    }
 }

@@ -138,6 +138,14 @@ public class Course implements Comparable<Course>{
         return daysBefore;
     }
 
+
+    void setAsLast(boolean isLast) {
+        if (isLast) {
+            this.isFirst = false;
+        } //Course can't be as last and as first at the same time
+        this.isLast = isLast;
+    }
+
     public void setHasExam(boolean t){
         hasExam = t;
     }
@@ -145,15 +153,14 @@ public class Course implements Comparable<Course>{
     public boolean hasExam(){
         return hasExam;
     }
-
-    public void setAsLast(boolean isLast){
-        this.isLast = isLast;
-    }
     public boolean isLast(){
         return isLast;
     }
 
-    public void setAsFirst(boolean isFirst){
+    void setAsFirst(boolean isFirst) {
+        if (isFirst) {
+            this.isLast = false;
+        } //Course can't be as last and as first at the same time
         this.isFirst = isFirst;
     }
     public boolean isFirst(){
