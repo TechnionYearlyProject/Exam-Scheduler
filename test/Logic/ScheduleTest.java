@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.junit.Assert.*;
 
@@ -15,28 +16,34 @@ public class ScheduleTest {
     Database db;
     CourseLoader loader;
     Semester semester;
-    Schedule schedule;
+    Schedule moedA;
+    Schedule moedB;
 
-    final static int EXAMS_DAYS = 23;
+    final static int EXAM_DAYS_MOED_A = 23;
+    final static int EXAM_DAYS_MOED_B = 16;
     @Before
     public void setUp() throws Exception {
         db = new Database();
         db.loadSemester(2017, "winter_test");
         semester = db.getSemester(2017, "winter_test");
         loader = new CourseLoader(semester, null);
-        schedule = new Schedule(LocalDate.of(2018, 1, 29), LocalDate.of(2018, 2, 23), null);
+        moedA = new Schedule(LocalDate.of(2018, 1, 29), LocalDate.of(2018, 2, 23), null);
+        HashSet<LocalDate> occupied = new HashSet<>();
+        occupied.add(LocalDate.of(2018, 3, 1));
+        occupied.add(LocalDate.of(2018, 3, 2));
+        moedB = new Schedule(LocalDate.of(2018, 2, 27), LocalDate.of(2018, 3, 19), occupied, 18);
     }
 
     @Test
     public void getSize() throws Exception {
-        System.out.println(schedule.getSize());
-        assert(schedule.getSize() == EXAMS_DAYS);
+        assert(moedA.getSize() == EXAM_DAYS_MOED_A);
+        assert(moedB.getSize() == EXAM_DAYS_MOED_B);
     }
 
     @Test
     public void getSchedulableDays() throws Exception {
-        ArrayList<Day> days = schedule.getSchedulableDays();
-        assert(days.size() == EXAMS_DAYS);
+        ArrayList<Day> days = moedA.getSchedulableDays();
+        assert(days.size() == EXAM_DAYS_MOED_A);
         LocalDate date = LocalDate.of(2018, 1, 29);
         while(!(date.equals(LocalDate.of(2018, 2, 23)))){
             if(date.getDayOfWeek()== DayOfWeek.SATURDAY){
@@ -60,17 +67,17 @@ public class ScheduleTest {
     @Test
     public void assignCourse() throws Exception {
         for (Course course: loader.getSortedCourses()){
-            schedule.assignCourse(course, course.getCourseID() % EXAMS_DAYS);
+            moedA.assignCourse(course, course.getCourseID() % EXAM_DAYS_MOED_A);
         }
         for (Course course: loader.getSortedCourses()){
             int counter = -course.getDaysBefore();
-            int index = counter + (course.getCourseID() % EXAMS_DAYS);
+            int index = counter + (course.getCourseID() % EXAM_DAYS_MOED_A);
             if (index < 0){
                 counter += (-index);
                 index = 0;
             }
-            while (index < EXAMS_DAYS){
-                assert(schedule.getSchedulableDays().get(index).getDistance(course.getCourseID()) == counter);
+            while (index < EXAM_DAYS_MOED_A){
+                assert(moedA.getSchedulableDays().get(index).getDistance(course.getCourseID()) == counter);
                 index ++;
                 counter++;
             }
@@ -79,20 +86,22 @@ public class ScheduleTest {
 
     @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        schedule.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_A), null);
+        moedA.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_A), null);
         for (Course course: loader.getSortedCourses()){
-            assert(isCourseInSchedule(course.getCourseID()));
-            assert(isCourseConflictsRequirementsMet(course));
+            assert(isCourseInSchedule(moedA, course.getCourseID()));
+            assert(isCourseConflictsRequirementsMet(moedA, course, true));
+        }
+        moedB.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_B), moedA);
+        for (Course course: loader.getSortedCourses()){
+            assert(isCourseInSchedule(moedB, course.getCourseID()));
+            assert(isCourseConflictsRequirementsMet(moedB, course, false));
         }
         //Print schedule (just for interest)
-        for(Day day: schedule.getSchedulableDays()){
-            System.out.println("============  Day " + day.getDate().toString());
-            for (Integer courseId: day.courses.keySet()){
-                if(day.courses.get(courseId) == 0) {
-                    System.out.println(courseId);
-                }
-            }
-        }
+        System.out.println("============ MOED A ============");
+        printSchedule(moedA);
+        System.out.println("============ MOED B ============");
+        printSchedule(moedB);
+
     }
 
     @Test
@@ -100,7 +109,7 @@ public class ScheduleTest {
         //TODO: assert that producing schedule with illegal data throws exception
     }
 
-    private boolean isCourseInSchedule (int courseId) {
+    private boolean isCourseInSchedule (Schedule schedule, int courseId) {
         for (Day day: schedule.getSchedulableDays()){
             Integer distance = day.getDistance(courseId);
             if (distance == null){
@@ -113,7 +122,7 @@ public class ScheduleTest {
         }
         return false; //If got here- exam is not in schedule
     }
-    private boolean isCourseConflictsRequirementsMet(Course course){
+    private boolean isCourseConflictsRequirementsMet(Schedule schedule, Course course, boolean isMoedA){
         for (Day day: schedule.getSchedulableDays()){
             Integer distance = day.getDistance(course.getCourseID());
             if (distance == null || distance >= 0){ //As checks are symmetric,
@@ -123,14 +132,25 @@ public class ScheduleTest {
                     Integer conflictDistance = day.getDistance(conflictId);
                     //as we write negative distance only for days we need for preparation, it is iilegal to
                     //conflict courses to have negative distance in same day
-                    if (conflictDistance != null && (conflictDistance <= 0 || (conflictDistance - distance < course.getDaysBefore()))){
+                    if (conflictDistance != null && (conflictDistance <= 0 || (isMoedA && conflictDistance - distance < course.getDaysBefore()))){
                         System.out.println("The course: " + course.getCourseID() + " conflicts with: " + conflictId + " distances "+
-                        distance + ": " + conflictDistance);
+                        distance + ": " + conflictDistance + " days for prepare:" + course.getDaysBefore());
                         return false;
                     }
                 }
             }
         }
         return true;
+    }
+
+    private void printSchedule(Schedule schedule){
+        for(Day day: schedule.getSchedulableDays()){
+            System.out.println("============  Day " + day.getDate().toString());
+            for (Integer courseId: day.courses.keySet()){
+                if(day.courses.get(courseId) == 0) {
+                    System.out.println(courseId);
+                }
+            }
+        }
     }
 }
