@@ -17,6 +17,7 @@ public class Course implements Comparable<Course>{
     private Set<Pair<String, Integer>> programs;
     private ArrayList<Constraint> goodConstraints;
     private ArrayList<Constraint> badConstraints;
+    private boolean assigned;
 
     /*
      * Logic.Course copy c0'tor performing deepCopy.
@@ -33,6 +34,7 @@ public class Course implements Comparable<Course>{
         conflictCourses = new HashMap<>(o.getConflictCourses());
         goodConstraints = new ArrayList<>(o.goodConstraints);
         badConstraints = new ArrayList<>(o.badConstraints);
+        assigned = o.assigned;
     }
 
     /*
@@ -51,6 +53,7 @@ public class Course implements Comparable<Course>{
         this.programs = new HashSet<>();
         goodConstraints = new ArrayList<>();
         badConstraints = new ArrayList<>();
+        assigned = false;
     }
 
     public Course(String courseName, Integer courseID, boolean isRequired, double cPoints, Map<String, Integer> programs) {
@@ -263,6 +266,18 @@ public class Course implements Comparable<Course>{
         } else {
             return Integer.compare(o.daysBefore,daysBefore);
         }
+    }
+
+    public void assign(){
+        assigned = true;
+    }
+
+    public void unAssign(){
+        assigned = false;
+    }
+
+    public boolean isAssigned() {
+        return assigned;
     }
 
     public Set<Pair<String, Integer>> getPrograms() {
