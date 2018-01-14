@@ -24,14 +24,20 @@ public class DbSerializationTest {
     public void initDb() {
         db = new Database();
         db.baseDirectory = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test" +
-                db.sep + "empty_db";
+                db.sep + "empty_db_for_serialization";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     @After
     public void deleteDb() {
         File dir = new File(db.baseDirectory);
+        if (dir.listFiles() == null) {
+            return;
+        }
         for (File sem: dir.listFiles()) {
+            if (sem.listFiles() == null) {
+                continue;
+            }
             for (File xml_file: sem.listFiles()) {
                 xml_file.delete();
             }
