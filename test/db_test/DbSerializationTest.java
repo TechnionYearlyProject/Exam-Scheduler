@@ -35,6 +35,9 @@ public class DbSerializationTest {
             return;
         }
         for (File sem: dir.listFiles()) {
+            if (sem.getName().endsWith("dummy.txt")) {
+                continue;
+            }
             if (sem.listFiles() == null) {
                 continue;
             }
