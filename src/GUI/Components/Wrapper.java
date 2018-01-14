@@ -1,5 +1,6 @@
 package GUI.Components;
 
+import db.Semester;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
@@ -23,6 +24,15 @@ public class Wrapper extends ScrollPane {
     }
     public void cleanData() {
         manager.cleanData();
+    }
+    public void updateSchdule(Integer moed, Logic.Schedule schedule, Semester semester) {
+        if (moed == 1) {
+            manager.A.schedule.updateSchedule(schedule,semester);
+        }
+        else {
+            manager.B.schedule.updateSchedule(schedule,semester);
+        }
+
     }
 /*
     public void saveAllData() {
