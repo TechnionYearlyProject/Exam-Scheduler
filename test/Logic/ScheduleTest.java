@@ -133,8 +133,6 @@ public class ScheduleTest {
                     //as we write negative distance only for days we need for preparation, it is iilegal to
                     //conflict courses to have negative distance in same day
                     if (conflictDistance != null && (conflictDistance <= 0 || (isMoedA && conflictDistance - distance < course.getDaysBefore()))){
-                        System.out.println("The course: " + course.getCourseID() + " conflicts with: " + conflictId + " distances "+
-                        distance + ": " + conflictDistance + " days for prepare:" + course.getDaysBefore());
                         return false;
                     }
                 }

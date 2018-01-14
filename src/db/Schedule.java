@@ -2,7 +2,6 @@ package db;
 
 import db.exception.DateOutOfSchedule;
 import db.exception.InvalidSchedule;
-import db.exception.ScheduleDateAlreadyTaken;
 import db.exception.UninitializedSchedule;
 
 import java.util.*;

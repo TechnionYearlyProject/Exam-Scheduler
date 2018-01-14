@@ -1,5 +1,9 @@
 package Logic;
+import db.Constraint;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class Day {
@@ -39,18 +43,22 @@ public class Day {
     }
 
     public boolean canBeAssigned (Course course){
-        boolean canBeAssigned = true;
         for (int course_id: course.getConflictCourses().keySet()){
             Integer distance = this.getDistance(course_id);
             if (distance == null){
                 continue;
             }
             if (distance <= 0 || course.getDaysBefore() >= distance){ //A student has not time to prepare to any of two courses
-                canBeAssigned = false;
-                break;
+                return false;
             }
         }
-        return canBeAssigned;
+        for (Constraint constraint: course.getBadConstraints()){
+            if (LocalDateTime.ofInstant(constraint.start.toInstant(), ZoneId.systemDefault()).toLocalDate().equals(getDate())){
+                System.out.println(course.getCourseID());
+                return false;
+            }
+        }
+        return true;
     }
     public void deleteCourse(int courseId){
         courses.remove(courseId);

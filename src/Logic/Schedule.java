@@ -1,6 +1,7 @@
 package Logic;
 import Logic.Exceptions.IllegalDaysBefore;
 import Logic.Exceptions.IllegalRange;
+import db.Constraint;
 import db.ConstraintList;
 import db.Database;
 import db.Semester;
@@ -240,6 +241,7 @@ public class Schedule {
                         }
                     }
                     if (!assigned) {
+                        System.out.println(course.getDaysBefore());
                         throw new CanNotBeScheduledException(courseId);
                     }
                 }

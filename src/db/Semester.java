@@ -88,6 +88,13 @@ public class Semester {
         courses.get(courseId).removeStudyProgram(program);
     }
 
+    public Course getCourse(int courseId) throws CourseUnknown {
+        if (!courses.containsKey(courseId)) {
+            throw new CourseUnknown();
+        }
+        return courses.get(courseId);
+    }
+
     public List<Course> getCourseCollection() {
         List<Course> list = new ArrayList<>();
         for (Course course: courses.values()) {

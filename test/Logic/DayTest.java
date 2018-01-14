@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -66,6 +67,20 @@ public class DayTest {
             day.insertCourse(course.id, 0);
         }
         assert(day.getNumOfCourses() == semester.getCourseCollection().size());
+    }
+
+    @Test
+    public void getCoursesScheduledToTheDay() throws Exception {
+        for (Course course: semester.getCourseCollection()) {
+            day.insertCourse(course.id, 0);
+        }
+        List<Integer> scheduledCourses = day.getCoursesScheduledToTheDay();
+        for (Integer courseId: scheduledCourses){
+            assert(semester.getCourseCollection().stream().filter(c->c.id == courseId).findFirst().get().id == courseId);
+        }
+        for (Course course: semester.getCourseCollection()) {
+            assert(scheduledCourses.stream().filter(id-> id.equals(course.id)).findFirst().get().equals(course.id));
+        }
     }
 
 }
