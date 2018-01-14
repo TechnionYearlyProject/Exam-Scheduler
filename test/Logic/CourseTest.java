@@ -19,7 +19,7 @@ public class CourseTest {
     Database db;
     Semester semester;
     Course c1,c2,c3,c4,c5;
-//    Calendar ca1,ca2,ca3,ca4,ca5,ca6,ca7,ca8;
+    Calendar ca1,ca2,ca3,ca4,ca5,ca6,ca7,ca8;
 
     @Before
     public void setUp() throws Exception {
@@ -33,24 +33,24 @@ public class CourseTest {
         semester = db.getSemester(2017, "winter_test");
     }
 
-//    private void setCalendar(){
-//        ca1 = new GregorianCalendar();
-//        ca1.set(2018,Calendar.JANUARY,14);
-//        ca2 = new GregorianCalendar();
-//        ca2.set(2018,Calendar.JANUARY,15);
-//        ca3 = new GregorianCalendar();
-//        ca3.set(2018,Calendar.JANUARY,17);
-//        ca4 = new GregorianCalendar();
-//        ca4.set(2018,Calendar.JANUARY,20);
-//        ca5 = new GregorianCalendar();
-//        ca5.set(2018,Calendar.FEBRUARY,2);
-//        ca6 = new GregorianCalendar();
-//        ca6.set(2018,Calendar.FEBRUARY,3);
-//        ca7 = new GregorianCalendar();
-//        ca7.set(2018,Calendar.JANUARY,2);
-//        ca8 = new GregorianCalendar();
-//        ca8.set(2018,Calendar.JANUARY,5);
-//    }
+    private void setCalendar(){
+        ca1 = new GregorianCalendar();
+        ca1.set(2018,Calendar.JANUARY,14);
+        ca2 = new GregorianCalendar();
+        ca2.set(2018,Calendar.JANUARY,15);
+        ca3 = new GregorianCalendar();
+        ca3.set(2018,Calendar.JANUARY,17);
+        ca4 = new GregorianCalendar();
+        ca4.set(2018,Calendar.JANUARY,20);
+        ca5 = new GregorianCalendar();
+        ca5.set(2018,Calendar.FEBRUARY,2);
+        ca6 = new GregorianCalendar();
+        ca6.set(2018,Calendar.FEBRUARY,3);
+        ca7 = new GregorianCalendar();
+        ca7.set(2018,Calendar.JANUARY,2);
+        ca8 = new GregorianCalendar();
+        ca8.set(2018,Calendar.JANUARY,5);
+    }
 
     @Test
     public void addConstraint() throws Exception {
@@ -102,6 +102,11 @@ public class CourseTest {
         assertEquals(1,c1.getNumOfConflictCourses());
         c1.addConflictCourse(c1.getCourseID(),c1.getCourseName());
         assertEquals(1,c1.getNumOfConflictCourses());
+    }
+
+    @Test
+    public void verifyCreditPoints(){
+        assertTrue(4==c1.getDaysBefore());
     }
 
     @Test
@@ -163,7 +168,7 @@ public class CourseTest {
 
     @Test
     public void getDaysBefore() throws Exception {
-        assertTrue( 3 == c1.getDaysBefore());
+        assertTrue( 4 == c1.getDaysBefore());
     }
 
     @Test

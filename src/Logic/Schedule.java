@@ -251,7 +251,7 @@ public class Schedule {
     //Produce schedule which has not overlapped conflicts
     private void produceLegalSchedule(List<Course> courses, Schedule moedA) throws CanNotBeScheduledException{
         for (Course course: courses){
-            if (course.getConstraints().size() != 0){
+            if (course.getGoodConstraints().size() != 0){//was getConstraints().
                 continue;
             }
             int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
@@ -265,7 +265,7 @@ public class Schedule {
 
     private void optimizeSchedule(List<Course> courses, Schedule moedA){
         for (Course course: courses){
-            if (course.getConstraints().size() != 0){
+            if (course.getGoodConstraints().size() != 0){//was getConstraints().
                 continue; //Courses with constraints have to be scheduled where is required by constraint
             }
             boolean scheduled = false;
