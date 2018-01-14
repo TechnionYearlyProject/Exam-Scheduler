@@ -1,11 +1,15 @@
 package Logic;
+import Logic.Exceptions.IllegalDaysBefore;
 import Logic.Exceptions.IllegalRange;
 import db.ConstraintList;
 import db.Database;
 import db.Semester;
+import javafx.util.Pair;
 
 import java.time.LocalDate;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.List;
 import java.util.LinkedList;
@@ -17,7 +21,84 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class Schedule {
     ArrayList<Day> schedulable_days;
     private int gap; //This parameter is relevant only for moed B schedule, and shows how many days should be between exams on same course
-    public class CanNotBeScheduledException extends Exception{};
+    public class CanNotBeScheduledException extends Exception{
+        public CanNotBeScheduledException(int courseId){
+            super(String.valueOf(courseId));
+        }
+    };
+    private ScheduleHeuristic heuristic;
+    private class ScheduleHeuristic {
+        private HashMap<Pair<String, Integer>, ArrayList<Integer>> specializationMapping;
+        public ScheduleHeuristic(){
+            specializationMapping = new HashMap<>();
+        }
+        public int findIndexOfBestDayForScheduling(Course course, int beginFrom){
+            int bestIndex = -1;
+            int heuristicValue = schedulable_days.size() * (course.getPrograms().size() + 1);
+            int currentValue = getHeuristicValue(course);
+            for (int i = beginFrom; i < schedulable_days.size(); i++){
+                if (!schedulable_days.get(i).canBeAssigned(course)){
+                    continue;
+                }
+                int newHeuristicValue = currentValue;
+                for (Pair<String, Integer> program: course.getPrograms()){
+                    ArrayList<Integer> days = specializationMapping.get(program);
+                    if (days == null){
+                        days = new ArrayList<>(schedulable_days.size());
+                        for (int k = 0; k < schedulable_days.size(); k++){
+                            days.add(null);
+                        }
+                        specializationMapping.put(program, days);
+                    }
+                    for(int j = 0; j < course.getDaysBefore(); j++){
+                        if (i - j < 0){
+                            break;
+                        } else {
+                            if (days.get(i - j) == null) {
+                                newHeuristicValue++;
+                            }
+                        }
+                    }
+                }
+                if (newHeuristicValue < heuristicValue) {
+                    bestIndex = i;
+                    heuristicValue = newHeuristicValue;
+                }
+            }
+            return bestIndex;
+        }
+
+        private int getHeuristicValue(Course course){
+            int value = 0;
+            for (Pair<String, Integer> program: course.getPrograms()) {
+                ArrayList<Integer> days = specializationMapping.get(program);
+                if(days != null){
+                    for (int i = 0; i < schedulable_days.size(); i++){
+                        if (days.get(i) != null){
+                            value++;
+                        }
+                    }
+                }
+            }
+            return value;
+        }
+
+        public void updateHeuristic(Course course, int index){
+            for (Pair<String, Integer> program: course.getPrograms()) {
+                ArrayList<Integer> days = specializationMapping.get(program);
+                if(days == null) {
+                    days = new ArrayList<>(schedulable_days.size());
+                }
+                for (int i = 0; i < course.getDaysBefore(); i++){
+                    if (index - i < 0){
+                        break;
+                    }
+                    days.add(index - i, 1);
+                }
+                specializationMapping.put(program, days);
+            }
+        }
+    }
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied) throws IllegalRange {
         if (occupied == null){
             occupied = new HashSet<LocalDate>();
@@ -31,19 +112,22 @@ public class Schedule {
                 schedulable_days.add(new Day(curr));
             curr=curr.plusDays(1);
         }
+        this.heuristic = new ScheduleHeuristic();
     }
 
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied, int gap) throws IllegalRange {
         this(begin, end, occupied);
         this.gap = gap;
-
     }
+
     public int getSize() {
         return schedulable_days.size();
     }
+
     public ArrayList<Day> getSchedulableDays() {
         return schedulable_days;
     }
+
     public void assignCourse(Course course, int index) {
         int course_id = course.getCourseID();
         (schedulable_days.get(index)).insertCourse(course_id,0);
@@ -59,12 +143,12 @@ public class Schedule {
             index++;
         }
     }
+
     public Day getDayWhenScheduled(int courseId){
         for (int i = 0; i < schedulable_days.size();){
             Integer distance = schedulable_days.get(i).getDistance(courseId);
             if ( distance == null){
                 i++;
-                continue;
             } else if (distance == 0) {
                 return schedulable_days.get(i);
             } else {
@@ -76,55 +160,38 @@ public class Schedule {
 
     public void produceSchedule(Semester semester, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
         CourseLoader loader = new CourseLoader(semester, cl);
-        //First need to schedule courses with constraints
         //sort courses by number of conflicts
         List<Course> courses = loader.getSortedCourses();
-        //try to schedule courses in such way, that every day will be ~ same number of exams (is it true to do it?)
-        for (Course course: courses){
-            boolean scheduled = false;
-            int uniformity = 1;
-            int beginFrom = getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID());
-            while (!scheduled){
-                try {
-                    scheduleExamFor(course, uniformity, beginFrom);
-                    scheduled = true;
-                } catch (CanNotBeScheduledException e){
-                    uniformity++;
-                }
-                if(uniformity > courses.size()){ //Can't schedule anyway
-                    throw new CanNotBeScheduledException();
-                }
-            }
-        }
+        //First need to schedule courses with constraints
+        this.assignConstraints(cl, courses);
+        //Now, try to produce a legal (maybe not optimized) schedule
+        produceLegalSchedule(courses, moedA);
+        //try to optimize schedule in such way, that every day will be ~ same number of exams (do we really want it?)
+        optimizeSchedule(courses, moedA);
     }
 
+    /*The function finds day where exam should be scheduled and assign the exam to the day
+      Params:
+        course - course to be scheduled
+        uniformity - max number of exams in one day
+        beginFrom - first index of schedulable_days array, where the exam can be put
+    */
     private void scheduleExamFor(Course course, Integer uniformity, int beginFrom) throws CanNotBeScheduledException{
-        Set<Integer> course_conflicts = course.getConflictCourses().keySet();
         boolean scheduled = false;
         for (int i = beginFrom; i < schedulable_days.size(); i++){
             Day day = schedulable_days.get(i);
             if (uniformity != null && day.getNumOfCourses() > uniformity){
                 continue;
             }
-            boolean can_schedule = true;
-            for (int course_id: course_conflicts){
-                Integer distance = day.getDistance(course_id);
-                if (distance == null){
-                    continue;
-                }
-                if (distance <= 0 || course.getDaysBefore() >= distance){ //A student has not time to prepare to any of two courses
-                    can_schedule = false;
-                    break;
-                }
-            }
-            if (can_schedule){
+            if (day.canBeAssigned(course)){
+                unassignCourse(course);
                 assignCourse(course, i);
                 scheduled = true;
                 break;
             }
         }
         if (!scheduled){
-            throw new CanNotBeScheduledException();
+            throw new CanNotBeScheduledException(course.getCourseID());
         }
     }
 
@@ -139,5 +206,95 @@ public class Schedule {
         LocalDate moedBBeginDate = schedulable_days.get(0).getDate();
         int index = (int)DAYS.between(moedAExamDate.plusDays(gap), moedBBeginDate);
         return index < 0 ? 0: index;
+    }
+
+    //this function assigns all courses listed in constraint list to associated days
+    //If constraints of conflicted courses overlap: throws exception
+    private void assignConstraints(ConstraintList constraintList, List<Course> courses) throws CanNotBeScheduledException{
+        if (constraintList == null){
+            return;
+        }
+        for (int courseId: constraintList.constraints.keySet()){
+            Course course = courses.stream().filter(c -> c.getCourseID().equals(courseId)).findFirst().get();
+            LocalDate dateToBeScheduled =
+                    LocalDateTime.ofInstant
+                            (constraintList.getConstraints(courseId).get(0).start.toInstant(),
+                                    ZoneId.systemDefault()).toLocalDate();
+            for (int i = 0; i < schedulable_days.size(); i++){
+                Day day = schedulable_days.get(i);
+                if (day.getDate().equals(dateToBeScheduled)){
+                    boolean assigned = false;
+                    for (int param = course.getDaysBefore()/2; param >= 0; param--){
+                        try {
+                            if(day.canBeAssigned(course)){
+                                this.assignCourse(course, i);
+                                assigned = true;
+                            } else {
+                                System.out.println(param);
+                                course.setDaysBefore(course.getDaysBefore() - 1);
+                            }
+                        } catch (IllegalDaysBefore e){
+                            throw new CanNotBeScheduledException(courseId);
+                        }
+                        if (assigned){
+                            break;
+                        }
+                    }
+                    if (!assigned) {
+                        throw new CanNotBeScheduledException(courseId);
+                    }
+                }
+            }
+        }
+    }
+
+    //Produce schedule which has not overlapped conflicts
+    private void produceLegalSchedule(List<Course> courses, Schedule moedA) throws CanNotBeScheduledException{
+        for (Course course: courses){
+            if (course.getConstraints().size() != 0){
+                continue;
+            }
+            int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
+            if (indexOfDayToSchedule == -1){
+                throw new CanNotBeScheduledException(course.getCourseID());
+            }
+            assignCourse(course, indexOfDayToSchedule);
+            heuristic.updateHeuristic(course, indexOfDayToSchedule);
+        }
+    }
+
+    private void optimizeSchedule(List<Course> courses, Schedule moedA){
+        for (Course course: courses){
+            if (course.getConstraints().size() != 0){
+                continue; //Courses with constraints have to be scheduled where is required by constraint
+            }
+            boolean scheduled = false;
+            int uniformity = 1;
+            int currMaxNumberOfCoursesInADay = 0;
+            for (int i = 0; i < schedulable_days.size(); i++){
+                int numOfCourses = schedulable_days.get(i).getNumOfCourses();
+                if ( numOfCourses > currMaxNumberOfCoursesInADay){
+                    currMaxNumberOfCoursesInADay = numOfCourses;
+                }
+            }
+            int beginFrom = getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID());
+            while (!scheduled){
+                try {
+                    scheduleExamFor(course, uniformity, beginFrom);
+                    scheduled = true;
+                } catch (CanNotBeScheduledException e){
+                    uniformity++;
+                }
+                if(uniformity > currMaxNumberOfCoursesInADay){ //there is no point to increase number of courses in a day
+                    break;
+                }
+            }
+        }
+    }
+
+    public void unassignCourse(Course course){
+        for (int i = 0; i < schedulable_days.size(); i++){
+            schedulable_days.get(i).deleteCourse(course.getCourseID());
+        }
     }
 }

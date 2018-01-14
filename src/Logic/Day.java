@@ -37,4 +37,22 @@ public class Day {
         }
         return coursesScheduledToTheDay;
     }
+
+    public boolean canBeAssigned (Course course){
+        boolean canBeAssigned = true;
+        for (int course_id: course.getConflictCourses().keySet()){
+            Integer distance = this.getDistance(course_id);
+            if (distance == null){
+                continue;
+            }
+            if (distance <= 0 || course.getDaysBefore() >= distance){ //A student has not time to prepare to any of two courses
+                canBeAssigned = false;
+                break;
+            }
+        }
+        return canBeAssigned;
+    }
+    public void deleteCourse(int courseId){
+        courses.remove(courseId);
+    }
 }

@@ -18,6 +18,7 @@ public class CourseLoader {
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
         dbCourses = semester.getCourseCollection().stream().collect(Collectors.toMap(x-> x.id, x -> x));
+
         //building Logic CourseList.
         buildLogicCourses();
         //updating conflictList for each Course.
@@ -58,7 +59,7 @@ public class CourseLoader {
             if(c.studyProgramSize() > 0){
                 isRequired = true;
             }
-            Logic.Course current =  new Logic.Course(c.name,c.id,isRequired,c.weight);
+            Logic.Course current =  new Logic.Course(c.name,c.id,isRequired,c.weight, c.getPrograms());
             courses.put(current.getCourseID(),current);
         }
     }

@@ -163,7 +163,7 @@ public class CourseTest {
 
     @Test
     public void getDaysBefore() throws Exception {
-        assertTrue(4 == c1.getDaysBefore());
+        assertTrue( 3 == c1.getDaysBefore());
     }
 
     @Test
