@@ -27,9 +27,11 @@ public class Day extends VBox{
     private Label lock_label;
     private Label label;
     private VBox tests;
+    private CoursesTable table;
     private Boolean isBlocked;
     private List<Integer> displayedCourseIDs = new LinkedList<>();
-    public Day(LocalDate input_date, List<Course> courses) {
+    public Day(CoursesTable table, LocalDate input_date, List<Course> courses) {
+        this.table = table;
         isBlocked = false;
         label = new Label(input_date.format(disp_date));
         label.setPadding(new Insets(2,0,0,2));
@@ -84,6 +86,11 @@ public class Day extends VBox{
                 String courseNum = db.getString().split(" - ")[0];
                 addTest(new Course(courseName, Integer.parseInt(courseNum), true, 3.0 ));
                 success = true;
+/*                for (int i = 0; i < table.getItems().size(); i++) {
+                    if (table.getItems().get(i).name.equals(db.getString())) {
+                        table.getItems().get(i).
+                    }
+                }*/
             }
             event.setDropCompleted(success);
             event.consume();
@@ -109,10 +116,19 @@ public class Day extends VBox{
         isBlocked = true;
         this.setDisable(true);
     }
+
+    public VBox getTests() {
+        return tests;
+    }
+
+    public List<Integer> getDisplayedCourseIDs() {
+        return displayedCourseIDs;
+    }
+
     public void addTest(Course course) {
         if(!displayedCourseIDs.contains(course.getCourseID())){
             displayedCourseIDs.add(course.getCourseID());
-            tests.getChildren().add(new Test(course,true));
+            tests.getChildren().add(new Test(table,this,course,true));
         }
     }
 }

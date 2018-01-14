@@ -14,12 +14,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Moed extends VBox{
-    Schedule schedule;
-    Picker picker1;
-    Picker picker2;
-    Boolean start_set;
-    Boolean end_set;
-    public Moed(String title) {
+    private Schedule schedule;
+    private Picker picker1;
+    private Picker picker2;
+    private Boolean start_set;
+    private Boolean end_set;
+    public Moed(CoursesTable table, String title) {
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
         start_set = false;
@@ -30,9 +30,9 @@ public class Moed extends VBox{
         picker1 = new Picker("תאריך התחלה:");
         picker2 = new Picker("תאריך סיום:");
         if (title == "מועד א'")
-            schedule = new Schedule(LocalDate.now(),LocalDate.now().plusDays(30));
+            schedule = new Schedule(table,LocalDate.now(),LocalDate.now().plusDays(30));
         else
-            schedule = new Schedule(LocalDate.now().plusDays(31),LocalDate.now().plusDays(61));
+            schedule = new Schedule(table,LocalDate.now().plusDays(31),LocalDate.now().plusDays(61));
 
         this.getChildren().addAll(label,picker1,picker2,schedule);
         picker1.getPicker().setOnAction(event -> {
@@ -44,7 +44,7 @@ public class Moed extends VBox{
                 }
                 else {
                     this.getChildren().remove(3);
-                    schedule = new Schedule(picker1.getDate(), picker2.getDate());
+                    schedule = new Schedule(table,picker1.getDate(), picker2.getDate());
                     this.getChildren().add(schedule);
                 }
             }
@@ -58,7 +58,7 @@ public class Moed extends VBox{
                 }
                 else {
                     this.getChildren().remove(3);
-                    schedule = new Schedule(picker1.getDate(), picker2.getDate());
+                    schedule = new Schedule(table,picker1.getDate(), picker2.getDate());
                     this.getChildren().add(schedule);
                 }
             }
