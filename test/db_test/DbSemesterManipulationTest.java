@@ -1,5 +1,6 @@
 package db_test;
 
+import db.Course;
 import db.Database;
 import db.Semester;
 import db.exception.CourseAlreadyExist;
@@ -9,6 +10,9 @@ import db.exception.StudyProgramUnknown;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static junit.framework.Assert.assertNotSame;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.fail;
@@ -152,6 +156,48 @@ public class DbSemesterManipulationTest {
             // Expected
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
+        }
+        List<Course> courses = semester.getCourseCollection();
+        List<String> programs = semester.getStudyProgramCollection();
+        for (Course c: courses) {
+            for (String p: programs) {
+                assertNotSame(0, c.getStudyProgramSemester(p));
+            }
+        }
+        try {
+            semester.unregisterCourse(123, "There is no spoon");
+            semester.unregisterCourse(123, "I see dead people");
+            semester.unregisterCourse(123, "Hasta la vista baby");
+            semester.unregisterCourse(123, "Zed is dead");
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        courses = semester.getCourseCollection();
+        for (Course c: courses) {
+            for (String p: programs) {
+                if (c.id == 123) {
+                    assertEquals(0, c.getStudyProgramSemester(p));
+                } else {
+                    assertNotSame(0, c.getStudyProgramSemester(p));
+                }
+            }
+        }
+        try {
+            semester.removeCourse(123);
+            semester.removeStudyProgram("Zed is dead");
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        courses = semester.getCourseCollection();
+        programs = semester.getStudyProgramCollection();
+        for (Course c: courses) {
+            for (String p: programs) {
+                if (p.equals("Zed is dead")) {
+                    assertEquals(0, c.getStudyProgramSemester(p));
+                } else {
+                    assertNotSame(0, c.getStudyProgramSemester(p));
+                }
+            }
         }
     }
 }
