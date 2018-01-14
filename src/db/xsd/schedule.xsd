@@ -12,7 +12,6 @@
                                 <xs:complexType>
                                     <xs:simpleContent>
                                         <xs:extension base="xs:integer">
-                                            <xs:attribute name="hour"/>
                                         </xs:extension>
                                     </xs:simpleContent>
                                 </xs:complexType>

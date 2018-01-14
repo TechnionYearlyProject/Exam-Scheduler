@@ -28,7 +28,7 @@ public class Database {
     private Map<String, Semester> semesters;
     private DocumentBuilder builder;
     private Transformer transformer;
-    private SimpleDateFormat dateParser, hourParser;
+    private SimpleDateFormat dateParser;
     private Map<String, Validator> validators;
     private String XSDFilesDir;
 
@@ -55,7 +55,6 @@ public class Database {
         XSDFilesDir = baseDirectory + sep + "src" + sep + "db" + sep + "xsd";
         baseDirectory = baseDirectory + sep + "db";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
-        hourParser = new SimpleDateFormat("HH:mm");
     }
 
     public Map<Integer,Course> getCourses() {
@@ -236,17 +235,6 @@ public class Database {
         }
     }
 
-    private void addHourToDate(String hourStr, Semester.Moed moed, Calendar date) throws InvalidDatabase {
-        try {
-            Calendar tmp = Calendar.getInstance();
-            tmp.setTime(hourParser.parse(hourStr));
-            date.set(Calendar.HOUR, tmp.get(Calendar.HOUR_OF_DAY));
-            date.set(Calendar.MINUTE, tmp.get(Calendar.MINUTE));
-        } catch (ParseException e) {
-            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid hour : '" + hourStr + "'");
-        }
-    }
-
     private void parseSchedules(String filePath1, String filePath2, Semester semester) throws InvalidDatabase {
         Map<Semester.Moed, Document> docs = new HashMap<>();
         docs.put(Semester.Moed.MOED_A, loadXMLFile(filePath1));
@@ -282,8 +270,6 @@ public class Database {
                         Node m = exams.item(j);
                         if (m.getNodeType() == Node.ELEMENT_NODE) {
                             Element examElement = (Element) m;
-                            String hourStr = examElement.getAttribute("hour");
-                            addHourToDate(hourStr, moed, date);
                             int courseId = Integer.parseInt(examElement.getTextContent());
                             try {
                                 semester.scheduleCourse(courseId, moed, date);
@@ -456,24 +442,22 @@ public class Database {
             schedule.appendChild(endDate);
 
             // Date ordering
-            Map<String, Map<String, Integer>> dates = new HashMap<>();
+            Map<String, List<Integer>> dates = new HashMap<>();
             for (Map.Entry<Integer, Calendar> dateEntry: semester.schedules.get(moed).schedule.entrySet()){
                 String dateStr = dateParser.format(dateEntry.getValue().getTime());
-                String hourStr = hourParser.format(dateEntry.getValue().getTime());
                 if (!dates.containsKey(dateStr)) {
-                    dates.put(dateStr, new HashMap<>());
+                    dates.put(dateStr, new ArrayList<>());
                 }
-                dates.get(dateStr).put(hourStr, dateEntry.getKey());
+                dates.get(dateStr).add(dateEntry.getKey());
             }
 
             // Date nodes
-            for (Map.Entry<String, Map<String, Integer>> entry1: dates.entrySet()) {
+            for (Map.Entry<String, List<Integer>> entry1: dates.entrySet()) {
                 Element dateElement = document.createElement("day");
                 dateElement.setAttribute("date", entry1.getKey());
-                for(Map.Entry<String, Integer> entry2: entry1.getValue().entrySet()) {
+                for(Integer courseId: entry1.getValue()) {
                     Element examElement = document.createElement("exam");
-                    examElement.setAttribute("hour", entry2.getKey());
-                    Text examText = document.createTextNode(Integer.toString(entry2.getValue()));
+                    Text examText = document.createTextNode(Integer.toString(courseId));
                     examElement.appendChild(examText);
                     dateElement.appendChild(examElement);
                 }
