@@ -1,25 +1,26 @@
 package Logic;
 
 import Logic.Exceptions.IllegalDaysBefore;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import db.Constraint;
 import db.Database;
 import db.Semester;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
+import sun.plugin.javascript.navig.Array;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
 public class CourseTest {
-    CourseLoader cL;
     Database db;
     Semester semester;
     Course c1,c2,c3,c4,c5;
+    Calendar ca1,ca2,ca3,ca4,ca5,ca6,ca7,ca8;
+
     @Before
     public void setUp() throws Exception {
         c1= new Course("OS",234123,true,4.5);
@@ -27,23 +28,70 @@ public class CourseTest {
         c3 = new Course ("DS",234218,true,3.0);
         c4 = new Course("MAMAN",236363,false,3.0);
         c5 = new Course("Yearly project stage A",234311,true,3.0);
-
         db = new Database();
         db.loadSemester(2017, "winter_test");
         semester = db.getSemester(2017, "winter_test");
     }
 
+    private void setCalendar(){
+        ca1 = new GregorianCalendar();
+        ca1.set(2018,Calendar.JANUARY,14);
+        ca2 = new GregorianCalendar();
+        ca2.set(2018,Calendar.JANUARY,15);
+        ca3 = new GregorianCalendar();
+        ca3.set(2018,Calendar.JANUARY,17);
+        ca4 = new GregorianCalendar();
+        ca4.set(2018,Calendar.JANUARY,20);
+        ca5 = new GregorianCalendar();
+        ca5.set(2018,Calendar.FEBRUARY,2);
+        ca6 = new GregorianCalendar();
+        ca6.set(2018,Calendar.FEBRUARY,3);
+        ca7 = new GregorianCalendar();
+        ca7.set(2018,Calendar.JANUARY,2);
+        ca8 = new GregorianCalendar();
+        ca8.set(2018,Calendar.JANUARY,5);
+    }
+
     @Test
     public void addConstraint() throws Exception {
-
+//        setCalendar();
+//        Constraint con = new Constraint(ca1,ca2);
+//        assertEquals(0,c1.getConstraints().size());
+//        c1.addConstraint(con);
+//        assertEquals(1,c1.getConstraints().size());
+//        assertTrue(c1.getConstraints().contains(con));
     }
 
     @Test
     public void addConstraint1() throws Exception {
+//        setCalendar();
+//        Constraint con1,con2,con3,con4;
+//        ArrayList<Constraint> aL = new ArrayList<>();
+//        aL.add(con2 = new Constraint(ca3,ca4));
+//        aL.add(con3 = new Constraint(ca5,ca6));
+//        aL.add(new Constraint(ca7,ca8));
+//        aL.add(con4 = new Constraint(ca7,ca8));
+//        aL.add(new Constraint(ca1,ca2));
+//        aL.add(con1 = new Constraint(ca1,ca2));
+//        aL.add(new Constraint(ca1,ca2));
+//        c1.addConstraint(aL);
+//        assertEquals(4,c1.getConstraints().size());
+//        assertTrue(c1.getConstraints().contains(con1));
+//        assertTrue(c1.getConstraints().contains(con2));
+//        assertTrue(c1.getConstraints().contains(con3));
+//        assertTrue(c1.getConstraints().contains(con4));
     }
 
     @Test
     public void removeConstraint() throws Exception {
+//        setCalendar();
+//        Constraint con = new Constraint(ca1,ca2);
+//        Constraint notCon = new Constraint(ca3,ca4);
+//        c1.addConstraint(con);
+//        c1.removeConstraint(notCon);
+//        assertEquals(1,c1.getConstraints().size());
+//        c1.removeConstraint(con);
+//        assertEquals(0,c1.getConstraints().size());
     }
 
     @Test
@@ -54,6 +102,11 @@ public class CourseTest {
         assertEquals(1,c1.getNumOfConflictCourses());
         c1.addConflictCourse(c1.getCourseID(),c1.getCourseName());
         assertEquals(1,c1.getNumOfConflictCourses());
+    }
+
+    @Test
+    public void verifyCreditPoints(){
+        assertTrue(4==c1.getDaysBefore());
     }
 
     @Test
@@ -115,7 +168,7 @@ public class CourseTest {
 
     @Test
     public void getDaysBefore() throws Exception {
-        assertTrue( 3 == c1.getDaysBefore());
+        assertTrue( 4 == c1.getDaysBefore());
     }
 
     @Test

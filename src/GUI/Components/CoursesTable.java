@@ -3,21 +3,21 @@ package GUI.Components;
 import db.Course;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
+import java.util.logging.Filter;
+
 public class CoursesTable extends javafx.scene.control.TableView<Item> {
-    TableColumn<Item,CheckBox> take;
-    TableColumn<Item,String> name;
-    TableColumn<Item,Integer> study;
-    TableColumn<Item,CheckBox> pref;
-    TableColumn<Item,Button> connections;
+    private TableColumn<Item,CheckBox> take;
+    private TableColumn<Item,String> name;
+    private TableColumn<Item,Integer> study;
+    private TableColumn<Item,CheckBox> pref;
+    private TableColumn<Item,Button> connections;
 
 
     public CoursesTable() {
@@ -38,7 +38,8 @@ public class CoursesTable extends javafx.scene.control.TableView<Item> {
         connections.setCellValueFactory(new PropertyValueFactory<>("connections"));
         connections.setStyle("-fx-alignment: CENTER-RIGHT");
         this.setPrefWidth(395);
-        this.setItems(getData());
+
+        //this.setItems(filteredList);
         this.getColumns().addAll(connections,pref,study,name,take);
         this.setRowFactory(tv -> {
             TableRow<Item> row = new TableRow<>();
@@ -58,14 +59,6 @@ public class CoursesTable extends javafx.scene.control.TableView<Item> {
             });
             return row ;
         });
-    }
-    public ObservableList<Item> getData() {
-        ObservableList<Item> items = FXCollections.observableArrayList();
-        items.add(new Item(new Course(234141, "קומבינטוריקה למדעי המחשב", 3)));
-        items.add(new Item(new Course(234123, "מערכות הפעלה", 4)));
-        items.add(new Item(new Course(236353, "אוטומטים ושפות פורמליות", 3)));
-        items.add(new Item(new Course(104032, "חשבון אינפיניטסימלי 2מ'", 5)));
-        return items;
     }
 
 }
