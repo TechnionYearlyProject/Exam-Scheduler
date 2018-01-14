@@ -1,14 +1,11 @@
 package Logic;
 
 import Logic.Exceptions.IllegalDaysBefore;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import db.Constraint;
 import db.Database;
 import db.Semester;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
-import sun.plugin.javascript.navig.Array;
 
 import java.util.*;
 import java.util.stream.Collectors;
