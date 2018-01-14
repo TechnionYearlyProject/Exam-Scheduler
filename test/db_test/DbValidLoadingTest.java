@@ -22,14 +22,13 @@ public class DbValidLoadingTest {
 
     public static Database db;
     private static String baseDir;
-    private static SimpleDateFormat dateParser, hourParser;
+    private static SimpleDateFormat dateParser;
 
     @Before
     public void initDb() {
         db = new Database();
         baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test";
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
-        hourParser = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     }
 
     private Calendar parse(String str, SimpleDateFormat parser) {
@@ -121,9 +120,9 @@ public class DbValidLoadingTest {
         assertEquals(startDateB, semester.getStartDate(Semester.Moed.MOED_B));
         assertEquals(endDateB, semester.getEndDate(Semester.Moed.MOED_B));
         Map<Integer, Calendar> schedulesRef = new HashMap<>();
-        schedulesRef.put(104166, parse("2017-01-03 13:00", hourParser));
-        schedulesRef.put(104031, parse("2017-01-03 09:00", hourParser));
-        schedulesRef.put(234114, parse("2017-01-07 09:00", hourParser));
+        schedulesRef.put(104166, parse("2017-01-03", dateParser));
+        schedulesRef.put(104031, parse("2017-01-03", dateParser));
+        schedulesRef.put(234114, parse("2017-01-07", dateParser));
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_B).size());
         assertEquals(schedulesRef.size(), semester.getSchedule(Semester.Moed.MOED_A).size());
         for (int courseId: semester.getSchedule(Semester.Moed.MOED_A).keySet()) {

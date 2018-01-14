@@ -9,5 +9,6 @@
         <course_id>104031</course_id>
         <start_date>2017-01-04</start_date>
         <end_date>2017-01-07</end_date>
+        <forbidden/>
     </constraint>
 </constraints>

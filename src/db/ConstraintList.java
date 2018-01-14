@@ -12,7 +12,8 @@ public class ConstraintList {
         constraints = new HashMap<>();
     }
 
-    public void addConstraint(int courseId, Calendar start, Calendar end) throws InvalidConstraint, OverlappingConstraints {
+    public void addConstraint(int courseId, Calendar start, Calendar end, boolean forbidden) throws InvalidConstraint,
+            OverlappingConstraints {
         if (end.before(start)) {
             throw new InvalidConstraint();
         }
@@ -25,8 +26,13 @@ public class ConstraintList {
             }
             throw new OverlappingConstraints();
         }
-        constraints.get(courseId).add(new Constraint(start, end));
+        constraints.get(courseId).add(new Constraint(start, end, forbidden));
         Collections.sort(constraints.get(courseId)); // Ordered by start date
+    }
+
+    public  void addConstraint(int courseId, Calendar start, Calendar end) throws OverlappingConstraints,
+            InvalidConstraint {
+        addConstraint(courseId, start, end, false);
     }
 
     public void removeConstraint(int courseId, Calendar start, Calendar end) {
