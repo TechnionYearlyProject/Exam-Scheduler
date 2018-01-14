@@ -44,17 +44,19 @@ public class CoursesTable extends javafx.scene.control.TableView<Item> {
         this.setRowFactory(tv -> {
             TableRow<Item> row = new TableRow<>();
             row.setOnDragDetected(event -> {
-                Dragboard db = row.startDragAndDrop(TransferMode.ANY);
-                ClipboardContent content = new ClipboardContent();
-                content.putString(name.getCellData(row.getIndex()));
-                db.setContent(content);
-                db.setDragView(row.snapshot(null,null));
+                if(take.getCellData(row.getIndex()).isSelected()) {
+                    Dragboard db = row.startDragAndDrop(TransferMode.ANY);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(name.getCellData(row.getIndex()));
+                    db.setContent(content);
+                    db.setDragView(row.snapshot(null, null));
+                }
                 event.consume();
             });
             row.setOnDragOver(event -> {
-                if (event.getGestureSource() != row && event.getDragboard().hasString()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
+                    if (event.getGestureSource() != row && event.getDragboard().hasString()) {
+                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    }
                 event.consume();
             });
             return row ;
