@@ -28,11 +28,9 @@ public class Manager extends HBox {
         return new FilteredList<>(items);
     }
     public Manager() {
-        A = new Moed("מועד א'");
-        B = new Moed("מועד ב'");
+
         courses = new CoursesTable();
         FilteredList<Item> filteredList = getData();
-
         TextField filterInput = new TextField();
         filterInput.setPromptText("חפש קורס...");
         filterInput.textProperty().addListener(obs->{
@@ -46,16 +44,18 @@ public class Manager extends HBox {
         });
         filterInput.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         courses.setItems(filteredList);
+        A = new Moed(courses,"מועד א'");
+        B = new Moed(courses,"מועד ב'");
         this.getChildren().addAll(B,A,new VBox(filterInput, courses));
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
     }
     public void cleanData() {
         this.getChildren().remove(0);
-        B = new Moed("מועד ב'");
+        B = new Moed(courses,"מועד ב'");
         this.getChildren().add(0, B);
         this.getChildren().remove(1);
-        A = new Moed("מועד א'");
+        A = new Moed(courses,"מועד א'");
         this.getChildren().add(1, A);
     }
 }

@@ -42,8 +42,9 @@ public class CoursesTable extends javafx.scene.control.TableView<Item> {
         //this.setItems(filteredList);
         this.getColumns().addAll(connections,pref,study,name,take);
         this.setRowFactory(tv -> {
-            TableRow<Item> row = new TableRow<>();
+            CourseRow<Item> row = new CourseRow<>();
             row.setOnDragDetected(event -> {
+
                 if(take.getCellData(row.getIndex()).isSelected()) {
                     Dragboard db = row.startDragAndDrop(TransferMode.ANY);
                     ClipboardContent content = new ClipboardContent();
