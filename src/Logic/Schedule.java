@@ -262,7 +262,7 @@ public class Schedule {
             }
         }
         for (Course course: courses){
-            if (course.getGoodConstraints().size() != 0){//was getConstraints().
+            if (course.getConstraints().size() != 0){//was getGoodConstraints().
                 continue;
             }
             int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
@@ -284,7 +284,7 @@ public class Schedule {
 
     private void optimizeSchedule(List<Course> courses, Schedule moedA){
         for (Course course: courses){
-            if (course.getGoodConstraints().size() != 0){//was getConstraints().
+            if (course.getConstraints().size() != 0){//was getGoodConstraints()
                 continue; //Courses with constraints have to be scheduled where is required by constraint
             }
             boolean scheduled = false;

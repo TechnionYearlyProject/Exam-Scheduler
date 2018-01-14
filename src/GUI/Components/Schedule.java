@@ -23,9 +23,11 @@ public class Schedule extends GridPane{
     LocalDate start;
     LocalDate finish;
     HashMap<LocalDate,Day> days;
+    private CoursesTable table;
 
-    public Schedule(LocalDate input_start, LocalDate input_finish) {
 
+    public Schedule(CoursesTable table, LocalDate input_start, LocalDate input_finish) {
+        this.table = table;
         start = input_start;
         finish = input_finish;
         days = new HashMap<>();
@@ -50,16 +52,16 @@ public class Schedule extends GridPane{
 
         for (int i = 5; i >= 0; i--, current = current.plusDays(1)) {
             if (current.isBefore(input_start)) {
-                Day day = new Day(current, null);
+                Day day = new Day(table, current, null);
                 day.Disable();
                 this.add(day, i, 1);
             } else {
                 if (!current.isAfter(input_finish)) {
-                    Day day = new Day(current,null);
+                    Day day = new Day(table, current,null);
                     days.put(current, day);
                     this.add(day, i, 1);
                 } else {
-                    Day day = new Day(current,null);
+                    Day day = new Day(table, current,null);
                     day.Disable();
                     this.add(day, i, 1);
                 }
@@ -71,13 +73,13 @@ public class Schedule extends GridPane{
         {
             for (int j=5;j>=0;j--) {
                 if (current.isAfter(input_finish)) {
-                    Day day = new Day(current,null);
+                    Day day = new Day(table, current,null);
                     day.Disable();
                     this.add(day, j, i);
                     current = current.plusDays(1);
                     continue;
                 }
-                Day day = new Day(current,null);
+                Day day = new Day(table, current,null);
                 days.put(current,day);
                 this.add(day,j,i);
                 current = current.plusDays(1);

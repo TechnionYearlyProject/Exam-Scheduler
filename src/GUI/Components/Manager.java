@@ -16,21 +16,13 @@ import javafx.util.Callback;
 import java.time.LocalDate;
 
 public class Manager extends HBox {
-    private Moed A;
-    private Moed B;
+    public Moed A;
+    public Moed B;
     private CoursesTable courses;
-    private FilteredList<Item> getData() {
-        ObservableList<Item> items = FXCollections.observableArrayList();
-        items.add(new Item(new Course(234141, "קומבינטוריקה למדעי המחשב", 3)));
-        items.add(new Item(new Course(234123, "מערכות הפעלה", 4)));
-        items.add(new Item(new Course(236353, "אוטומטים ושפות פורמליות", 3)));
-        items.add(new Item(new Course(104032, "חשבון אינפיניטסימלי 2מ'", 5)));
-        return new FilteredList<>(items);
-    }
     public Manager() {
 
         courses = new CoursesTable();
-        FilteredList<Item> filteredList = getData();
+        FilteredList<Item> filteredList = new FilteredList<>(courses.getData());
         TextField filterInput = new TextField();
         filterInput.setPromptText("חפש קורס...");
         filterInput.textProperty().addListener(obs->{
@@ -46,7 +38,8 @@ public class Manager extends HBox {
         courses.setItems(filteredList);
         A = new Moed(courses,"מועד א'");
         B = new Moed(courses,"מועד ב'");
-        this.getChildren().addAll(B,A,new VBox(filterInput, courses));
+        VBox vbox = new VBox(filterInput, courses);
+        this.getChildren().addAll(B,A,vbox);
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
     }

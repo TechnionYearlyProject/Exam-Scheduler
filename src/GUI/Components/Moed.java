@@ -19,7 +19,7 @@ public class Moed extends VBox{
     Picker picker2;
     Boolean start_set;
     Boolean end_set;
-    public Moed(String title) {
+    public Moed(CoursesTable table, String title) {
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
         start_set = false;
@@ -30,9 +30,9 @@ public class Moed extends VBox{
         picker1 = new Picker("תאריך התחלה:");
         picker2 = new Picker("תאריך סיום:");
         if (title == "מועד א'")
-            schedule = new Schedule(LocalDate.now(),LocalDate.now().plusDays(35));
+            schedule = new Schedule(table,LocalDate.now(),LocalDate.now().plusDays(35));
         else
-            schedule = new Schedule(LocalDate.now().plusDays(36),LocalDate.now().plusDays(72));
+            schedule = new Schedule(table,LocalDate.now().plusDays(36),LocalDate.now().plusDays(72));
 
         this.getChildren().addAll(label,picker1,picker2,schedule);
         picker1.getPicker().setOnAction(event -> {
@@ -44,7 +44,7 @@ public class Moed extends VBox{
                 }
                 else {
                     this.getChildren().remove(3);
-                    schedule = new Schedule(picker1.getDate(), picker2.getDate());
+                    schedule = new Schedule(table,picker1.getDate(), picker2.getDate());
                     this.getChildren().add(schedule);
                 }
             }
@@ -58,7 +58,7 @@ public class Moed extends VBox{
                 }
                 else {
                     this.getChildren().remove(3);
-                    schedule = new Schedule(picker1.getDate(), picker2.getDate());
+                    schedule = new Schedule(table,picker1.getDate(), picker2.getDate());
                     this.getChildren().add(schedule);
                 }
             }

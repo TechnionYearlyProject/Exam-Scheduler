@@ -24,10 +24,10 @@ public class Test extends Label{
     * course- the course to display in the schedule
     * setTooltip - true if we want the full course information to appear when hovering
     */
-    public Test(CoursesTable table, Day day, Course course, boolean setTooltip) {
+    public Test(CoursesTable table, Day day, Integer course_id, boolean setTooltip) {
         this.day = day;
         this.setTextFill(Paint.valueOf("white"));
-        this.setText(course.getCourseName() + course.getCourseID());
+        this.setText(course_id.toString());
         this.setPadding(new Insets(0,3,0,0));
         this.setAlignment(Pos.CENTER_RIGHT);
         if(setTooltip){
@@ -35,18 +35,18 @@ public class Test extends Label{
             this.setPrefHeight(16);
             this.setMaxHeight(16);
             Tooltip msg = new Tooltip();
-            msg.setGraphic(new Test(table, day,course,false));
+            msg.setGraphic(new Test(table, day,course_id,false));
             msg.setStyle("-fx-background-color: rgba(30,30,30,0.0);\n");
             bindTooltip(this, msg);
         }
         this.setOnMouseClicked(event->{
             if(event.getButton()== MouseButton.SECONDARY) {
                 day.getTests().getChildren().remove(this);
-                day.getDisplayedCourseIDs().remove(course.getCourseID());
+                day.getDisplayedCourseIDs().remove(course_id);
             }
         });
 
-        this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+ getCourseColor(course.getCourseID()));
+        this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+ course_id);
     }
 
     private String getCourseColor(int course_int)

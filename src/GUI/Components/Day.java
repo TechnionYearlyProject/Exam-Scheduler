@@ -68,7 +68,7 @@ public class Day extends VBox{
 
          if (courses != null)
              for (Course course:courses)
-                 this.addTest(course);
+                 this.addTest(course.getCourseID());
 
         this.setSpacing(2);
         this.getChildren().add(hbox);
@@ -84,7 +84,7 @@ public class Day extends VBox{
             if (db.hasString() && !isBlocked) {
                 String courseName = db.getString().split(" - ")[1];
                 String courseNum = db.getString().split(" - ")[0];
-                addTest(new Course(courseName, Integer.parseInt(courseNum), true, 3.0 ));
+                addTest(Integer.parseInt(courseNum));
                 success = true;
 /*                for (int i = 0; i < table.getItems().size(); i++) {
                     if (table.getItems().get(i).name.equals(db.getString())) {
@@ -125,10 +125,10 @@ public class Day extends VBox{
         return displayedCourseIDs;
     }
 
-    public void addTest(Course course) {
-        if(!displayedCourseIDs.contains(course.getCourseID())){
-            displayedCourseIDs.add(course.getCourseID());
-            tests.getChildren().add(new Test(table,this,course,true));
+    public void addTest(Integer course_id) {
+        if(!displayedCourseIDs.contains(course_id)){
+            displayedCourseIDs.add(course_id);
+            tests.getChildren().add(new Test(table,this,course_id,true));
         }
     }
 }
