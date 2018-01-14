@@ -8,7 +8,7 @@ import db.Semester;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
-import sun.plugin.javascript.navig.Array;
+//import sun.plugin.javascript.navig.Array;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -106,7 +106,7 @@ public class CourseTest {
 
     @Test
     public void verifyCreditPoints(){
-        assertTrue(4==c1.getDaysBefore());
+        assertTrue(4==c1.getDaysBefore() + 1);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class CourseTest {
 
     @Test
     public void getDaysBefore() throws Exception {
-        assertTrue( 4 == c1.getDaysBefore());
+        assertTrue( 3 == c1.getDaysBefore());
     }
 
     @Test
