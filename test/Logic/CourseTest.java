@@ -161,7 +161,7 @@ public class CourseTest {
     @Test(expected = IllegalDaysBefore.class)
     public void negativeDaysBeforeThrowsException() throws Exception{
         c1.setDaysBefore(-2);
-        assertTrue(4 == c1.getDaysBefore());
+        assertTrue(3 == c1.getDaysBefore());
     }
 
     @Test
