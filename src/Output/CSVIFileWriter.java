@@ -6,29 +6,29 @@ import Output.Exceptions.ErrorOpeningFile;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CSVIFileWriter implements IFileWriter {
     private static final String COMMA_DELIMITER = ",";
-    //private static final String FORMAT = "Course,Date";
-    //private static final int INDEX = FORMAT.indexOf('D');
+    private static final String FORMAT = "Course,Date";
+
 
     public void write(String fileName, List<Day> array) throws ErrorOpeningFile {
 
         FileWriter f;
         try {
             f = new FileWriter(fileName);
-//            f.append(FORMAT);
-//            f.append(String.format("%n"));
+            f.append(FORMAT);
+            f.append(String.format("%n"));
             for (Day d: array) {
                 LocalDate localDate = d.getDate();
                 StringBuilder sb = new StringBuilder();
                 sb.append(localDate.getDayOfMonth());
-                sb.append("-");
+                sb.append("/");
                 sb.append(localDate.getMonthValue());
-                sb.append("-");
+                sb.append("/");
                 sb.append(localDate.getYear());
                 for (Integer key: d.getCoursesScheduledToTheDay()) {
                     f.append(Integer.toString(key));
@@ -47,4 +47,29 @@ public class CSVIFileWriter implements IFileWriter {
             e.printStackTrace();
         }
     }
+
+//    public void simpleTest(){
+//        Day d1 = new Day(LocalDate.of(2018, Month.JANUARY,17));
+//        Day d2 = new Day(LocalDate.of(2018, Month.JANUARY,18));
+//        Day d3 = new Day(LocalDate.of(2018, Month.JANUARY,19));
+//        d1.insertCourse(234123,0);
+//        d1.insertCourse(234124,0);
+//        d1.insertCourse(234125,0);
+//        d1.insertCourse(234123,0);
+//        d2.insertCourse(236124,0);
+//        d2.insertCourse(236125,0);
+//        d3.insertCourse(236123,0);
+//        d3.insertCourse(238124,0);
+//        d3.insertCourse(238125,0);
+//        ArrayList<Day> days = new ArrayList<>();
+//        days.add(d1);
+//        days.add(d2);
+//        days.add(d3);
+//        try {
+//            write("output.csv",days);
+//        } catch (ErrorOpeningFile errorOpeningFile) {
+//            errorOpeningFile.printStackTrace();
+//        }
+//
+//    }
 }

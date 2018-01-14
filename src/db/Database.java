@@ -589,7 +589,7 @@ public class Database {
 
     public void saveSemester(int year, String sem) {
         String semesterDir = getSemesterDir(year, sem);
-        String path = baseDirectory + sep + "db" + sep + semesterDir;
+        String path = baseDirectory + sep + semesterDir;
         Semester semester = semesters.get(semesterDir);
         writeSemester(path, semester);
     }

@@ -16,11 +16,14 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 public class XMLIFileWriter implements IFileWriter {
@@ -32,7 +35,11 @@ public class XMLIFileWriter implements IFileWriter {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            transformerFactory.setAttribute("indent-number", 4);
+
             Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             // root elements
             Document doc = docBuilder.newDocument();
             Element rootElement = doc.createElement("Schedule");
@@ -59,18 +66,45 @@ public class XMLIFileWriter implements IFileWriter {
                     year.appendChild(doc.createTextNode(Integer.toString(localDate.getYear())));
                     course.appendChild(year);
 
-
-                    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+//                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+//                    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+                    //transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                    //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 }
             }
+            //DOMSource source = new DOMSource(doc);
+
             DOMSource source = new DOMSource(doc);
-            Writer outxml = new FileWriter(new File(fileName));
-            OutputFormat format = new OutputFormat(doc);
-            XMLSerializer serializer = new XMLSerializer(outxml,format);
-            serializer.serialize(doc);
-        } catch (ParserConfigurationException |TransformerException | IOException e){
+            StreamResult result = new StreamResult(new File(fileName));
+            transformer.transform(source, result);
+        } catch (ParserConfigurationException |TransformerException e){
             throw new ErrorOpeningFile();
         }
     }
+
+
+//    public void simpleTest(){
+//        Day d1 = new Day(LocalDate.of(2018, Month.JANUARY,17));
+//        Day d2 = new Day(LocalDate.of(2018, Month.JANUARY,18));
+//        Day d3 = new Day(LocalDate.of(2018, Month.JANUARY,19));
+//        d1.insertCourse(234123,0);
+//        d1.insertCourse(234124,0);
+//        d1.insertCourse(234125,0);
+//        d1.insertCourse(234123,0);
+//        d2.insertCourse(236124,0);
+//        d2.insertCourse(236125,0);
+//        d3.insertCourse(236123,0);
+//        d3.insertCourse(238124,0);
+//        d3.insertCourse(238125,0);
+//        ArrayList<Day> days = new ArrayList<>();
+//        days.add(d1);
+//        days.add(d2);
+//        days.add(d3);
+//        try {
+//            write("output.xml",days);
+//        } catch (ErrorOpeningFile errorOpeningFile) {
+//            errorOpeningFile.printStackTrace();
+//        }
+//
+//    }
 }
