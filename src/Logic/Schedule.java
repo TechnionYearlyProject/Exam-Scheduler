@@ -223,19 +223,25 @@ public class Schedule {
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
-                    if(day.canBeAssigned(course)){
-                        this.assignCourse(course, i);
-                    } else {
+                    boolean assigned = false;
+                    for (int param = course.getDaysBefore()/2; param >= 0; param--){
                         try {
-                            course.setDaysBefore(course.getDaysBefore() - 1);
                             if(day.canBeAssigned(course)){
                                 this.assignCourse(course, i);
+                                assigned = true;
                             } else {
-                                throw new CanNotBeScheduledException(courseId);
+                                System.out.println(param);
+                                course.setDaysBefore(course.getDaysBefore() - 1);
                             }
                         } catch (IllegalDaysBefore e){
                             throw new CanNotBeScheduledException(courseId);
                         }
+                        if (assigned){
+                            break;
+                        }
+                    }
+                    if (!assigned) {
+                        throw new CanNotBeScheduledException(courseId);
                     }
                 }
             }
