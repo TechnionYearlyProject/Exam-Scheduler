@@ -29,4 +29,12 @@ public class Constraint implements Comparable<Constraint>{
     public Calendar getEnd(){
         return (Calendar)end.clone();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null){
+            return false;
+        }
+        return obj instanceof Constraint && (start.equals(((Constraint)obj).start) && end.equals(((Constraint)obj).end));
+    }
 }
