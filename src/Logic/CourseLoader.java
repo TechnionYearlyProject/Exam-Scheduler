@@ -59,6 +59,7 @@ public class CourseLoader {
             if(c.studyProgramSize() > 0){
                 isRequired = true;
             }
+
             Logic.Course current =  new Logic.Course(c.name,c.id,isRequired,c.weight, c.getPrograms());
             courses.put(current.getCourseID(),current);
         }
@@ -69,6 +70,10 @@ public class CourseLoader {
      */
     public Map<Integer,Logic.Course> getCourses(){
         return this.courses;
+    }
+
+    public Logic.Course getCourse(Integer id){
+        return courses.get(id);
     }
 
     public List<Logic.Course> getSortedCourses(){
