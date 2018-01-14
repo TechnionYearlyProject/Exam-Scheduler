@@ -61,3 +61,5 @@ public class Manager extends HBox {
         this.getChildren().add(1, A);
     }
 }
+
+

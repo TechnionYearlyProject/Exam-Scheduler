@@ -80,8 +80,8 @@ public class Day extends VBox{
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString() && !isBlocked) {
-                String courseName = db.getString().split("_")[0];
-                String courseNum = db.getString().split("_")[1];
+                String courseName = db.getString().split(" - ")[1];
+                String courseNum = db.getString().split(" - ")[0];
                 addTest(new Course(courseName, Integer.parseInt(courseNum), true, 3.0 ));
                 success = true;
             }
