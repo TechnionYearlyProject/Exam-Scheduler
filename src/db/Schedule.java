@@ -18,15 +18,6 @@ public class Schedule {
         this.schedule = new HashMap<>();
     }
 
-    public Schedule(Calendar start, Calendar end) throws InvalidSchedule {
-        if (end.before(start)) {
-            throw new InvalidSchedule();
-        }
-        this.start = (Calendar) start.clone();
-        this.end = (Calendar) end.clone();
-        this.schedule = new HashMap<>();
-    }
-
     public boolean undefinedStartOrEnd() {
         return start == null || end == null;
     }

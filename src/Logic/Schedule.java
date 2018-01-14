@@ -230,7 +230,6 @@ public class Schedule {
                                 this.assignCourse(course, i);
                                 assigned = true;
                             } else {
-                                System.out.println(param);
                                 course.setDaysBefore(course.getDaysBefore() - 1);
                             }
                         } catch (IllegalDaysBefore e){
@@ -250,13 +249,31 @@ public class Schedule {
 
     //Produce schedule which has not overlapped conflicts
     private void produceLegalSchedule(List<Course> courses, Schedule moedA) throws CanNotBeScheduledException{
+        if (this.schedulable_days.size() / 21.0 < 1){ //lul TODO: improve it
+            for (Course course: courses){
+                try{
+                    course.setDaysBefore(course.getDaysBefore() - 1);
+                } catch (IllegalDaysBefore e) {
+
+                }
+
+            }
+        }
         for (Course course: courses){
             if (course.getGoodConstraints().size() != 0){//was getConstraints().
                 continue;
             }
             int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
             if (indexOfDayToSchedule == -1){
-                throw new CanNotBeScheduledException(course.getCourseID());
+                try {
+                    course.setDaysBefore(course.getDaysBefore() - 1);
+                    indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
+                } catch (IllegalDaysBefore e){
+                    throw new CanNotBeScheduledException(course.getCourseID());
+                }
+                if (indexOfDayToSchedule == -1){
+                    throw new CanNotBeScheduledException(course.getCourseID());
+                }
             }
             assignCourse(course, indexOfDayToSchedule);
             heuristic.updateHeuristic(course, indexOfDayToSchedule);
