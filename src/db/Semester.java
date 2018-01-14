@@ -22,7 +22,7 @@ public class Semester {
     Map<Integer, Course> courses;
     Set<String> programs;
     Map<Moed, Schedule> schedules;
-    Map<Moed, ConstraintList> constraints;
+    public Map<Moed, ConstraintList> constraints;
 
     public Semester() {
         courses = new HashMap<>();

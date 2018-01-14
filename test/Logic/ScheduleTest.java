@@ -17,14 +17,14 @@ public class ScheduleTest {
     Semester semester;
     Schedule schedule;
 
-    final static int EXAMS_DAYS = 33;
+    final static int EXAMS_DAYS = 23;
     @Before
     public void setUp() throws Exception {
         db = new Database();
         db.loadSemester(2017, "winter_test");
         semester = db.getSemester(2017, "winter_test");
         loader = new CourseLoader(semester, null);
-        schedule = new Schedule(LocalDate.of(2018, 2, 2), LocalDate.of(2018, 3, 12), null);
+        schedule = new Schedule(LocalDate.of(2018, 1, 29), LocalDate.of(2018, 2, 23), null);
     }
 
     @Test
@@ -37,8 +37,8 @@ public class ScheduleTest {
     public void getSchedulableDays() throws Exception {
         ArrayList<Day> days = schedule.getSchedulableDays();
         assert(days.size() == EXAMS_DAYS);
-        LocalDate date = LocalDate.of(2018, 2, 2);
-        while(!(date.equals(LocalDate.of(2018, 3, 13)))){
+        LocalDate date = LocalDate.of(2018, 1, 29);
+        while(!(date.equals(LocalDate.of(2018, 2, 23)))){
             if(date.getDayOfWeek()== DayOfWeek.SATURDAY){
                 for (Day day: days){
                     assert(!(day.getDate().equals(date)));
@@ -79,7 +79,7 @@ public class ScheduleTest {
 
     @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        schedule.produceSchedule(semester, null, null);
+        schedule.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_A), null);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(course));
