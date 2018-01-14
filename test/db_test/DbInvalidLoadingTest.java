@@ -196,29 +196,11 @@ public class DbInvalidLoadingTest {
             fail("Unexpected exception: " + e.toString());
         }
         try {
-            // Invalid exam hour
-            db.loadSemester(2015, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Schedule 'A' contains invalid hour : '1300'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
             // Unknown course in schedule
             db.loadSemester(2015, "spring");
             fail("Should have thrown InvalidDatabase exception");
         } catch (InvalidDatabase e) {
             assertEquals("Schedule 'A' contain unknown course : '123456'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Invalid exam hour
-            db.loadSemester(2016, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Course '104166' has invalid schedule date : '2017-03-03' in schedule 'A'", e.getMessage());
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }

@@ -189,8 +189,8 @@ public class Semester {
         return schedule;
     }
 
-    public void addConstraint(int courseId, Moed moed, Calendar start, Calendar end) throws UninitializedSchedule,
-            DateOutOfSchedule, InvalidConstraint, CourseUnknown, OverlappingConstraints {
+    public void addConstraint(int courseId, Moed moed, Calendar start, Calendar end, boolean forbidden)
+            throws UninitializedSchedule, DateOutOfSchedule, InvalidConstraint, CourseUnknown, OverlappingConstraints {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
@@ -200,7 +200,12 @@ public class Semester {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        constraints.get(moed).addConstraint(courseId, start, end);
+        constraints.get(moed).addConstraint(courseId, start, end, forbidden);
+    }
+
+    public void addConstraint(int courseId, Moed moed, Calendar start, Calendar end)
+            throws UninitializedSchedule, DateOutOfSchedule, InvalidConstraint, CourseUnknown, OverlappingConstraints {
+        addConstraint(courseId, moed, start, end, false);
     }
 
     public void removeConstraint(int courseId, Moed moed, Calendar start, Calendar end) {
