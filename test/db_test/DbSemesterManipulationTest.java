@@ -3,13 +3,13 @@ package db_test;
 import db.Course;
 import db.Database;
 import db.Semester;
-import db.exception.CourseAlreadyExist;
-import db.exception.CourseUnknown;
-import db.exception.StudyProgramAlreadyExist;
-import db.exception.StudyProgramUnknown;
+import db.exception.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import static junit.framework.Assert.assertNotSame;
@@ -20,11 +20,23 @@ import static junit.framework.TestCase.fail;
 public class DbSemesterManipulationTest {
     public static Database db;
     private static String baseDir;
+    private static SimpleDateFormat dateParser;
+
+    private Calendar parse(String str) {
+        Calendar cal = Calendar.getInstance();
+        try {
+            cal.setTime(dateParser.parse(str));
+        } catch (ParseException e) {
+            return null;
+        }
+        return cal;
+    }
 
     @Before
     public void initDb() {
         db = new Database();
         baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test";
+        dateParser = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     @Test
@@ -114,10 +126,6 @@ public class DbSemesterManipulationTest {
             semester.addCourse(111, "Kill Bill", 3.0);
             semester.addCourse(7777, "Kill Bill", 3.0);
             semester.addCourse(1234, "The good, the bad and the ugly", 7.0);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
             semester.registerCourse(123, "There is no spoon", 1);
             semester.registerCourse(123, "I see dead people", 1);
             semester.registerCourse(123, "Hasta la vista baby", 3);
@@ -198,6 +206,139 @@ public class DbSemesterManipulationTest {
                     assertNotSame(0, c.getStudyProgramSemester(p));
                 }
             }
+        }
+        try {
+            semester.removeStudyProgram("Zed is dead");
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+    }
+
+    @Test
+    public void ScheduleTest() {
+        db.baseDirectory = baseDir + db.sep + "empty_db";
+        Semester semester = null;
+        try {
+            semester = db.createSemester(2017, "winter");
+            assertNotNull(semester);
+            semester.addCourse(1, "John", 4.5);
+            semester.addCourse(2, "Paul", 4.5);
+            semester.addCourse(3, "Ringo", 4.5);
+            semester.addCourse(4, "Georges", 4.5);
+            // Can't schedule exam before setting start and end date of exam period
+            semester.scheduleCourse(1, Semester.Moed.MOED_A, parse("2018-01-01"));
+            fail("Should have thrown UninitializedSchedule exception");
+        } catch (UninitializedSchedule e) {
+            // Expected
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Set start date
+        try {
+            semester.setStartDate(Semester.Moed.MOED_A, parse("2018-01-01"));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Try to set end date before start date
+        try {
+            semester.setEndDate(Semester.Moed.MOED_A, parse("2017-01-01"));
+            fail("Should have thrown UninitializedSchedule exception");
+        } catch (InvalidSchedule e) {
+            // Expected
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Set end dates
+        try {
+            semester.setEndDate(Semester.Moed.MOED_A, parse("2018-01-31"));
+            semester.setEndDate(Semester.Moed.MOED_B, parse("2018-02-28"));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Try to set start date after end date
+        try {
+            semester.setStartDate(Semester.Moed.MOED_B, parse("2018-03-01"));
+            fail("Should have thrown UninitializedSchedule exception");
+        } catch (InvalidSchedule e) {
+            // Expected
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Set start date
+        try {
+            semester.setStartDate(Semester.Moed.MOED_B, parse("2018-02-01"));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Schedule some exams, all are valid
+        try {
+            semester.scheduleCourse(1, Semester.Moed.MOED_A, parse("2018-01-01"));
+            semester.scheduleCourse(2, Semester.Moed.MOED_A, parse("2018-01-02"));
+            semester.scheduleCourse(3, Semester.Moed.MOED_A, parse("2018-01-03"));
+            semester.scheduleCourse(4, Semester.Moed.MOED_A, parse("2018-01-04"));
+            semester.scheduleCourse(1, Semester.Moed.MOED_B, parse("2018-02-01"));
+            semester.scheduleCourse(2, Semester.Moed.MOED_B, parse("2018-02-01"));
+            semester.scheduleCourse(3, Semester.Moed.MOED_B, parse("2018-02-01"));
+            semester.scheduleCourse(4, Semester.Moed.MOED_B, parse("2018-02-01"));
+            assertEquals(4, semester.getSchedule(Semester.Moed.MOED_A).size());
+            assertEquals(4, semester.getSchedule(Semester.Moed.MOED_B).size());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Try to schedule on non-existant course
+        try {
+            semester.scheduleCourse(10, Semester.Moed.MOED_A, parse("2018-01-01"));
+            fail("Should have thrown CourseUnknown exception");
+        } catch (CourseUnknown e) {
+            // Expected
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Try to schedule exam day before exam period start date
+        try {
+            semester.scheduleCourse(1, Semester.Moed.MOED_A, parse("2014-01-01"));
+            fail("Should have thrown DateOutOfSchedule exception");
+        } catch (DateOutOfSchedule e) {
+            // Expected
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Unschedule some exams, should work
+        try {
+            semester.unscheduleCourse(1, Semester.Moed.MOED_A);
+            semester.unscheduleCourse(2, Semester.Moed.MOED_B);
+            assertEquals(3, semester.getSchedule(Semester.Moed.MOED_A).size());
+            assertEquals(3, semester.getSchedule(Semester.Moed.MOED_B).size());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Remove course, should remove schedules of this course
+        try {
+            semester.removeCourse(4);
+            assertEquals(2, semester.getSchedule(Semester.Moed.MOED_A).size());
+            assertEquals(2, semester.getSchedule(Semester.Moed.MOED_B).size());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+        // Unschedule non-existant schedules - no effect
+        try {
+            semester.unscheduleCourse(1, Semester.Moed.MOED_A);
+            semester.unscheduleCourse(2, Semester.Moed.MOED_B);
+            assertEquals(2, semester.getSchedule(Semester.Moed.MOED_A).size());
+            assertEquals(2, semester.getSchedule(Semester.Moed.MOED_B).size());
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
         }
     }
 }
