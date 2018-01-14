@@ -15,6 +15,7 @@ public class Course implements Comparable<Course>{
     private boolean isLast, isFirst, isRequired, hasExam;
     private double creditPoints;
     private ArrayList<Constraint> constraints;
+    private Set<Pair<String, Integer>> programs;
 
     /*
      * Logic.Course copy c0'tor performing deepCopy.
@@ -30,6 +31,7 @@ public class Course implements Comparable<Course>{
         constraints = new ArrayList<>(o.getConstraints());
         conflictCourses = new HashMap<>(o.getConflictCourses());
         hasExam = o.hasExam;
+        programs = o.programs;
     }
 
     /*
@@ -44,8 +46,16 @@ public class Course implements Comparable<Course>{
         this.isFirst = false;
         this.isRequired = isRequired;
         this.creditPoints = cPoints;
-        this.daysBefore = (int)floor(creditPoints);
+        this.daysBefore = (int)floor(creditPoints) - 1;
         this.hasExam = true;
+        this.programs = new HashSet<>();
+    }
+
+    public Course(String courseName, Integer courseID, boolean isRequired, double cPoints, Map<String, Integer> programs) {
+        this(courseName, courseID, isRequired, cPoints);
+        for(Map.Entry<String, Integer> program: programs.entrySet()){
+            this.programs.add(new Pair<>(program.getKey(), program.getValue()));
+        }
     }
 
     /*
@@ -220,5 +230,9 @@ public class Course implements Comparable<Course>{
         } else {
             return Integer.compare(o.daysBefore,daysBefore);
         }
+    }
+
+    public Set<Pair<String, Integer>> getPrograms() {
+        return programs;
     }
 }

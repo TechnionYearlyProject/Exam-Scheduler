@@ -1,6 +1,125 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <courses>
     <course>
+        <course_id>104031 </course_id>
+        <name>חשבון אינפיניטסימלי 1 מ' </name>
+        <weight>5.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">1</semester>
+        <semester program="מסלול כללי תלת-שנתי">1</semester>
+        <semester program="הנדסת תוכנה">1</semester>
+        <semester program="מערכות מידע">1</semester>
+        <semester program="הנדסת מחשבים">1</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">1</semester>
+    </course>
+    <course>
+        <course_id>104166 </course_id>
+        <name>אלגברה א'</name>
+        <weight>5.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">1</semester>
+        <semester program="מסלול כללי תלת-שנתי">1</semester>
+        <semester program="הנדסת תוכנה">1</semester>
+        <semester program="מערכות מידע">1</semester>
+        <semester program="הנדסת מחשבים">1</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">1</semester>
+    </course>
+    <course>
+        <course_id>324033 </course_id>
+        <name>אנגלית טכנית- מתקדמים ב'</name>
+        <weight>3</weight>
+        <semester program="מסלול כללי ארבע-שנתי">1</semester>
+        <semester program="מסלול כללי תלת-שנתי">1</semester>
+        <semester program="הנדסת תוכנה">1</semester>
+        <semester program="מערכות מידע">1</semester>
+        <semester program="הנדסת מחשבים">1</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">1</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">2</semester>
+    </course>
+    <course>
+        <course_id>104032</course_id>
+        <name>חשבון אינפיניטסימלי 2 מ'</name>
+        <weight>5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <semester program="הנדסת תוכנה">2</semester>
+        <semester program="מערכות מידע">2</semester>
+        <semester program="הנדסת מחשבים">2</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">2</semester>
+    </course>
+    <course>
+        <course_id>114071</course_id>
+        <name>פיזיקה 1מ'</name>
+        <weight>3.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">2</semester>
+        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <semester program="הנדסת תוכנה">2</semester>
+        <semester program="מערכות מידע">2</semester>
+        <semester program="הנדסת מחשבים">2</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">2</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">2</semester>
+    </course>
+    <course>
+        <course_id>114074</course_id>
+        <name>פיזיקה 1פ'</name>
+        <weight>5</weight>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">1</semester>
+    </course>
+    <course>
+        <course_id>094323</course_id>
+        <name>מערכות דינמיות לינאריוות</name>
+        <weight>3.5</weight>
+        <semester program="מערכות מידע">3</semester>
+    </course>
+    <course>
+        <course_id>094313</course_id>
+        <name>מודלים דטרמניסטיים בחקר ביצועים</name>
+        <weight>3.5</weight>
+        <semester program="מערכות מידע">3</semester>
+    </course>
+    <course>
+        <course_id>094314</course_id>
+        <name>מודלים סטוכסטיים בחקר ביצועים</name>
+        <weight>3.5</weight>
+        <semester program="מערכות מידע">4</semester>
+    </course>
+    <course>
+        <course_id>094423</course_id>
+        <name>מבוא לסטטיסטיקה</name>
+        <weight>3.5</weight>
+        <semester program="מערכות מידע">4</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">4</semester>
+    </course>
+    <course>
+        <course_id>094412</course_id>
+        <name>הסתברות 1 מ'</name>
+        <weight>4.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">3</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <semester program="הנדסת תוכנה">3</semester>
+        <semester program="מערכות מידע">3</semester>
+        <semester program="הנדסת מחשבים">3</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">3</semester>
+    </course>
+    <course>
+        <course_id>104134</course_id>
+        <name>אלגברה מודרנית ח</name>
+        <weight>2.5</weight>
+        <semester program="מסלול כללי ארבע-שנתי">3</semester>
+        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <semester program="הנדסת תוכנה">3</semester>
+        <semester program="הנדסת מחשבים">2</semester>
+        <semester program="המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה">3</semester>
+        <semester program="תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה">3</semester>
+    </course>
+    <course>
         <course_id>234111 </course_id>
         <name>מבוא למדעי המחשב </name>
         <weight>3</weight>
