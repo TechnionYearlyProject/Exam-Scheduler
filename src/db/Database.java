@@ -305,10 +305,11 @@ public class Database {
                     int courseId = Integer.parseInt(constraintElement.getElementsByTagName("course_id").item(0).getTextContent());
                     String startDateStr = constraintElement.getElementsByTagName("start_date").item(0).getTextContent();
                     String endDateStr = constraintElement.getElementsByTagName("end_date").item(0).getTextContent();
+                    boolean forbidden = constraintElement.getElementsByTagName("forbidden").getLength() == 1;
                     Calendar startDate = stringToDate(startDateStr, moed);
                     Calendar endDate = stringToDate(endDateStr, moed);
                     try {
-                        semester.addConstraint(courseId, moed, startDate, endDate);
+                        semester.addConstraint(courseId, moed, startDate, endDate, forbidden);
                     } catch (InvalidConstraint e) {
                         throw new InvalidDatabase("Course '" + courseId + "' has invalid constraint date : '" +
                                 startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
@@ -494,6 +495,11 @@ public class Database {
 
                     Element endDate = createDateElement(document, "end_date", constraint.end);
                     constraintElement.appendChild(endDate);
+
+                    if (constraint.forbidden) {
+                        Element forbiddenFlag = document.createElement("forbidden");
+                        constraintElement.appendChild(forbiddenFlag);
+                    }
 
                     constraints.appendChild(constraintElement);
                 }
