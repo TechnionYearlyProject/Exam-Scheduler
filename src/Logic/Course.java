@@ -46,7 +46,7 @@ public class Course implements Comparable<Course>{
         this.isFirst = false;
         this.isRequired = isRequired;
         this.creditPoints = cPoints;
-        this.daysBefore = (int)floor(creditPoints - 1);
+        this.daysBefore = (int)floor(creditPoints) - 1; //For now (after many experiments) need to leave as cPoints-1
         this.hasExam = true;
         this.programs = new HashSet<>();
         goodConstraints = new ArrayList<>();

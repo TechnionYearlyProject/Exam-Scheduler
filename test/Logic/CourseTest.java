@@ -7,6 +7,7 @@ import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,7 +104,7 @@ public class CourseTest {
 
     @Test
     public void verifyCreditPoints(){
-        assertTrue(4==c1.getDaysBefore());
+        assertTrue(4==c1.getDaysBefore() + 1);
     }
 
     @Test
