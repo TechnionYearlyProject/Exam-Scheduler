@@ -22,8 +22,6 @@ import javafx.scene.layout.VBox;
 import java.util.logging.Filter;
 
 public class CoursesTable extends VBox{
-    CourseLoader courses;
-    Database db;
     TableColumn<Item,CheckBox> take;
     TableColumn<Item,String> name;
     TableColumn<Item,Integer> study;
@@ -31,16 +29,11 @@ public class CoursesTable extends VBox{
     TableColumn<Item,Label> connections;
     TableView<Item> table;
     FilteredList<Item> filteredList;
+    Manager manager;
 
-    public CoursesTable() {
+    public CoursesTable(Manager parent) {
         this.getStylesheets().add("/coursetable_style.css");
-        try {
-            db = new Database();
-            courses = new CourseLoader(db.loadSemester(2017, "winter_test"),null);
-        }
-        catch (Exception e) {
-            //handle exceptions
-        }
+        manager = parent;
         table = new TableView<>();
         take = new TableColumn<>("");
         take.setCellValueFactory(new PropertyValueFactory<>("take"));
@@ -106,7 +99,7 @@ public class CoursesTable extends VBox{
     }
     public ObservableList<Item> getData() {
         ObservableList<Item> items = FXCollections.observableArrayList();
-        for (Logic.Course course:courses.getCourses().values()) {
+        for (Logic.Course course:manager.courseloader.getCourses().values()) {
             items.add(new Item(course));
         }
         return items;

@@ -31,7 +31,7 @@ public class Toolbar extends HBox{
         this.getChildren().addAll(export_button, clean_button, save_button, schedule_button, title_box);
     }
     public void cleanFunction() {
-        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->wrapper.cleanData());
+        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->wrapper.manager.cleanData());
     }
 
     public void saveFunction() {
@@ -44,7 +44,7 @@ public class Toolbar extends HBox{
                 Logic.Schedule scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
                 Logic.Schedule scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
                 scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
+                //scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
                 wrapper.updateSchdule(scheduleA, scheduleB);
             } catch (Exception e){}
         });

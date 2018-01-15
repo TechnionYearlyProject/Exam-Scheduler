@@ -10,7 +10,9 @@ public class Moed extends VBox{
     Picker picker2;
     Boolean start_set;
     Boolean end_set;
-    public Moed(String title,LocalDate start, LocalDate end) {
+    Manager manager;
+    public Moed(Manager parent, String title,LocalDate start, LocalDate end) {
+        manager = parent;
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
         start_set = false;
@@ -21,8 +23,17 @@ public class Moed extends VBox{
         picker1.getPicker().setValue(start);
         picker2 = new Picker("תאריך סיום:");
         picker2.getPicker().setValue(end);
-        schedule = new Schedule(start,end);
+        schedule = new Schedule(this,start,end);
         this.getChildren().addAll(label,picker1,picker2,schedule);
+    }
+
+    public void cleanData(LocalDate start, LocalDate end) {
+        picker1.getPicker().setValue(start);
+        picker2.getPicker().setValue(end);
+        this.getChildren().remove(3);
+        schedule = new Schedule(this,start,end);
+        this.getChildren().add(schedule);
+
     }
 
 }

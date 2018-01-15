@@ -23,7 +23,8 @@ public class Manager extends HBox {
     LocalDate Bstart;
     LocalDate Bend;
     Boolean flag;
-    public Manager() {
+    Wrapper wrapper;
+    public Manager(Wrapper parent) {
         try {
             db = new Database();
             courseloader = new CourseLoader(db.loadSemester(2017, "winter_test"),null);
@@ -35,14 +36,15 @@ public class Manager extends HBox {
         catch (Exception e) {
             //handle exceptions
         }
+        wrapper = parent;
         flag = true;
-        coursetable = new CoursesTable();
+        coursetable = new CoursesTable(this);
         Astart = LocalDate.now();
         Aend = LocalDate.now().plusDays(35);
         Bstart = LocalDate.now().plusDays(36);
         Bend = LocalDate.now().plusDays(72);
-        A = new Moed("מועד א'",Astart,Aend);
-        B = new Moed("מועד ב'",Bstart,Bend);
+        A = new Moed(this,"מועד א'",Astart,Aend);
+        B = new Moed(this,"מועד ב'",Bstart,Bend);
         this.getChildren().addAll(B,A,coursetable);
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
@@ -53,7 +55,7 @@ public class Manager extends HBox {
             if (datesOkay(curr,Aend,Bstart,Bend)) {
                 Astart = curr;
                 A.getChildren().remove(3);
-                A.schedule = new Schedule(Astart, Aend);
+                A.schedule = new Schedule(A,Astart, Aend);
                 A.getChildren().add(A.schedule);
             }
             else {
@@ -70,7 +72,7 @@ public class Manager extends HBox {
             if (datesOkay(Astart,curr,Bstart,Bend)) {
                 Aend = curr;
                 A.getChildren().remove(3);
-                A.schedule = new Schedule(Astart, Aend);
+                A.schedule = new Schedule(A,Astart, Aend);
                 A.getChildren().add(A.schedule);
             }
             else {
@@ -87,7 +89,7 @@ public class Manager extends HBox {
             if (datesOkay(Astart,Aend,curr,Bend)) {
                 Bstart = curr;
                 B.getChildren().remove(3);
-                B.schedule = new Schedule(Bstart, Bend);
+                B.schedule = new Schedule(B,Bstart, Bend);
                 B.getChildren().add(B.schedule);
             }
             else {
@@ -104,7 +106,7 @@ public class Manager extends HBox {
             if (datesOkay(Astart,Aend,Bstart,curr)) {
                 Bend = curr;
                 B.getChildren().remove(3);
-                B.schedule = new Schedule(Bstart, Bend);
+                B.schedule = new Schedule(B,Bstart, Bend);
                 B.getChildren().add(B.schedule);
             }
             else {
@@ -119,17 +121,42 @@ public class Manager extends HBox {
     }
 
     public void cleanData() {
-        this.getChildren().remove(0);
-        B = new Moed("מועד ב'",LocalDate.now(),LocalDate.now().plusDays(35));
-        this.getChildren().add(0, B);
-        this.getChildren().remove(1);
-        A = new Moed("מועד א'",LocalDate.now().plusDays(36),LocalDate.now().plusDays(72));
-        this.getChildren().add(1, A);
+        Astart = LocalDate.now();
+        Aend = LocalDate.now().plusDays(35);
+        Bstart = LocalDate.now().plusDays(36);
+        Bend = LocalDate.now().plusDays(72);
+        A.cleanData(Astart, Aend);
+        B.cleanData(Bstart, Bend);
+        try {
+            constraintlistA = new ConstraintList();
+            constraintlistB = new ConstraintList();
+            occupiedA = new HashSet<LocalDate>();
+            occupiedB = new HashSet<LocalDate>();
+        }
+        catch (Exception e) {
+            //handle exceptions
+        }
     }
 
     public boolean datesOkay(LocalDate Astart,LocalDate Aend, LocalDate Bstart, LocalDate Bend) {
         return ((Astart.isBefore(Aend))&&(Aend.isBefore(Bstart))&&(Bstart.isBefore(Bend)));
     }
 
+    public void blockDay(LocalDate date) {
+        if (!date.isBefore(Astart) && !date.isAfter(Aend)) {
+            occupiedA.add(date);
+        }
+        else {
+            occupiedB.add(date);
+        }
+    }
 
+    public void unblockDay(LocalDate date) {
+        if (!date.isBefore(Astart) && !date.isAfter(Aend)) {
+            occupiedA.remove(date);
+        }
+        else {
+            occupiedB.remove(date);
+        }
+    }
 }

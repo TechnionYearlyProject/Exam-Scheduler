@@ -1,5 +1,6 @@
 package GUI.Components;
 
+import Logic.Course;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -21,32 +22,17 @@ public class Test extends Label{
     * course- the course to display in the schedule
     * setTooltip - true if we want the full course information to appear when hovering
     */
-    public Test(Integer course_id) {
+    public Test(Course course) {
         this.setTextFill(Paint.valueOf("white"));
-        this.setText(course_id.toString());
+        this.setText(course.getCourseName());
         this.setPadding(new Insets(0,3,0,0));
         this.setAlignment(Pos.CENTER_RIGHT);
-        /*if(setTooltip){
-            this.setPrefWidth(86);
-            this.setPrefHeight(16);
-            this.setMaxHeight(16);
-            Tooltip msg = new Tooltip();
-            msg.setGraphic(new Test(course_id,false));
-            msg.setStyle("-fx-background-color: rgba(30,30,30,0.0);\n");
-            bindTooltip(this, msg);
-        }*/
-        /*this.setOnMouseClicked(event->{
-            if(event.getButton()== MouseButton.SECONDARY) {
-                day.getTests().getChildren().remove(this);
-                day.getDisplayedCourseIDs().remove(course_id);
-            }
-        });*/
-        this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: "+ course_id);
+        this.setPrefWidth(86);
+        this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: " + getCourseColor(course.getCourseID()));
     }
 
-    private String getCourseColor(int course_int) {
-        // int cant handle 0 digit
-        String course_str = Integer.toString(course_int);
+    private String getCourseColor(int course_id) {
+        String course_str = String.format("%06d",course_id);
         for (int i=0; i<start_digits.size();i++)
             if (course_str.startsWith(start_digits.get(i)))
                 return colors.get(i);

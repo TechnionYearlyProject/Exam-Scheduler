@@ -22,14 +22,17 @@ import java.util.List;
 
 
 public class Day extends VBox{
-    private static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
-    private HBox hbox;
-    private Label lock_label;
-    private Label label;
-    private VBox tests;
-    private Boolean isBlocked;
-    private List<Integer> displayedCourseIDs = new LinkedList<>();
-    public Day(LocalDate input_date) {
+    static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
+    HBox hbox;
+    Label lock_label;
+    Label label;
+    VBox tests;
+    Boolean isBlocked;
+    Schedule schedule;
+    LocalDate date;
+    public Day(Schedule parent, LocalDate input_date) {
+        date = input_date;
+        schedule = parent;
         isBlocked = false;
         label = new Label(input_date.format(disp_date));
         label.setPadding(new Insets(2,0,0,2));
@@ -53,7 +56,6 @@ public class Day extends VBox{
                 Enable();
             else
                 Block();
-
         });
         hbox = new HBox();
         hbox.getChildren().addAll(label,lock_label);
@@ -61,9 +63,6 @@ public class Day extends VBox{
         tests.setSpacing(1);
         tests.setStyle("-fx-background-color: white");
         tests.setAlignment(Pos.TOP_CENTER);
-        /* if (courses != null)
-             for (Course course:courses)
-                 this.addTest(course.getCourseID());*/
         this.setSpacing(2);
         this.getChildren().add(hbox);
         this.getChildren().add(tests);
@@ -71,34 +70,30 @@ public class Day extends VBox{
         this.setPrefHeight(100);
         this.setStyle("-fx-background-color: white");
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
-        this.setOnDragDropped(event->{
+        /*this.setOnDragDropped(event->{
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString() && !isBlocked) {
                 String courseName = db.getString().split(" - ")[1];
                 String courseNum = db.getString().split(" - ")[0];
-                addTest(Integer.parseInt(courseNum));
                 success = true;
-/*                for (int i = 0; i < table.getItems().size(); i++) {
-                    if (table.getItems().get(i).name.equals(db.getString())) {
-                        table.getItems().get(i).
-                    }
-                }*/
             }
             event.setDropCompleted(success);
             event.consume();
-        });
+        });*/
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event -> {
             if (!isBlocked)
                 lock_label.setVisible(false);
         });
     }
     private void Block() {
+        schedule.moed.manager.blockDay(date);
         this.setStyle("-fx-background-color: #ECEFF1");
         tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
     }
     private void Enable() {
+        schedule.moed.manager.unblockDay(date);
         this.setStyle("-fx-background-color: white");
         tests.setStyle("-fx-background-color: white");
         isBlocked = false;
@@ -114,14 +109,7 @@ public class Day extends VBox{
         return tests;
     }
 
-    public List<Integer> getDisplayedCourseIDs() {
-        return displayedCourseIDs;
-    }
-
-    public void addTest(Integer course_id) {
-        if(!displayedCourseIDs.contains(course_id)){
-            displayedCourseIDs.add(course_id);
-            tests.getChildren().add(new Test(course_id));
-        }
+    public void addTest(Course course) {
+        tests.getChildren().add(new Test(course));
     }
 }

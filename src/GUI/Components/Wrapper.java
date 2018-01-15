@@ -9,7 +9,7 @@ public class Wrapper extends ScrollPane {
     Toolbar toolbar;
     Manager manager;
     public Wrapper() {
-        manager = new Manager();
+        manager = new Manager(this);
         toolbar = new Toolbar(this);
         VBox vbox = new VBox();
         vbox.setStyle("-fx-background-image: url(\"/background.png\");");
@@ -20,12 +20,9 @@ public class Wrapper extends ScrollPane {
         this.setContent(vbox);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
-    public void cleanData() {
-        manager.cleanData();
-    }
     public void updateSchdule(Logic.Schedule scheduleA, Logic.Schedule scheduleB) {
-            manager.A.schedule.updateSchedule(scheduleA);
-            manager.B.schedule.updateSchedule(scheduleB);
+            manager.A.schedule.updateSchedule(scheduleA,manager.courseloader);
+            manager.B.schedule.updateSchedule(scheduleB,manager.courseloader);
         }
 }
 /*
