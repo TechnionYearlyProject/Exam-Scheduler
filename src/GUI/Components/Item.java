@@ -1,31 +1,24 @@
 package GUI.Components;
-
-import db.Course;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.VBox;
-
 
 public class Item {
     CheckBox take;
     String name;
-    Integer study;
+    SimpleStringProperty study;
     ChoiceBox<String> pref;
     Label connections;
     public Item(Logic.Course course) {
         take = new CheckBox();
         take.setSelected(true);
         name = String.format("%06d",course.getCourseID()) + " - " + course.getCourseName();
-        study = course.getCreditPoints().intValue();
+        study = new SimpleStringProperty((new Integer(course.getCreditPoints().intValue()).toString()));
         pref = new ChoiceBox<String>();
         pref.getItems().addAll("אוטומטי","סוף תקופה","תחילת תקופה");
         pref.setValue("אוטומטי");
@@ -40,14 +33,22 @@ public class Item {
     public CheckBox getTake() {
         return take;
     }
-    public Integer getStudy() {
-        return study;
+    public String getStudy() {
+        return study.get();
+    }
+    public void setStudy(String new_study) {
+        study.set(new_study);
     }
     public ChoiceBox<String> getPref() {
         return pref;
     }
     public Label getConnections() {
         return connections;
+    }
+
+    public Integer getCourseID()
+    {
+        return Integer.parseInt(name.split(" - ")[0]);
     }
 
 

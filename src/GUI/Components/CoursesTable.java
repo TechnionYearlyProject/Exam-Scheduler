@@ -1,30 +1,26 @@
 package GUI.Components;
-
-import Logic.CourseLoader;
-import db.Course;
-import db.Database;
-import db.Semester;
-import db.exception.InvalidDatabase;
-import db.exception.SemesterFileMissing;
-import db.exception.SemesterNotFound;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
-
-import java.util.logging.Filter;
+import Logic.Course;
+import javafx.util.Callback;
+import javafx.util.converter.IntegerStringConverter;
 
 public class CoursesTable extends VBox{
     TableColumn<Item,CheckBox> take;
     TableColumn<Item,String> name;
-    TableColumn<Item,Integer> study;
+    TableColumn<Item,String> study;
     TableColumn<Item,CheckBox> pref;
     TableColumn<Item,Label> connections;
     TableView<Item> table;
@@ -47,6 +43,12 @@ public class CoursesTable extends VBox{
         study.setCellValueFactory(new PropertyValueFactory<>("study"));
         study.setStyle("-fx-alignment: CENTER-RIGHT");
         study.setPrefWidth(72);
+        study.setCellFactory(TextFieldTableCell.forTableColumn());
+        study.setOnEditCommit(event -> {
+            try {
+                manager.courseloader.getCourse(event.getRowValue().getCourseID()).setDaysBefore(Integer.parseInt(event.getNewValue()));
+            } catch (Exception e) {}
+        });
         pref = new TableColumn<>("העדפת שיבוץ");
         pref.setCellValueFactory(new PropertyValueFactory<>("pref"));
         pref.setStyle("-fx-alignment: CENTER-RIGHT");
@@ -55,6 +57,7 @@ public class CoursesTable extends VBox{
         connections.setCellValueFactory(new PropertyValueFactory<>("connections"));
         connections.setStyle("-fx-alignment: CENTER-RIGHT");
         connections.setPrefWidth(56);
+        table.setEditable(true);
         table.setPrefWidth(500);
         table.setPrefHeight(726);
         table.setItems(getData());
@@ -65,22 +68,17 @@ public class CoursesTable extends VBox{
                 if(take.getCellData(row.getIndex()).isSelected()) {
                     Dragboard db = row.startDragAndDrop(TransferMode.ANY);
                     ClipboardContent content = new ClipboardContent();
-                    content.putString(name.getCellData(row.getIndex()));
+                    String course_str = (name.getCellData(row.getIndex())).split(" - ")[0];
+                    content.putString(course_str);
                     db.setContent(content);
-                    db.setDragView(row.snapshot(null, null));
-                }
-                event.consume();
-            });
-            row.setOnDragOver(event -> {
-                if (event.getGestureSource() != row && event.getDragboard().hasString()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    Course course = manager.courseloader.getCourse(Integer.parseInt(course_str));
+                    Scene scene = new Scene(new Test(course));
+                    db.setDragView(scene.snapshot(null));
                 }
                 event.consume();
             });
             return row ;
         });
-
-
         filteredList = new FilteredList<>(getData());
         TextField filterInput = new TextField();
         filterInput.setPromptText("חפש קורס...");

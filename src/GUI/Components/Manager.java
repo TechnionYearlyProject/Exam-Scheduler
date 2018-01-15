@@ -1,5 +1,4 @@
 package GUI.Components;
-
 import Logic.CourseLoader;
 import db.ConstraintList;
 import db.Database;

@@ -1,9 +1,6 @@
 package GUI.Components;
 import Logic.Course;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
@@ -14,12 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
-
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
-
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class Day extends VBox{
     static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
@@ -70,17 +67,25 @@ public class Day extends VBox{
         this.setPrefHeight(100);
         this.setStyle("-fx-background-color: white");
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
-        /*this.setOnDragDropped(event->{
+        this.setOnDragDropped(event->{
             Dragboard db = event.getDragboard();
-            boolean success = false;
             if (db.hasString() && !isBlocked) {
-                String courseName = db.getString().split(" - ")[1];
-                String courseNum = db.getString().split(" - ")[0];
-                success = true;
+                Integer course_id = Integer.parseInt(db.getString());
+                this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
+                GregorianCalendar calendar = new GregorianCalendar(date.getYear(),date.getMonthValue(),date.getDayOfMonth());
+                if (schedule.moed.moedType == Moed.MoedType.A) {
+                    try {
+                        schedule.moed.manager.constraintlistA.addConstraint(course_id,calendar,calendar);
+                    } catch (Exception e) {}
+                } else {
+                    try {
+                        schedule.moed.manager.constraintlistB.addConstraint(course_id, calendar, calendar);
+                    } catch (Exception e) {}
+                }
             }
-            event.setDropCompleted(success);
+            event.setDropCompleted(true);
             event.consume();
-        });*/
+        });
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event -> {
             if (!isBlocked)
                 lock_label.setVisible(false);

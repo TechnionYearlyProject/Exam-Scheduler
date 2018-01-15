@@ -11,7 +11,15 @@ public class Moed extends VBox{
     Boolean start_set;
     Boolean end_set;
     Manager manager;
+    enum MoedType {
+        A,B
+    }
+    MoedType moedType;
     public Moed(Manager parent, String title,LocalDate start, LocalDate end) {
+        if (title == "מועד א'")
+            moedType = MoedType.A;
+        else
+            moedType = MoedType.B;
         manager = parent;
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);

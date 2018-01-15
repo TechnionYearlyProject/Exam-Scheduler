@@ -138,13 +138,13 @@ public class Course implements Comparable<Course>{
     }
 
 
-    void setDaysBefore(int daysBefore) throws IllegalDaysBefore {
+    public void setDaysBefore(int daysBefore) throws IllegalDaysBefore {
         if(daysBefore < 1){
             throw new IllegalDaysBefore();
         }
         this.daysBefore = daysBefore;
     }
-    int getDaysBefore(){
+    public int getDaysBefore(){
         return daysBefore;
     }
 
