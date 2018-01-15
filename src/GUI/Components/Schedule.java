@@ -1,5 +1,4 @@
 package GUI.Components;
-
 import Logic.CourseLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

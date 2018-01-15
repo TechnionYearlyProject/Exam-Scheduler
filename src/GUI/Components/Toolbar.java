@@ -1,12 +1,10 @@
 package GUI.Components;
-
 import Logic.Schedule;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import java.time.LocalDate;
 
 public class Toolbar extends HBox{
     Wrapper wrapper;
