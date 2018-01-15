@@ -84,7 +84,7 @@ public class ScheduleTest {
         }
     }
 
-    @Test
+    /*@Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
         moedA.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_A), null);
         for (Course course: loader.getSortedCourses()){
@@ -102,7 +102,7 @@ public class ScheduleTest {
         System.out.println("============ MOED B ============");
         printSchedule(moedB);
 
-    }
+    }*/
 
     @Test
     public void produceScheduleWithIllegalData() throws Exception {

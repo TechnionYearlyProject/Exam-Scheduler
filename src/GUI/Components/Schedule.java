@@ -1,33 +1,24 @@
 package GUI.Components;
-import Logic.Course;
+
 import db.Semester;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-
 
 public class Schedule extends GridPane{
     static ArrayList<String > weekdays = new ArrayList<String>(Arrays.asList("ו'","ה'","ד'","ג'","ב'","א'"));
     LocalDate start;
     LocalDate finish;
     HashMap<LocalDate,Day> days;
-    private CoursesTable table;
 
-
-    public Schedule(CoursesTable table, LocalDate input_start, LocalDate input_finish) {
-        this.table = table;
+    public Schedule(LocalDate input_start, LocalDate input_finish) {
         start = input_start;
         finish = input_finish;
         days = new HashMap<>();
@@ -52,16 +43,16 @@ public class Schedule extends GridPane{
 
         for (int i = 5; i >= 0; i--, current = current.plusDays(1)) {
             if (current.isBefore(input_start)) {
-                Day day = new Day(table, current, null);
+                Day day = new Day(current);
                 day.Disable();
                 this.add(day, i, 1);
             } else {
                 if (!current.isAfter(input_finish)) {
-                    Day day = new Day(table, current,null);
+                    Day day = new Day(current);
                     days.put(current, day);
                     this.add(day, i, 1);
                 } else {
-                    Day day = new Day(table, current,null);
+                    Day day = new Day(current);
                     day.Disable();
                     this.add(day, i, 1);
                 }
@@ -73,13 +64,13 @@ public class Schedule extends GridPane{
         {
             for (int j=5;j>=0;j--) {
                 if (current.isAfter(input_finish)) {
-                    Day day = new Day(table, current,null);
+                    Day day = new Day(current);
                     day.Disable();
                     this.add(day, j, i);
                     current = current.plusDays(1);
                     continue;
                 }
-                Day day = new Day(table, current,null);
+                Day day = new Day(current);
                 days.put(current,day);
                 this.add(day,j,i);
                 current = current.plusDays(1);
@@ -97,7 +88,7 @@ public class Schedule extends GridPane{
     {
         days.get(date).addTest(course);
     }*/
-    public void updateSchedule(Logic.Schedule schedule, Semester semester) {
+    public void updateSchedule(Logic.Schedule schedule) {
         for (Logic.Day day:schedule.getSchedulableDays()) {
             Day curr_day = days.get(day.getDate());
             for (Integer course_number : day.getCoursesScheduledToTheDay()) {

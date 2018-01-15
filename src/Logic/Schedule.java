@@ -159,10 +159,9 @@ public class Schedule {
         return null;
     }
 
-    public void produceSchedule(Semester semester, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
-        CourseLoader loader = new CourseLoader(semester, cl);
+    public void produceSchedule(CourseLoader courseloader, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
         //sort courses by number of conflicts
-        List<Course> courses = loader.getSortedCourses();
+        List<Course> courses = courseloader.getSortedCourses();
         //First need to schedule courses with constraints
         this.assignConstraints(cl, courses);
         //Now, try to produce a legal (maybe not optimized) schedule
