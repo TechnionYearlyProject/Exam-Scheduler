@@ -9,9 +9,9 @@ import javafx.scene.text.TextAlignment;
 import java.time.LocalDate;
 
 public class Toolbar extends HBox{
-    Wrapper parent;
-    public Toolbar(Wrapper new_parent) {
-        parent = new_parent;
+    Wrapper wrapper;
+    public Toolbar(Wrapper parent) {
+        wrapper = parent;
         Text main_title = new Text("מערכת שיבוץ לוח מבחנים");
         main_title.setTextAlignment(TextAlignment.RIGHT);
         main_title.setStyle("-fx-font-size: 34pt; -fx-font-weight: bold");
@@ -31,7 +31,7 @@ public class Toolbar extends HBox{
         this.getChildren().addAll(export_button, clean_button, save_button, schedule_button, title_box);
     }
     public void cleanFunction() {
-        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->parent.cleanData());
+        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->wrapper.cleanData());
     }
 
     public void saveFunction() {
@@ -41,11 +41,11 @@ public class Toolbar extends HBox{
     public void scheduleFunction(){
         LoadingBox alert = new LoadingBox(()->  {
             try {
-                Logic.Schedule scheduleA = new Schedule(LocalDate.of(2018, 1, 14), LocalDate.of(2018, 2, 23), null);
-                Logic.Schedule scheduleB = new Schedule(LocalDate.of(2018, 1, 14), LocalDate.of(2018, 2, 23), null);
-                scheduleA.produceSchedule(parent.manager.courseloader, parent.manager.constraintlistA, null);
-                scheduleB.produceSchedule(parent.manager.courseloader, parent.manager.constraintlistB, scheduleA);
-                parent.updateSchdule(scheduleA, scheduleB);
+                Logic.Schedule scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
+                Logic.Schedule scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
+                scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
+                scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
+                wrapper.updateSchdule(scheduleA, scheduleB);
             } catch (Exception e){}
         });
 

@@ -1,6 +1,4 @@
 package GUI.Components;
-// http://htmlcolorcodes.com/color-chart/ 
-// https://icons8.com/icon/new-icons/all
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,9 +17,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-
-	
 
 public class AlertBox {
 	ImageView X_icon;
@@ -96,6 +91,7 @@ public class AlertBox {
 
 		icon_label.setGraphic(new ImageView(icon_image));
 		Label msg_label = new Label(msg);
+		msg_label.setAlignment(Pos.CENTER_RIGHT);
 		hbox_body.getChildren().addAll(msg_label, icon_label);
 
 		HBox hbox_button = new HBox();

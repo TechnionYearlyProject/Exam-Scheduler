@@ -21,9 +21,7 @@ import java.util.HashMap;
 public class Picker extends HBox{
     LocalDate date;
     DatePicker picker;
-    //Boolean is_set;
     public Picker(String title) {
-        //this.is_set = false;
         this.setAlignment(Pos.TOP_RIGHT);
         Label label = new Label(title);
         label.setPrefWidth(140);
@@ -31,11 +29,6 @@ public class Picker extends HBox{
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 13pt");
         picker = new DatePicker();
         picker.getStylesheets().add("/metro.css");
-        /*picker.setOnAction(event -> {
-            date = picker.getValue();
-            is_set = true;
-            picker.fireEvent(event);
-        });*/
         picker.setConverter(new StringConverter<LocalDate>() {
             @Override public String toString(LocalDate date) {
                 String pattern = "dd/MM/yyyy";
@@ -62,20 +55,17 @@ public class Picker extends HBox{
                 }
             }
         });
-
         this.getChildren().addAll(picker,label);
-
-
-
     }
+
     public LocalDate getDate() {
-        //if (is_set)
-            return date;
-        //return LocalDate.now();
+        return date;
     }
+
     public DatePicker getPicker() {
         return picker;
     }
+
     public void setDate(LocalDate new_date) {
         date = new_date;
     }
