@@ -84,14 +84,14 @@ public class ScheduleTest {
         }
     }
 
-    /*@Test
+    @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        moedA.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_A), null);
+        moedA.produceSchedule(loader, semester.constraints.get(Semester.Moed.MOED_A), null);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(moedA, course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(moedA, course, true));
         }
-        moedB.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_B), moedA);
+        moedB.produceSchedule(loader, semester.constraints.get(Semester.Moed.MOED_B), moedA);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(moedB, course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(moedB, course, false));
@@ -102,7 +102,7 @@ public class ScheduleTest {
         System.out.println("============ MOED B ============");
         printSchedule(moedB);
 
-    }*/
+    }
 
     @Test
     public void produceScheduleWithIllegalData() throws Exception {
