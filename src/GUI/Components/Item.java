@@ -24,7 +24,7 @@ public class Item {
     public Item(Logic.Course course) {
         take = new CheckBox();
         take.setSelected(true);
-        name = course.getCourseID() + " - " + course.getCourseName();
+        name = String.format("%06d",course.getCourseID()) + " - " + course.getCourseName();
         study = course.getCreditPoints().intValue();
         pref = new ChoiceBox<String>();
         pref.getItems().addAll("אוטומטי","סוף תקופה","תחילת תקופה");
