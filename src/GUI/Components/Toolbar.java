@@ -1,7 +1,9 @@
 package GUI.Components;
 import Logic.Schedule;
 import Logic.WriteScheduleToDB;
-import Output.CSVIFileWriter;
+import Output.CSVFileWriter;
+import Output.CSVFileWriter;
+import Output.Exceptions.ErrorOpeningFile;
 import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -28,13 +30,13 @@ public class Toolbar extends HBox{
         title_box.setAlignment(Pos.TOP_RIGHT);
         title_box.getChildren().addAll(main_title, sub_title);
         title_box.setPrefWidth(996);
-        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png",()->scheduleFunction(),40,150);
+        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png", this::scheduleFunction,40,150);
         schedule_button.setCircular();
-        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png",()->cleanFunction(),40,150);
+        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png", this::cleanFunction,40,150);
         clean_button.setCircular();
-        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",()->saveFunction(),40,150);
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png", this::saveFunction,40,150);
         save_button.setCircular();
-        export_button = new CustomButton("ייצוא", "/export_icon.png",()->exportFunction(),40,150);
+        export_button = new CustomButton("ייצוא", "/export_icon.png", this::exportFunction,40,150);
         export_button.setCircular();
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
@@ -42,6 +44,16 @@ public class Toolbar extends HBox{
     }
     public void cleanFunction() {
         new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", () -> wrapper.manager.cleanData());
+        for (Day day : wrapper.manager.A.schedule.days.values()){
+            day.enableBlocking();
+        }
+        for (Day day : wrapper.manager.B.schedule.days.values()){
+            day.enableBlocking();
+        }
+        wrapper.manager.A.picker1.enable();
+        wrapper.manager.A.picker2.enable();
+        wrapper.manager.B.picker1.enable();
+        wrapper.manager.B.picker2.enable();
     }
 
     public void saveFunction() {
@@ -55,8 +67,12 @@ public class Toolbar extends HBox{
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
             CustomButton CSVButton = new CustomButton("יצא בתור CSV",null, ()->{
-                CSVIFileWriter writer = new CSVIFileWriter();
-                //writer.write("temp.csv",wrapper.manager.);
+                CSVFileWriter writer = new CSVFileWriter();
+                try {
+                    writer.write("temp.csv",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                } catch (ErrorOpeningFile errorOpeningFile) {
+                    errorOpeningFile.printStackTrace();
+                }
             }, 30,110);
             CSVButton.setRectangle();
             CustomButton XMLButton = new CustomButton("יצא בתור XML",null, stage::close, 30 ,110);
@@ -91,8 +107,15 @@ public class Toolbar extends HBox{
                 wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
             } catch (Exception ignored) {}});
         wrapper.manager.coursetable.setScheduled(true);
-
-
-
+        for (Day day : wrapper.manager.A.schedule.days.values()){
+            day.disableBlocking();
+        }
+        for (Day day : wrapper.manager.B.schedule.days.values()){
+            day.disableBlocking();
+        }
+        wrapper.manager.A.picker1.disable();
+        wrapper.manager.A.picker2.disable();
+        wrapper.manager.B.picker1.disable();
+        wrapper.manager.B.picker2.disable();
     }
 }

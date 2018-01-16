@@ -38,9 +38,6 @@ public class Test extends Label{
             msg.setStyle("-fx-background-color: rgba(30,30,30,0.0);\n");
             bindTooltip(this, msg);
         }
-        else{
-
-        }
         this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 3 3 3 3; -fx-background-color: " + getCourseColor(course.getCourseID()));
     }
 

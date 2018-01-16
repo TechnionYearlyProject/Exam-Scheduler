@@ -1,6 +1,5 @@
 package GUI.Components;
 import Logic.Course;
-import com.sun.deploy.util.StringUtils;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;

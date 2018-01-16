@@ -29,6 +29,7 @@ public class Day extends VBox{
     Boolean isBlocked;
     Schedule schedule;
     LocalDate date;
+    boolean blockingAllowed;
     public Day(Schedule parent, LocalDate input_date) {
         date = input_date;
         schedule = parent;
@@ -109,20 +110,22 @@ public class Day extends VBox{
         });
     }
     private void Block() {
-        schedule.moed.manager.blockDay(date);
-        this.setStyle("-fx-background-color: #ECEFF1");
-        tests.setStyle("-fx-background-color: #ECEFF1");
-        isBlocked = true;
-        if (schedule.moed.moedType == Moed.MoedType.A)
-            schedule.moed.manager.constraintlistA.removeDateConstraint(date);
-        else
-            schedule.moed.manager.constraintlistB.removeDateConstraint(date);
-        this.getChildren().remove(1);
-        tests = new VBox();
-        tests.setSpacing(1);
-        tests.setStyle("-fx-background-color: white");
-        tests.setAlignment(Pos.TOP_CENTER);
-        this.getChildren().add(tests);
+        if(blockingAllowed) {
+            schedule.moed.manager.blockDay(date);
+            this.setStyle("-fx-background-color: #ECEFF1");
+            tests.setStyle("-fx-background-color: #ECEFF1");
+            isBlocked = true;
+            if (schedule.moed.moedType == Moed.MoedType.A)
+                schedule.moed.manager.constraintlistA.removeDateConstraint(date);
+            else
+                schedule.moed.manager.constraintlistB.removeDateConstraint(date);
+            this.getChildren().remove(1);
+            tests = new VBox();
+            tests.setSpacing(1);
+            tests.setStyle("-fx-background-color: white");
+            tests.setAlignment(Pos.TOP_CENTER);
+            this.getChildren().add(tests);
+        }
     }
     private void Enable() {
         schedule.moed.manager.unblockDay(date);
@@ -135,6 +138,14 @@ public class Day extends VBox{
         tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
         this.setDisable(true);
+    }
+    public void disableBlocking(){
+        blockingAllowed = false;
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(false));
+    }
+    public void enableBlocking(){
+        blockingAllowed = true;
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
     }
 
     public VBox getTests() {
