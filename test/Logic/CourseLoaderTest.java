@@ -1,3 +1,4 @@
+/*
 package Logic;
 
 import db.Course;
@@ -44,4 +45,4 @@ public class CourseLoaderTest {
         }
     }
 
-}
+}*/

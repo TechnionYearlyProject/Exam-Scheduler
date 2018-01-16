@@ -59,7 +59,9 @@ public class CourseLoader {
                 isRequired = true;
             }
 
-            Logic.Course current =  new Logic.Course(c.courseName,c.courseID,isRequired,c.creditPoints, c.getPrograms());
+            Logic.Course current =  new Logic.Course(c.courseName,c.courseID,isRequired
+                    ,c.creditPoints, c.getPrograms());
+
             courses.put(current.getCourseID(),current);
         }
     }
