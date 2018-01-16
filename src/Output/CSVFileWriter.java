@@ -5,10 +5,8 @@ import Logic.CourseLoader;
 import Logic.Day;
 import Output.Exceptions.ErrorOpeningFile;
 
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -20,14 +18,10 @@ public class CSVFileWriter implements IFileWriter {
 
 
     public void write(String fileName, List<Day> array, CourseLoader cL) throws ErrorOpeningFile {
-        OutputStreamWriter f =null;
+
+        FileWriter f;
         try {
-            f = new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            assert f != null;
+            f = new FileWriter(fileName);
             f.append(FORMAT);
             f.append(String.format("%n"));
             for (Day d: array) {

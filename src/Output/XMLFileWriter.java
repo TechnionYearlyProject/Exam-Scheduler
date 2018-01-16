@@ -1,8 +1,13 @@
 package Output;
 
+import Logic.Course;
 import Logic.CourseLoader;
 import Logic.Day;
 import Output.Exceptions.ErrorOpeningFile;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import db.Semester;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,6 +21,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -26,9 +34,11 @@ public class XMLFileWriter implements IFileWriter {
     @Override
     public void write(String fileName, List<Day> lst, CourseLoader cL) throws ErrorOpeningFile {
         try {
+
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
@@ -41,9 +51,6 @@ public class XMLFileWriter implements IFileWriter {
                     Element course = doc.createElement("Course");
                     rootElement.appendChild(course);
                     course.setAttribute("ID", Integer.toString(key));
-
-                    course.setAttribute("Name", cL.getCourse(key).getCourseName());
-                    // set attribute to staff element
 
                     Element day = doc.createElement("Day");
                     day.appendChild(doc.createTextNode(Integer.toString(localDate.getDayOfMonth())));
@@ -85,9 +92,6 @@ public class XMLFileWriter implements IFileWriter {
         days.add(d1);
         days.add(d2);
         days.add(d3);
-
-        //CourseLoader cl = new CourseLoader(new Semester(),null);
-
 
         try {
             write("output.xml",days,null);

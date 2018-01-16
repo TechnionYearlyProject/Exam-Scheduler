@@ -43,29 +43,29 @@ public class DayTest {
     public void getDistance() throws Exception {
         for (Course course: semester.getCourseCollection()){
             int coef;
-            if ((course.id / 1000) % 2 == 0){
+            if ((course.courseID / 1000) % 2 == 0){
                 coef = -1;
             } else {
                 coef = 1;
             }
-            day.insertCourse(course.id, coef * (course.id % 5));
+            day.insertCourse(course.courseID, coef * (course.courseID % 5));
         }
         for (Course course: semester.getCourseCollection()){
             int coef;
-            if ((course.id / 1000) % 2 == 0){
+            if ((course.courseID / 1000) % 2 == 0){
                 coef = -1;
             } else {
                 coef = 1;
             }
-            int dist = coef * (course.id % 5);
-            assert(day.getDistance(course.id) == dist);
+            int dist = coef * (course.courseID % 5);
+            assert(day.getDistance(course.courseID) == dist);
         }
     }
 
     @Test
     public void getNumOfCourses() throws Exception {
         for (Course course: semester.getCourseCollection()) {
-            day.insertCourse(course.id, 0);
+            day.insertCourse(course.courseID, 0);
         }
         assert(day.getNumOfCourses() == semester.getCourseCollection().size());
     }
@@ -73,14 +73,14 @@ public class DayTest {
     @Test
     public void getCoursesScheduledToTheDay() throws Exception {
         for (Course course: semester.getCourseCollection()) {
-            day.insertCourse(course.id, 0);
+            day.insertCourse(course.courseID, 0);
         }
         List<Integer> scheduledCourses = day.getCoursesScheduledToTheDay();
         for (Integer courseId: scheduledCourses){
-            assert(semester.getCourseCollection().stream().filter(c->c.id == courseId).findFirst().get().id == courseId);
+            assert(semester.getCourseCollection().stream().filter(c->c.courseID == courseId).findFirst().get().courseID == courseId);
         }
         for (Course course: semester.getCourseCollection()) {
-            assert(scheduledCourses.stream().filter(id-> id.equals(course.id)).findFirst().get().equals(course.id));
+            assert(scheduledCourses.stream().filter(id-> id.equals(course.courseID)).findFirst().get().equals(course.courseID));
         }
     }
 

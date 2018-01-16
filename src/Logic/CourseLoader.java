@@ -62,6 +62,7 @@ public class CourseLoader {
 
             Logic.Course current =  new Logic.Course(c.courseName,c.courseID,isRequired
                     ,c.creditPoints, c.getPrograms());
+
             courses.put(current.getCourseID(),current);
         }
     }

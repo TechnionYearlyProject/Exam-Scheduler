@@ -16,64 +16,48 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class CalendarFileWriter implements IFileWriter{
     private static final String COMMA_DELIMITER = ",";
     private static final String WEEK = "SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY";
-
+    //private static final String WEEK_ = "ראשון,שני,שלישי,רביעי,חמישי,שישי,שבת";
     @Override
     public void write(String fileName, List<Day> lst, CourseLoader cL) throws ErrorOpeningFile {
-        fixDaysArray(lst);
-        FileWriter f;
+        ArrayList<Day> tmpLst = new ArrayList<>(lst);
+        fixDaysArray(tmpLst);
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(fileName, "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        try {
-            f = new FileWriter(fileName);
-            StringBuilder sb = new StringBuilder();
-            writer.println(WEEK);
-//            f.append(WEEK);
-//            f.append(String.format("%n"));
-            int lastDay;
-            int numOfDay = 0;
-            int offset = 0;
-            ArrayList<Day> weekDays = new ArrayList<>();
-            for(Day d: lst){
-                LocalDate lD = d.getDate();
-                int currentDayOffset = offsetFromStartOfWeek(lD);
-                if(numOfDay == 0){
-                    offset = currentDayOffset;
-                    appendNCommas(sb,offset);
-                }
-                weekDays.add(d);
-                numOfDay++;
-                if(lD.getDayOfWeek() == DayOfWeek.SATURDAY){
-                    printDates(weekDays,offset,sb);
-                    printExamsOfWeek(sb,weekDays,offset,cL);
-                    //f.append(sb.toString());
-                    weekDays.clear();
-                    offset = 0;
-                    //sb = new StringBuilder();
-                    sb.append(String.format("%n"));
-                    //f.append(sb.toString());
-                }
-                else {
-                    if (numOfDay == lst.size()) {
-                        printDates(weekDays, offset, sb);
-                        printExamsOfWeek(sb, weekDays, offset, cL);
-//                        f.append(sb.toString());
-                    }
+        StringBuilder sb = new StringBuilder();
+        writer.println(WEEK);
+        int numOfDay = 0;
+        int offset = 0;
+        ArrayList<Day> weekDays = new ArrayList<>();
+        for (Day d : lst) {
+            LocalDate lD = d.getDate();
+            int currentDayOffset = offsetFromStartOfWeek(lD);
+            if (numOfDay == 0) {
+                offset = currentDayOffset;
+                appendNCommas(sb, offset);
+            }
+            weekDays.add(d);
+            numOfDay++;
+            if (lD.getDayOfWeek() == DayOfWeek.SATURDAY) {
+                printDates(weekDays, offset, sb);
+                printExamsOfWeek(sb, weekDays, offset, cL);
+                weekDays.clear();
+                offset = 0;
+                sb.append(String.format("%n"));
+            } else {
+                if (numOfDay == lst.size()) {
+                    printDates(weekDays, offset, sb);
+                    printExamsOfWeek(sb, weekDays, offset, cL);
                 }
             }
-            writer.print(sb.toString());
-            //f.append(sb.toString());//System.out.println(sb.toString());
-            writer.close();
-        } catch (IOException e){
-            throw new ErrorOpeningFile();
         }
-
+        writer.print(sb.toString());
+        writer.close();
     }
+
 
     private void fixDaysArray(List<Day> lst){
         long days = DAYS.between(lst.get(0).getDate(), lst.get(lst.size()-1).getDate());
