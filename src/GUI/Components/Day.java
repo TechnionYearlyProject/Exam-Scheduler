@@ -1,5 +1,7 @@
 package GUI.Components;
 import Logic.Course;
+import db.Constraint;
+import db.ConstraintList;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -74,7 +76,9 @@ public class Day extends VBox{
                 GregorianCalendar calendar = new GregorianCalendar(date.getYear(),date.getMonthValue(),date.getDayOfMonth());
                 if (schedule.moed.moedType == Moed.MoedType.A) {
                     if (schedule.moed.manager.constraintlistA.getConstraints(course_id)!=null) {
-                        return;
+                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size()!=0) {
+                            return;
+                        }
                     }
                     else {
                         try {
@@ -84,7 +88,9 @@ public class Day extends VBox{
                 }
                 else {
                     if (schedule.moed.manager.constraintlistB.getConstraints(course_id)!=null) {
-                        return;
+                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size()!=0) {
+                            return;
+                        }
                     }
                     else {
                         try {
@@ -107,6 +113,16 @@ public class Day extends VBox{
         this.setStyle("-fx-background-color: #ECEFF1");
         tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
+        if (schedule.moed.moedType == Moed.MoedType.A)
+            schedule.moed.manager.constraintlistA.removeDateConstraint(date);
+        else
+            schedule.moed.manager.constraintlistB.removeDateConstraint(date);
+        this.getChildren().remove(1);
+        tests = new VBox();
+        tests.setSpacing(1);
+        tests.setStyle("-fx-background-color: white");
+        tests.setAlignment(Pos.TOP_CENTER);
+        this.getChildren().add(tests);
     }
     private void Enable() {
         schedule.moed.manager.unblockDay(date);
