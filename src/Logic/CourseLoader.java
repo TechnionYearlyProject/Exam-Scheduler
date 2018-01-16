@@ -77,6 +77,7 @@ public class CourseLoader {
     }
 
     public List<Logic.Course> getSortedCourses(){
+        sortCourses();
         return this.sortedCoursesList;
     }
 

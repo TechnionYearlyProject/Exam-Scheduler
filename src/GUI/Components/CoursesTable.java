@@ -3,7 +3,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,6 +15,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import Logic.Course;
 import javafx.util.Callback;
@@ -28,7 +31,8 @@ public class CoursesTable extends VBox{
     FilteredList<Item> filteredList;
     Manager manager;
     private boolean scheduled;
-
+    HBox hbox;
+    ObservableList<Item> items;
     public CoursesTable(Manager parent) {
         this.getStylesheets().add("/coursetable_style.css");
         manager = parent;
@@ -63,7 +67,7 @@ public class CoursesTable extends VBox{
         connections.setPrefWidth(56);
         table.setEditable(true);
         table.setPrefWidth(500);
-        table.setPrefHeight(726);
+        table.setPrefHeight(666);
         table.setItems(getData());
         table.getColumns().addAll(connections,pref,study,name,take);
         table.setRowFactory(tv -> {
@@ -102,10 +106,22 @@ public class CoursesTable extends VBox{
         filterInput.setStyle("-fx-focus-color: transparent; -fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         table.setItems(filteredList);
         table.setStyle("-fx-focus-color: lightgrey; -fx-faint-focus-color: transparent;");
-        this.getChildren().addAll(filterInput,table);
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png", null,40,160);
+        save_button.setCircular();
+        CustomButton add_button = new CustomButton("הוסף קורס", "/add_icon.png", this::AddFunction,40,160);
+        add_button.setCircular();
+        CustomButton remove_button = new CustomButton("הסר קורס", "/remove_icon.png", this::removeFunction,40,160);
+        remove_button.setCircular();
+        hbox = new HBox();
+        hbox.setAlignment(Pos.TOP_RIGHT);
+        hbox.setSpacing(10);
+        hbox.getChildren().addAll(save_button, remove_button, add_button);
+        //hbox.setPadding(new Insets(10,0,0,0));
+        this.setSpacing(10);
+        this.getChildren().addAll(filterInput,table,hbox);
     }
     public ObservableList<Item> getData() {
-        ObservableList<Item> items = FXCollections.observableArrayList();
+        items = FXCollections.observableArrayList();
         for (Logic.Course course:manager.courseloader.getCourses().values()) {
             items.add(new Item(manager,course));
         }
@@ -113,6 +129,23 @@ public class CoursesTable extends VBox{
     }
     public void setScheduled(boolean value){
         scheduled = value;
+    }
+
+    public void removeFunction() {
+        Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
+        manager.courseloader.getCourses().remove(courseID);
+        Item to_remove = null;
+        for (Item item:items) {
+            if (item.getCourseID().equals(courseID)) {
+                to_remove = item;
+                break;
+            }
+        }
+        items.remove(to_remove);
+    }
+
+    public void AddFunction() {
+        new AddCourse();
     }
 
 }

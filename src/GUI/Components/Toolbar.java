@@ -15,6 +15,11 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Toolbar extends HBox{
     Wrapper wrapper;
     CustomButton export_button;
@@ -29,18 +34,18 @@ public class Toolbar extends HBox{
         VBox title_box = new VBox();
         title_box.setAlignment(Pos.TOP_RIGHT);
         title_box.getChildren().addAll(main_title, sub_title);
-        title_box.setPrefWidth(996);
-        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png", this::scheduleFunction,40,150);
+        title_box.setPrefWidth(956);
+        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png", this::scheduleFunction,40,160);
         schedule_button.setCircular();
-        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png", this::cleanFunction,40,150);
+        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png", this::cleanFunction,40,160);
         clean_button.setCircular();
-        CustomButton save_button = new CustomButton("שמור", "/save_icon.png", this::saveFunction,40,150);
-        save_button.setCircular();
-        export_button = new CustomButton("ייצוא", "/export_icon.png", this::exportFunction,40,150);
+        CustomButton guide_button = new CustomButton("מדריך", "/guide_icon.png", this::guideFunction,40,160);
+        guide_button.setCircular();
+        export_button = new CustomButton("ייצוא", "/export_icon.png", this::exportFunction,40,160);
         export_button.setCircular();
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
-        this.getChildren().addAll(export_button, clean_button, save_button, schedule_button, title_box);
+        this.getChildren().addAll(guide_button, export_button, clean_button, schedule_button, title_box);
     }
     public void cleanFunction() {
         new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", () -> wrapper.manager.cleanData());
@@ -60,6 +65,17 @@ public class Toolbar extends HBox{
         // AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את המצב הנוכחי?", ()->parent.saveAllData());
         Semester to_write = wrapper.manager.semester;
         wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);
+    }
+
+    public void guideFunction() {
+        Path curr = Paths.get("");
+        String s = curr.toAbsolutePath().toString() + "\\documentation\\Manual.docx";
+        File file = new File(s);
+        try {
+            Desktop.getDesktop().open(file);
+        } catch (Exception e){
+            System.out.print(e);
+        }
     }
 
     public void exportFunction() {
@@ -101,11 +117,13 @@ public class Toolbar extends HBox{
         new LoadingBox(()->  {
             try {
                 wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
-                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
+                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB,5);
                 wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
+                //wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, wrapper.manager.scheduleB);
                 wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
-            } catch (Exception ignored) {}});
+            } catch (Exception ignored) {
+                System.out.println(ignored);
+            }});
         wrapper.manager.coursetable.setScheduled(true);
         for (Day day : wrapper.manager.A.schedule.days.values()){
             day.disableBlocking();
