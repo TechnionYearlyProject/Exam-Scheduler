@@ -2,7 +2,9 @@ package GUI.Components;
 import Logic.Exceptions.IllegalRange;
 import Logic.Schedule;
 import Output.CSVFileWriter;
+import Output.CalendarFileWriter;
 import Output.Exceptions.ErrorOpeningFile;
+import Output.IFileWriter;
 import Output.XMLFileWriter;
 import db.Semester;
 import javafx.geometry.Pos;
@@ -86,27 +88,13 @@ public class Toolbar extends HBox{
             }
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            CustomButton CSVButton = new CustomButton("יצא בתור CSV",null, ()->{
-                CSVFileWriter writer = new CSVFileWriter();
-                try {
-                    writer.write("output.csv",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
-                    stage.close();
-                } catch (ErrorOpeningFile errorOpeningFile) {
-                    new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
-                }
-            }, 30,110);
-            CSVButton.setRectangle();
-            CustomButton XMLButton = new CustomButton("יצא בתור XML",null, ()->{
-                XMLFileWriter writer = new XMLFileWriter();
-                try {
-                    writer.write("output.xml",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
-                    stage.close();
-                } catch (ErrorOpeningFile errorOpeningFile) {
-                    new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
-                }
-            }, 30 ,110);
-            XMLButton.setRectangle();
-            Scene scene = new Scene(new VBox(CSVButton,XMLButton));
+            CustomButton CSVButton = buildExportOption("יצא בתור CSV","csv",
+                    "csv",new CSVFileWriter(), stage);
+            CustomButton XMLButton = buildExportOption("יצא בתור XML","xml",
+                    "xml",new XMLFileWriter(), stage);
+            CustomButton CalendarButton = buildExportOption("יצא בתור Calendar","calendar",
+                    "csv",new CalendarFileWriter(), stage);
+            Scene scene = new Scene(new VBox(CSVButton,XMLButton,CalendarButton));
             stage.setScene(scene);
             stage.setX(event.getScreenX());
             stage.setY(event.getScreenY());
@@ -119,6 +107,19 @@ public class Toolbar extends HBox{
 
             stage.show();
         });
+    }
+    private CustomButton buildExportOption(String msg, String fileType,
+                                           String fileFormat, IFileWriter writer,Stage stage){
+        CustomButton button = new CustomButton(msg,null, ()->{
+            try {
+                writer.write(fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                stage.close();
+            } catch (ErrorOpeningFile errorOpeningFile) {
+                new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+            }
+        }, 30,110);
+        button.setRectangle();
+        return button;
     }
 
     public void scheduleFunction(){
