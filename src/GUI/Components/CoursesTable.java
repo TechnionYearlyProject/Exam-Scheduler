@@ -82,6 +82,7 @@ public class CoursesTable extends VBox{
             return row ;
         });
         filteredList = new FilteredList<>(getData());
+
         TextField filterInput = new TextField();
         filterInput.setPromptText("חפש קורס...");
         filterInput.textProperty().addListener(obs->{
@@ -94,7 +95,9 @@ public class CoursesTable extends VBox{
             }
         });
         filterInput.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        filterInput.setStyle("-fx-focus-color: transparent; -fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         table.setItems(filteredList);
+        table.setStyle("-fx-focus-color: lightgrey;");
         this.getChildren().addAll(filterInput,table);
     }
     public ObservableList<Item> getData() {

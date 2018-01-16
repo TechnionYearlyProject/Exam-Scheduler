@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -42,6 +43,12 @@ public class Item {
             stage.setX(mouse_event.getScreenX());
             stage.setY(mouse_event.getScreenY());
             stage.getIcons().add(new Image("/app_icon.png"));
+            stage.focusedProperty().addListener(event -> {
+                if (!stage.isFocused()) {
+                    stage.close();
+                }
+            });
+
             stage.show();
         });
     }
