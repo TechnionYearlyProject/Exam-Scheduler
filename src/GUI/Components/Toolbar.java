@@ -1,9 +1,9 @@
 package GUI.Components;
+import Logic.Exceptions.IllegalRange;
 import Logic.Schedule;
-import Logic.WriteScheduleToDB;
-import Output.CSVFileWriter;
 import Output.CSVFileWriter;
 import Output.Exceptions.ErrorOpeningFile;
+import Output.XMLFileWriter;
 import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -80,18 +80,31 @@ public class Toolbar extends HBox{
 
     public void exportFunction() {
         export_button.setOnMouseClicked(event->{
+            if(!wrapper.manager.been_scheduled){
+                new AlertBox(AlertType.ERROR, "לא ניתן לייצא לפני שיבוץ.", null);
+                return;
+            }
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
             CustomButton CSVButton = new CustomButton("יצא בתור CSV",null, ()->{
                 CSVFileWriter writer = new CSVFileWriter();
                 try {
-                    writer.write("temp.csv",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                    writer.write("output.csv",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                    stage.close();
                 } catch (ErrorOpeningFile errorOpeningFile) {
-                    errorOpeningFile.printStackTrace();
+                    new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
                 }
             }, 30,110);
             CSVButton.setRectangle();
-            CustomButton XMLButton = new CustomButton("יצא בתור XML",null, stage::close, 30 ,110);
+            CustomButton XMLButton = new CustomButton("יצא בתור XML",null, ()->{
+                XMLFileWriter writer = new XMLFileWriter();
+                try {
+                    writer.write("output.xml",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                    stage.close();
+                } catch (ErrorOpeningFile errorOpeningFile) {
+                    new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+                }
+            }, 30 ,110);
             XMLButton.setRectangle();
             Scene scene = new Scene(new VBox(CSVButton,XMLButton));
             stage.setScene(scene);
@@ -114,26 +127,34 @@ public class Toolbar extends HBox{
             return;
         }
         wrapper.manager.been_scheduled = true;
-        new LoadingBox(()->  {
+        new LoadingBox(()-> {
             try {
-                wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
-                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB,5);
+                wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
+                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart, wrapper.manager.Bend, wrapper.manager.occupiedB);
+            } catch (IllegalRange illegalRange) {
+                new AlertBox(AlertType.ERROR, "טווח התאריכים אינו חוקי", null);
+                return;
+            }
+            try {
                 wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                //wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, wrapper.manager.scheduleB);
-                wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
-            } catch (Exception ignored) {
-                System.out.println(ignored);
-            }});
-        wrapper.manager.coursetable.setScheduled(true);
-        for (Day day : wrapper.manager.A.schedule.days.values()){
-            day.disableBlocking();
-        }
-        for (Day day : wrapper.manager.B.schedule.days.values()){
-            day.disableBlocking();
-        }
-        wrapper.manager.A.picker1.disable();
-        wrapper.manager.A.picker2.disable();
-        wrapper.manager.B.picker1.disable();
-        wrapper.manager.B.picker2.disable();
+                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
+            } catch (Logic.Schedule.CanNotBeScheduledException e) {
+                new AlertBox(AlertType.ERROR, "השיבוץ נכשל. נסו להסיר העדפות " +
+                        "או להגדיל את טווח התאריכים.", null);
+                return;
+            }
+            wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
+            wrapper.manager.coursetable.setScheduled(true);
+            for (Day day : wrapper.manager.A.schedule.days.values()) {
+                day.disableBlocking();
+            }
+            for (Day day : wrapper.manager.B.schedule.days.values()) {
+                day.disableBlocking();
+            }
+            wrapper.manager.A.picker1.disable();
+            wrapper.manager.A.picker2.disable();
+            wrapper.manager.B.picker1.disable();
+            wrapper.manager.B.picker2.disable();
+        });
     }
 }

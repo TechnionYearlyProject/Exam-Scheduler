@@ -61,7 +61,7 @@ public class Database {
         Map<Integer,Course> courses = new HashMap<>();
         for (Map.Entry<String, Semester> entry : semesters.entrySet()) {
             for (Course c:entry.getValue().getCourseCollection()) {
-                courses.put(c.id,new Course(c));
+                courses.put(c.courseID,new Course(c));
             }
         }
         return courses;
@@ -195,12 +195,26 @@ public class Database {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element courseElement = (Element) n;
                 int courseID = Integer.parseInt(courseElement.getElementsByTagName("course_id").item(0).getTextContent().trim());
-                double weight = Double.parseDouble(courseElement.getElementsByTagName("weight").item(0).getTextContent());
-                String name = courseElement.getElementsByTagName("name").item(0).getTextContent();
-                try {
-                    semester.addCourse(courseID, name, weight);
-                } catch (CourseAlreadyExist e) {
-                    throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
+                double weight = Double.parseDouble(courseElement.getElementsByTagName("credit_points").item(0).getTextContent());
+                String name = courseElement.getElementsByTagName("course_name").item(0).getTextContent();
+                NodeList l = courseElement.getElementsByTagName("days_before");
+                if (l.getLength() == 0) {
+                    try {
+                        semester.addCourse(courseID, name, weight);
+                    } catch (CourseAlreadyExist e) {
+                        throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
+                    }
+                } else {
+                    int daysBefore = Integer.parseInt(l.item(0).getTextContent());
+                    boolean isFirst = courseElement.getElementsByTagName("isFirst").getLength() == 1;
+                    boolean isLast = courseElement.getElementsByTagName("isLast").getLength() == 1;
+                    boolean isRequired = courseElement.getElementsByTagName("isRequired").getLength() == 1;
+                    boolean hasExam = courseElement.getElementsByTagName("hasExam").getLength() == 1;
+                    try {
+                        semester.addCourse(courseID, name, weight, daysBefore, isFirst, isLast, isRequired, hasExam);
+                    } catch (CourseAlreadyExist e) {
+                        throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
+                    }
                 }
                 NodeList programs = courseElement.getElementsByTagName("semester");
                 for (int j = 0; j < programs.getLength(); j++) {
@@ -379,21 +393,45 @@ public class Database {
 
             // Course ID node
             Element courseIdElement = document.createElement("course_id");
-            Text courseIdText = document.createTextNode(Integer.toString(course.id));
+            Text courseIdText = document.createTextNode(Integer.toString(course.courseID));
             courseIdElement.appendChild(courseIdText);
             courseElement.appendChild(courseIdElement);
 
             // Name node
-            Element courseNameElement = document.createElement("name");
-            Text courseNameText = document.createTextNode(course.name);
+            Element courseNameElement = document.createElement("course_name");
+            Text courseNameText = document.createTextNode(course.courseName);
             courseNameElement.appendChild(courseNameText);
             courseElement.appendChild(courseNameElement);
 
-            // Weight node
-            Element courseWeightElement = document.createElement("weight");
-            Text courseWeightText = document.createTextNode(Double.toString(course.weight));
+            // creditPoint node
+            Element courseWeightElement = document.createElement("credit_points");
+            Text courseWeightText = document.createTextNode(Double.toString(course.creditPoints));
             courseWeightElement.appendChild(courseWeightText);
             courseElement.appendChild(courseWeightElement);
+
+            // DaysBefore node
+            Element daysBeforeElement = document.createElement("days_before");
+            Text daysBeforeText = document.createTextNode(Integer.toString(course.daysBefore));
+            daysBeforeElement.appendChild(daysBeforeText);
+            courseElement.appendChild(daysBeforeElement);
+
+            // Flags
+            if (course.isFirst) {
+                Element isFirstFlag = document.createElement("isFirst");
+                courseElement.appendChild(isFirstFlag);
+            }
+            if (course.isLast) {
+                Element isLastFlag = document.createElement("isLast");
+                courseElement.appendChild(isLastFlag);
+            }
+            if (course.isRequired) {
+                Element isRequiredFlag = document.createElement("isRequired");
+                courseElement.appendChild(isRequiredFlag);
+            }
+            if (course.hasExam) {
+                Element hasExamFlag = document.createElement("hasExam");
+                courseElement.appendChild(hasExamFlag);
+            }
 
             // Study program nodes
             for (Map.Entry<String, Integer> entry: course.programs.entrySet()) {
@@ -550,12 +588,12 @@ public class Database {
             }
             for (Course course: courses) {
                 try {
-                    semester.addCourse(course.id, course.name, course.weight);
+                    semester.addCourse(course.courseID, course.courseName, course.creditPoints);
                     for (String program: programs) {
                         int programSemester = course.getStudyProgramSemester(program);
                         try {
                             if (programSemester > 0) {
-                                semester.registerCourse(course.id, program, programSemester);
+                                semester.registerCourse(course.courseID, program, programSemester);
                             }
                         } catch (StudyProgramUnknown | CourseUnknown ignored) {}
                     }

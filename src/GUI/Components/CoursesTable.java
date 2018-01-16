@@ -6,6 +6,9 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
+import javafx.event.Event;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -87,7 +90,15 @@ public class CoursesTable extends VBox{
                 }
                 event.consume();
             });
-            return row ;
+            row.setOnMouseEntered(event->{
+                func(manager.A,true,row);
+                func(manager.B,true,row);
+            });
+            row.setOnMouseExited(event->{
+                func(manager.A,false,row);
+                func(manager.B,false,row);
+            });
+            return row;
         });
         filteredList = new FilteredList<>(getData());
 
@@ -119,6 +130,17 @@ public class CoursesTable extends VBox{
         //hbox.setPadding(new Insets(10,0,0,0));
         this.setSpacing(10);
         this.getChildren().addAll(filterInput,table,hbox);
+    }
+    private void func(Moed moed, boolean brighten, TableRow<Item> row){
+            String courseNum = (name.getCellData(row.getIndex())).split(" - ")[0];
+            for(Day day : moed.schedule.days.values()){
+                for(Test test : day.testList){
+                    if(test.course.getCourseID().equals(
+                            Integer.parseInt(courseNum))){
+                        test.setColor(brighten);
+                    }
+                }
+            }
     }
     public ObservableList<Item> getData() {
         items = FXCollections.observableArrayList();

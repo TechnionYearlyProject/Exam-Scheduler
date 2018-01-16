@@ -17,8 +17,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class Day extends VBox{
     static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
@@ -30,6 +32,7 @@ public class Day extends VBox{
     Schedule schedule;
     LocalDate date;
     boolean blockingAllowed;
+    List<Test> testList = new ArrayList<>();
     public Day(Schedule parent, LocalDate input_date) {
         date = input_date;
         schedule = parent;
@@ -153,6 +156,8 @@ public class Day extends VBox{
     }
 
     public void addTest(Course course) {
-        tests.getChildren().add(new Test(course,true));
+        Test test = new Test(course,true);
+        tests.getChildren().add(test);
+        testList.add(test);
     }
 }

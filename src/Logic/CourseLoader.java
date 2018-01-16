@@ -17,7 +17,7 @@ public class CourseLoader {
         this.semester = semester;
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
-        dbCourses = semester.getCourseCollection().stream().collect(Collectors.toMap(x-> x.id, x -> x));
+        dbCourses = semester.getCourseCollection().stream().collect(Collectors.toMap(x-> x.courseID, x -> x));
 
         //building Logic CourseList.
         buildLogicCourses();
@@ -45,8 +45,8 @@ public class CourseLoader {
             for (String program: programsForSemester.keySet()){
                 List<Pair<Integer,String>> l =
                         semester.getCoursesByProgramAndSemester(program, programsForSemester.get(program)).
-                                stream().map(a->new Pair<>(a.id,a.name)).collect(Collectors.toList());
-                courses.get(course.id).addConflictCourses(l); //we iterate over db.Courses but need to add conflict
+                                stream().map(a->new Pair<>(a.courseID,a.courseName)).collect(Collectors.toList());
+                courses.get(course.courseID).addConflictCourses(l); //we iterate over db.Courses but need to add conflict
                                                               //to Logic.Course
             }
         }
@@ -60,7 +60,9 @@ public class CourseLoader {
                 isRequired = true;
             }
 
-            Logic.Course current =  new Logic.Course(c.name,c.id,isRequired,c.weight, c.getPrograms());
+            Logic.Course current =  new Logic.Course(c.courseName,c.courseID,isRequired
+                    ,c.creditPoints, c.getPrograms());
+
             courses.put(current.getCourseID(),current);
         }
     }
