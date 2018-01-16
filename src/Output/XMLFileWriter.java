@@ -51,7 +51,7 @@ public class XMLFileWriter implements IFileWriter {
                     Element course = doc.createElement("Course");
                     rootElement.appendChild(course);
                     course.setAttribute("ID", Integer.toString(key));
-
+                    course.setAttribute("Name", cL.getCourse(key).getCourseName());
                     Element day = doc.createElement("Day");
                     day.appendChild(doc.createTextNode(Integer.toString(localDate.getDayOfMonth())));
                     course.appendChild(day);
