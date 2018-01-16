@@ -15,8 +15,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class Toolbar extends HBox{
     Wrapper wrapper;
     CustomButton export_button;
