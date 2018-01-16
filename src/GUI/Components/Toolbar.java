@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import Logic.WriteScheduleToDB;
+import db.Semester;
 
 public class Toolbar extends HBox{
     Wrapper wrapper;
@@ -59,7 +61,8 @@ public class Toolbar extends HBox{
     }
 
     public void saveFunction() {
-       // AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את המצב הנוכחי?", ()->parent.saveAllData());
+        Semester to_write = wrapper.manager.semester;
+        wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);
     }
 
     public void scheduleFunction(){
@@ -70,11 +73,11 @@ public class Toolbar extends HBox{
         wrapper.manager.been_scheduled = true;
         LoadingBox alert = new LoadingBox(()->  {
             try {
-                Logic.Schedule scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
-                Logic.Schedule scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
-                scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
-                wrapper.updateSchdule(scheduleA, scheduleB);
+                wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
+                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
+                wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
+                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
+                wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
             } catch (Exception e){}
         });
     }

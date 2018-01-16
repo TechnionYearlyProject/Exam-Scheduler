@@ -26,10 +26,16 @@ public class Manager extends HBox {
     Boolean picker_error;
     Boolean been_scheduled;
     Wrapper wrapper;
+    Integer semesterYear;
+    String semesterName;
+    Logic.Schedule scheduleA;
+    Logic.Schedule scheduleB;
     public Manager(Wrapper parent) {
         try {
             db = new Database();
-            semester = db.loadSemester(2017, "winter_test");
+            semesterYear = 2017;
+            semesterName = "winter_test";
+            semester = db.loadSemester(semesterYear, semesterName);
             courseloader = new CourseLoader(semester,null);
             constraintlistA = new ConstraintList();
             constraintlistB = new ConstraintList();
