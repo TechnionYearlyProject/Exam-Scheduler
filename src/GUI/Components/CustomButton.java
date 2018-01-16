@@ -18,12 +18,15 @@ public class CustomButton extends HBox {
     private Runnable function;
     public CustomButton(String title, String url, Runnable func) {
         function = func;
-        Image image = new Image(url);
-        Label image_label = new Label();
-        image_label.setGraphic(new ImageView(image));
         Text text = new Text(title);
         text.setFill(Color.WHITE);
-        this.getChildren().addAll(text,image_label);
+        this.getChildren().addAll(text);
+        if(url != null){
+            Image image = new Image(url);
+            Label image_label = new Label();
+            image_label.setGraphic(new ImageView(image));
+            this.getChildren().addAll(image_label);
+        }
         this.setPrefHeight(40);
         this.setPrefWidth(150);
         this.setMaxHeight(40);
@@ -39,7 +42,9 @@ public class CustomButton extends HBox {
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, mouse_event -> {
             if (mouse_event.getButton()!= MouseButton.PRIMARY)
                 return;
-                function.run();
+                if(function!=null){
+                    function.run();
+                }
         });
 
     }
