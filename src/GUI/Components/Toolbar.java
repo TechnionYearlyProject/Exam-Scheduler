@@ -90,7 +90,7 @@ public class Toolbar extends HBox{
                 //scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
                 wrapper.updateSchdule(scheduleA, scheduleB);
             } catch (Exception ignored) {
-            }
+            } try {
                 wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
                 wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
                 wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
@@ -99,8 +99,5 @@ public class Toolbar extends HBox{
             } catch (Exception e){}
         });
         wrapper.manager.coursetable.setScheduled(true);
-
-
-
     }
 }
