@@ -1,9 +1,9 @@
 package GUI.Components;
+import Logic.Exceptions.IllegalRange;
 import Logic.Schedule;
-import Logic.WriteScheduleToDB;
-import Output.CSVFileWriter;
 import Output.CSVFileWriter;
 import Output.Exceptions.ErrorOpeningFile;
+import Output.XMLFileWriter;
 import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +14,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Toolbar extends HBox{
     Wrapper wrapper;
@@ -75,7 +77,14 @@ public class Toolbar extends HBox{
                 }
             }, 30,110);
             CSVButton.setRectangle();
-            CustomButton XMLButton = new CustomButton("יצא בתור XML",null, stage::close, 30 ,110);
+            CustomButton XMLButton = new CustomButton("יצא בתור XML",null, ()->{
+                XMLFileWriter writer = new XMLFileWriter();
+/*                try {
+                    //writer.write("temp.xml",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                } catch (ErrorOpeningFile errorOpeningFile) {
+                    errorOpeningFile.printStackTrace();
+                }*/
+            }, 30 ,110);
             XMLButton.setRectangle();
             Scene scene = new Scene(new VBox(CSVButton,XMLButton));
             stage.setScene(scene);
@@ -98,24 +107,34 @@ public class Toolbar extends HBox{
             return;
         }
         wrapper.manager.been_scheduled = true;
-        new LoadingBox(()->  {
+        new LoadingBox(()-> {
             try {
-                wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
-                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
+                wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
+                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart, wrapper.manager.Bend, wrapper.manager.occupiedB);
+            } catch (IllegalRange illegalRange) {
+                new AlertBox(AlertType.ERROR, "טווח התאריכים אינו חוקי", null);
+                return;
+            }
+            try {
                 wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
                 wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
-                wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
-            } catch (Exception ignored) {}});
-        wrapper.manager.coursetable.setScheduled(true);
-        for (Day day : wrapper.manager.A.schedule.days.values()){
-            day.disableBlocking();
-        }
-        for (Day day : wrapper.manager.B.schedule.days.values()){
-            day.disableBlocking();
-        }
-        wrapper.manager.A.picker1.disable();
-        wrapper.manager.A.picker2.disable();
-        wrapper.manager.B.picker1.disable();
-        wrapper.manager.B.picker2.disable();
+            } catch (Schedule.CanNotBeScheduledException e) {
+                new AlertBox(AlertType.ERROR, "השיבוץ נכשל. נסו להסיר העדפות " +
+                        "או להגדיל את טווח התאריכים.", null);
+                return;
+            }
+            wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
+            wrapper.manager.coursetable.setScheduled(true);
+            for (Day day : wrapper.manager.A.schedule.days.values()) {
+                day.disableBlocking();
+            }
+            for (Day day : wrapper.manager.B.schedule.days.values()) {
+                day.disableBlocking();
+            }
+            wrapper.manager.A.picker1.disable();
+            wrapper.manager.A.picker2.disable();
+            wrapper.manager.B.picker1.disable();
+            wrapper.manager.B.picker2.disable();
+        });
     }
 }

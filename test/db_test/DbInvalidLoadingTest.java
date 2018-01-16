@@ -94,7 +94,7 @@ public class DbInvalidLoadingTest {
     public void loadInvalidSemesterTest() {
         db.baseDirectory = baseDir + db.sep + "invalid_db";
         try {
-            // course with missing name
+            // course with missing courseName
             db.loadSemester(2010, "winter");
             fail("Should have thrown InvalidDatabase exception");
         } catch (InvalidDatabase e) {
