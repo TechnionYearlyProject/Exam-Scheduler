@@ -105,10 +105,11 @@ public class Semester {
 
     public List<Course> getCourseBySemester(int i) {
         List<Course> list = new ArrayList<>();
-        for (String program: programs) {
-            for (Course course : courses.values()) {
+        for (Course course: courses.values()) {
+            for (String program: programs) {
                 if (course.getStudyProgramSemester(program) == i) {
                     list.add(new Course(course)); // Copy ctor perform deep copy
+                    break;
                 }
             }
         }
