@@ -92,7 +92,7 @@ public class Course implements Comparable<Course>{
      * @Param courseID: the ID of the course to be defined as conflict.
      * @Param courseName: the name of the course to be defined as conflict.
      */
-    void addConflictCourse(Integer courseID, String courseName){
+    public void addConflictCourse(Integer courseID, String courseName){
         if(this.courseID == courseID){
             return;
         }
@@ -149,7 +149,7 @@ public class Course implements Comparable<Course>{
     }
 
 
-    void setAsLast(boolean isLast) {
+    public void setAsLast(boolean isLast) {
         if (isLast) {
             this.isFirst = false;
         } //Course can't be as last and as first at the same time
@@ -167,7 +167,7 @@ public class Course implements Comparable<Course>{
         return isLast;
     }
 
-    void setAsFirst(boolean isFirst) {
+    public void setAsFirst(boolean isFirst) {
         if (isFirst) {
             this.isLast = false;
         } //Course can't be as last and as first at the same time
@@ -180,12 +180,12 @@ public class Course implements Comparable<Course>{
     void setAsRequired(boolean isRequired){this.isRequired = isRequired;}
     public boolean isRequired(){return isRequired;}
 
-    Map<Integer,String> getConflictCourses(){
+    public Map<Integer,String> getConflictCourses(){
         return new HashMap<>(conflictCourses);
 
     }
 
-    ArrayList<Constraint> getConstraints(){
+    public ArrayList<Constraint> getConstraints(){
         Collections.sort(constraints);
         return new ArrayList<>(constraints);
     }

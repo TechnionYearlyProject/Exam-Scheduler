@@ -47,11 +47,9 @@ public class Toolbar extends HBox{
                 Logic.Schedule scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
                 Logic.Schedule scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
                 scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                //scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
+                scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
                 wrapper.updateSchdule(scheduleA, scheduleB);
             } catch (Exception e){}
         });
-
-
     }
 }
