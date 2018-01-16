@@ -2,11 +2,16 @@ package GUI.Components;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Item {
     CheckBox take;
@@ -26,6 +31,19 @@ public class Item {
         pref.setPadding(new Insets(0,-7,0,0));
         connections = new Label();
         connections.setGraphic(new ImageView(new Image("/connection_icon.png")));
+        connections.addEventFilter(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton()!= MouseButton.PRIMARY)
+                return;
+            Connections connections = new Connections(course.getCourseID());
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.UNDECORATED);
+            Scene scene = new Scene(connections, 150, 200);
+            stage.setScene(scene);
+            stage.setX(mouse_event.getScreenX());
+            stage.setY(mouse_event.getScreenY());
+            stage.getIcons().add(new Image("/app_icon.png"));
+            stage.show();
+        });
     }
     public String getName() {
         return name;

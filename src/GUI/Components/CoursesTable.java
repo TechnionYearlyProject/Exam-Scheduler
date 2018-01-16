@@ -1,4 +1,5 @@
 package GUI.Components;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -46,6 +47,7 @@ public class CoursesTable extends VBox{
         study.setCellFactory(TextFieldTableCell.forTableColumn());
         study.setOnEditCommit(event -> {
             try {
+                event.getRowValue().setStudy(event.getNewValue());
                 manager.courseloader.getCourse(event.getRowValue().getCourseID()).setDaysBefore(Integer.parseInt(event.getNewValue()));
             } catch (Exception e) {}
         });
