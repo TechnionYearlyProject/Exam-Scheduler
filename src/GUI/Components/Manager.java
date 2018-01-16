@@ -30,8 +30,8 @@ public class Manager extends HBox {
             courseloader = new CourseLoader(db.loadSemester(2017, "winter_test"),null);
             constraintlistA = new ConstraintList();
             constraintlistB = new ConstraintList();
-            occupiedA = new HashSet<LocalDate>();
-            occupiedB = new HashSet<LocalDate>();
+            occupiedA = new HashSet<>();
+            occupiedB = new HashSet<>();
         }
         catch (Exception e) {
             //handle exceptions
