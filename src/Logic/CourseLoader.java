@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CourseLoader {
-    private Database db;
     private Map<Integer,Logic.Course> courses;//<courseID,Course>
     private Map<Integer,db.Course> dbCourses;
     private Semester semester;
@@ -65,6 +64,11 @@ public class CourseLoader {
         }
     }
 
+    public void removeCourse(Integer courseIDToRemove){
+        Logic.Course tmp = new Logic.Course("",courseIDToRemove,false,0);
+        sortedCoursesList.remove(tmp);
+    }
+
     /*
      * Logic.Course map. all the relevant data to the algorithm is here.
      */
@@ -81,6 +85,7 @@ public class CourseLoader {
     }
 
     private void sortCourses(){
+        sortedCoursesList = new ArrayList<>();
         for (Map.Entry<Integer, Logic.Course> entry: courses.entrySet()) {
             sortedCoursesList.add(new Logic.Course(entry.getValue()));
         }
