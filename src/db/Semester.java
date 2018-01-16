@@ -55,12 +55,17 @@ public class Semester {
         return list;
     }
 
-    public void addCourse(int courseId, String name, double weight) throws CourseAlreadyExist {
+    public void addCourse(int courseId, String name, double creditPoint, int daysBefore, boolean isFirst, boolean isLast,
+                          boolean isRequired, boolean hasExam) throws CourseAlreadyExist {
         if (courses.containsKey(courseId)) {
             throw new CourseAlreadyExist();
         }
-        Course course = new Course(courseId, name, weight);
+        Course course = new Course(courseId, name, creditPoint, daysBefore, isFirst, isLast, isRequired, hasExam);
         courses.put(courseId, course);
+    }
+
+    public void addCourse(int courseId, String name, double creditPoint) throws CourseAlreadyExist {
+        addCourse(courseId, name, creditPoint, -1, false, false, true, true);
     }
 
     public void removeCourse(int courseId) {

@@ -145,7 +145,7 @@ public class DbSerializationTest {
         }
         assertEquals(4, semester.getCourseCollection().size());
         for (Course course: semester.getCourseCollection()) {
-            assertTrue(courses.get(course.id).equals(course.name));
+            assertTrue(courses.get(course.courseID).equals(course.courseName));
         }
         assertEquals(3, semester.getSchedule(Semester.Moed.MOED_A).size());
         for (int courseId: semester.getSchedule(Semester.Moed.MOED_A).keySet()) {

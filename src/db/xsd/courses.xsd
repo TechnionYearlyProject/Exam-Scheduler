@@ -7,8 +7,13 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="course_id" type="xs:integer"/>
-                            <xs:element name="name" type="xs:string"/>
-                            <xs:element name="weight" type="xs:double"/>
+                            <xs:element name="course_name" type="xs:string"/>
+                            <xs:element name="credit_points" type="xs:double"/>
+                            <xs:element name="days_before" type="xs:integer" minOccurs="0"/>
+                            <xs:element name="isFirst" minOccurs="0"/>
+                            <xs:element name="isLast" minOccurs="0"/>
+                            <xs:element name="isRequired" minOccurs="0"/>
+                            <xs:element name="hasExam" minOccurs="0"/>
                             <xs:element name="semester" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:simpleContent>

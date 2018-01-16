@@ -206,7 +206,7 @@ public class DbSemesterManipulationTest {
         courses = semester.getCourseCollection();
         for (Course c: courses) {
             for (String p: programs) {
-                if (c.id == 123) {
+                if (c.courseID == 123) {
                     assertEquals(0, c.getStudyProgramSemester(p));
                 } else {
                     assertNotSame(0, c.getStudyProgramSemester(p));
