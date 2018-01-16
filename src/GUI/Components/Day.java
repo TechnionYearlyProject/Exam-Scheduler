@@ -1,5 +1,7 @@
 package GUI.Components;
 import Logic.Course;
+import db.Constraint;
+import db.ConstraintList;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,6 +29,7 @@ public class Day extends VBox{
     Boolean isBlocked;
     Schedule schedule;
     LocalDate date;
+    boolean blockingAllowed;
     public Day(Schedule parent, LocalDate input_date) {
         date = input_date;
         schedule = parent;
@@ -71,17 +74,32 @@ public class Day extends VBox{
             Dragboard db = event.getDragboard();
             if (db.hasString() && !isBlocked) {
                 Integer course_id = Integer.parseInt(db.getString());
-                this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
                 GregorianCalendar calendar = new GregorianCalendar(date.getYear(),date.getMonthValue(),date.getDayOfMonth());
                 if (schedule.moed.moedType == Moed.MoedType.A) {
-                    try {
-                        schedule.moed.manager.constraintlistA.addConstraint(course_id,calendar,calendar);
-                    } catch (Exception e) {}
-                } else {
-                    try {
-                        schedule.moed.manager.constraintlistB.addConstraint(course_id, calendar, calendar);
-                    } catch (Exception e) {}
+                    if (schedule.moed.manager.constraintlistA.getConstraints(course_id)!=null) {
+                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size()!=0) {
+                            return;
+                        }
+                    }
+                    else {
+                        try {
+                            schedule.moed.manager.constraintlistA.addConstraint(course_id, calendar, calendar);
+                        } catch (Exception e) {}
+                    }
                 }
+                else {
+                    if (schedule.moed.manager.constraintlistB.getConstraints(course_id)!=null) {
+                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size()!=0) {
+                            return;
+                        }
+                    }
+                    else {
+                        try {
+                            schedule.moed.manager.constraintlistB.addConstraint(course_id, calendar, calendar);
+                        } catch (Exception e) {}
+                    }
+                }
+                this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
             }
             event.setDropCompleted(true);
             event.consume();
@@ -92,10 +110,22 @@ public class Day extends VBox{
         });
     }
     private void Block() {
-        schedule.moed.manager.blockDay(date);
-        this.setStyle("-fx-background-color: #ECEFF1");
-        tests.setStyle("-fx-background-color: #ECEFF1");
-        isBlocked = true;
+        if(blockingAllowed) {
+            schedule.moed.manager.blockDay(date);
+            this.setStyle("-fx-background-color: #ECEFF1");
+            tests.setStyle("-fx-background-color: #ECEFF1");
+            isBlocked = true;
+            if (schedule.moed.moedType == Moed.MoedType.A)
+                schedule.moed.manager.constraintlistA.removeDateConstraint(date);
+            else
+                schedule.moed.manager.constraintlistB.removeDateConstraint(date);
+            this.getChildren().remove(1);
+            tests = new VBox();
+            tests.setSpacing(1);
+            tests.setStyle("-fx-background-color: white");
+            tests.setAlignment(Pos.TOP_CENTER);
+            this.getChildren().add(tests);
+        }
     }
     private void Enable() {
         schedule.moed.manager.unblockDay(date);
@@ -109,12 +139,20 @@ public class Day extends VBox{
         isBlocked = true;
         this.setDisable(true);
     }
+    public void disableBlocking(){
+        blockingAllowed = false;
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(false));
+    }
+    public void enableBlocking(){
+        blockingAllowed = true;
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
+    }
 
     public VBox getTests() {
         return tests;
     }
 
     public void addTest(Course course) {
-        tests.getChildren().add(new Test(course));
+        tests.getChildren().add(new Test(course,true));
     }
 }

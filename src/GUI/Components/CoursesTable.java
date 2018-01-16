@@ -27,10 +27,12 @@ public class CoursesTable extends VBox{
     TableView<Item> table;
     FilteredList<Item> filteredList;
     Manager manager;
+    private boolean scheduled;
 
     public CoursesTable(Manager parent) {
         this.getStylesheets().add("/coursetable_style.css");
         manager = parent;
+        scheduled = false;
         table = new TableView<>();
         take = new TableColumn<>("");
         take.setCellValueFactory(new PropertyValueFactory<>("take"));
@@ -67,15 +69,17 @@ public class CoursesTable extends VBox{
         table.setRowFactory(tv -> {
             TableRow<Item> row = new TableRow<>();
             row.setOnDragDetected(event -> {
-                if(take.getCellData(row.getIndex()).isSelected()) {
-                    Dragboard db = row.startDragAndDrop(TransferMode.ANY);
-                    ClipboardContent content = new ClipboardContent();
-                    String course_str = (name.getCellData(row.getIndex())).split(" - ")[0];
-                    content.putString(course_str);
-                    db.setContent(content);
-                    Course course = manager.courseloader.getCourse(Integer.parseInt(course_str));
-                    Scene scene = new Scene(new Test(course));
-                    db.setDragView(scene.snapshot(null));
+                if(!scheduled) {
+                    if (take.getCellData(row.getIndex()).isSelected()) {
+                        Dragboard db = row.startDragAndDrop(TransferMode.ANY);
+                        ClipboardContent content = new ClipboardContent();
+                        String course_str = (name.getCellData(row.getIndex())).split(" - ")[0];
+                        content.putString(course_str);
+                        db.setContent(content);
+                        Course course = manager.courseloader.getCourse(Integer.parseInt(course_str));
+                        Scene scene = new Scene(new Test(course,false));
+                        db.setDragView(scene.snapshot(null));
+                    }
                 }
                 event.consume();
             });
@@ -97,15 +101,18 @@ public class CoursesTable extends VBox{
         filterInput.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         filterInput.setStyle("-fx-focus-color: transparent; -fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         table.setItems(filteredList);
-        table.setStyle("-fx-focus-color: lightgrey;");
+        table.setStyle("-fx-focus-color: lightgrey; -fx-faint-focus-color: transparent;");
         this.getChildren().addAll(filterInput,table);
     }
     public ObservableList<Item> getData() {
         ObservableList<Item> items = FXCollections.observableArrayList();
         for (Logic.Course course:manager.courseloader.getCourses().values()) {
-            items.add(new Item(course));
+            items.add(new Item(manager,course));
         }
         return items;
+    }
+    public void setScheduled(boolean value){
+        scheduled = value;
     }
 
 }
