@@ -1,6 +1,7 @@
 package GUI.Components;
 import Logic.Schedule;
 import Logic.WriteScheduleToDB;
+import Output.CSVIFileWriter;
 import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,16 +28,20 @@ public class Toolbar extends HBox{
         title_box.setAlignment(Pos.TOP_RIGHT);
         title_box.getChildren().addAll(main_title, sub_title);
         title_box.setPrefWidth(996);
-        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png",()->scheduleFunction());
-        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png",()->cleanFunction());
-        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",()->saveFunction());
-        export_button = new CustomButton("ייצוא", "/export_icon.png",()->exportFunction());
+        CustomButton schedule_button = new CustomButton("שיבוץ", "/schedule_icon.png",()->scheduleFunction(),40,150);
+        schedule_button.setCircular();
+        CustomButton clean_button = new CustomButton("ניקוי", "/clean_icon.png",()->cleanFunction(),40,150);
+        clean_button.setCircular();
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",()->saveFunction(),40,150);
+        save_button.setCircular();
+        export_button = new CustomButton("ייצוא", "/export_icon.png",()->exportFunction(),40,150);
+        export_button.setCircular();
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
         this.getChildren().addAll(export_button, clean_button, save_button, schedule_button, title_box);
     }
     public void cleanFunction() {
-        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", ()->wrapper.manager.cleanData());
+        new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", () -> wrapper.manager.cleanData());
     }
 
     public void saveFunction() {
@@ -49,9 +54,13 @@ public class Toolbar extends HBox{
         export_button.setOnMouseClicked(event->{
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            CustomButton CSVButton = new CustomButton("יצא בתור CSV","/export_icon.png", stage::close);
-            CustomButton XMLButton = new CustomButton("יצא בתור XML","/export_icon.png",null);
-
+            CustomButton CSVButton = new CustomButton("יצא בתור CSV",null, ()->{
+                CSVIFileWriter writer = new CSVIFileWriter();
+                //writer.write("temp.csv",wrapper.manager.);
+            }, 30,110);
+            CSVButton.setRectangle();
+            CustomButton XMLButton = new CustomButton("יצא בתור XML",null, stage::close, 30 ,110);
+            XMLButton.setRectangle();
             Scene scene = new Scene(new VBox(CSVButton,XMLButton));
             stage.setScene(scene);
             stage.setX(event.getScreenX());
@@ -73,15 +82,18 @@ public class Toolbar extends HBox{
             return;
         }
         wrapper.manager.been_scheduled = true;
-        LoadingBox alert = new LoadingBox(()->  {
+        new LoadingBox(() -> {
             try {
-                Logic.Schedule scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
-                Logic.Schedule scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
+                Schedule scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
+                Schedule scheduleB = new Schedule(wrapper.manager.Bstart, wrapper.manager.Bend, wrapper.manager.occupiedB);
                 scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
                 //scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
                 wrapper.updateSchdule(scheduleA, scheduleB);
-            } catch (Exception e){}
+            } catch (Exception ignored) {
+            }
         });
+        wrapper.manager.coursetable.setScheduled(true);
+
 
 
     }

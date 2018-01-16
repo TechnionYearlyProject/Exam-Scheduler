@@ -16,7 +16,8 @@ import java.util.function.Function;
 
 public class CustomButton extends HBox {
     private Runnable function;
-    public CustomButton(String title, String url, Runnable func) {
+    private boolean isCircle;
+    public CustomButton(String title, String url, Runnable func, int height, int width) {
         function = func;
         Text text = new Text(title);
         text.setFill(Color.WHITE);
@@ -27,14 +28,12 @@ public class CustomButton extends HBox {
             image_label.setGraphic(new ImageView(image));
             this.getChildren().addAll(image_label);
         }
-        this.setPrefHeight(40);
-        this.setPrefWidth(150);
-        this.setMaxHeight(40);
-        this.setMaxWidth(150);
+        this.setPrefHeight(height);
+        this.setPrefWidth(width);
+        this.setMaxHeight(height);
+        this.setMaxWidth(width);
         this.setSpacing(15);
         this.setAlignment(Pos.CENTER);
-        this.setStyle("-fx-background-radius: 6 6 6 6;  -fx-background-color: #607D8B");
-
 
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> ChangeBackground("#455A64"));
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event -> ChangeBackground("#607D8B"));
@@ -48,9 +47,23 @@ public class CustomButton extends HBox {
         });
 
     }
+    public void setCircular(){
+        this.setStyle("-fx-background-radius: 6 6 6 6;  -fx-background-color: #607D8B");
+        isCircle = true;
+    }
+    public void setRectangle(){
+        this.setStyle("-fx-background-color: #607D8B");
+        isCircle = false;
+    }
     private void ChangeBackground (String color)
     {
-        this.setStyle("-fx-background-radius: 6 6 6 6; -fx-background-color:" + color);
+        if(isCircle){
+            this.setStyle("-fx-background-radius: 6 6 6 6; -fx-background-color:" + color);
+        }
+        else {
+            this.setStyle("-fx-background-color:" + color);
+        }
+
     }
 }
 

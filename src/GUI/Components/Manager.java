@@ -141,6 +141,7 @@ public class Manager extends HBox {
             constraintlistB = new ConstraintList();
             occupiedA = new HashSet<LocalDate>();
             occupiedB = new HashSet<LocalDate>();
+            wrapper.manager.coursetable.setScheduled(false);
         }
         catch (Exception e) {
             //handle exceptions
