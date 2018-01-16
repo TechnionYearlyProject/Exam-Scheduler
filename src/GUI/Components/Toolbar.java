@@ -82,22 +82,14 @@ public class Toolbar extends HBox{
             return;
         }
         wrapper.manager.been_scheduled = true;
-        LoadingBox alert = new LoadingBox(()->  {
+        new LoadingBox(()->  {
             try {
-                Schedule scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
-                Schedule scheduleB = new Schedule(wrapper.manager.Bstart, wrapper.manager.Bend, wrapper.manager.occupiedB);
-                scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                //scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, scheduleA);
-                wrapper.updateSchdule(scheduleA, scheduleB);
-            } catch (Exception ignored) {
-            }
                 wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
                 wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
                 wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
                 wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
                 wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
-            } catch (Exception e){}
-        });
+            } catch (Exception ignored) {}});
         wrapper.manager.coursetable.setScheduled(true);
 
 

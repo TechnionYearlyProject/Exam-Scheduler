@@ -126,6 +126,6 @@ public class Day extends VBox{
     }
 
     public void addTest(Course course) {
-        tests.getChildren().add(new Test(course));
+        tests.getChildren().add(new Test(course,true));
     }
 }
