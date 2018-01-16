@@ -1,5 +1,7 @@
 package GUI.Components;
 import Logic.Schedule;
+import Logic.WriteScheduleToDB;
+import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,7 +35,9 @@ public class Toolbar extends HBox{
     }
 
     public void saveFunction() {
-       // AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את המצב הנוכחי?", ()->parent.saveAllData());
+        // AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את המצב הנוכחי?", ()->parent.saveAllData());
+        Semester to_write = wrapper.manager.semester;
+        wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);
     }
 
     public void scheduleFunction(){
