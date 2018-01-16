@@ -1,68 +1,47 @@
 package GUI.Components;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.event.ActionEvent;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class Moed extends VBox{
-    private Schedule schedule;
-    private Picker picker1;
-    private Picker picker2;
-    private Boolean start_set;
-    private Boolean end_set;
-    public Moed(CoursesTable table, String title) {
+    public Schedule schedule;
+    Picker picker1;
+    Picker picker2;
+    Boolean start_set;
+    Boolean end_set;
+    Manager manager;
+    enum MoedType {
+        A,B
+    }
+    MoedType moedType;
+    public Moed(Manager parent, String title,LocalDate start, LocalDate end) {
+        if (title == "מועד א'")
+            moedType = MoedType.A;
+        else
+            moedType = MoedType.B;
+        manager = parent;
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
         start_set = false;
         end_set = false;
         Label label = new Label(title);
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 14pt; -fx-underline: true;");
-
         picker1 = new Picker("תאריך התחלה:");
+        picker1.getPicker().setValue(start);
         picker2 = new Picker("תאריך סיום:");
-        if (title == "מועד א'")
-            schedule = new Schedule(table,LocalDate.now(),LocalDate.now().plusDays(30));
-        else
-            schedule = new Schedule(table,LocalDate.now().plusDays(31),LocalDate.now().plusDays(61));
-
+        picker2.getPicker().setValue(end);
+        schedule = new Schedule(this,start,end);
         this.getChildren().addAll(label,picker1,picker2,schedule);
-        picker1.getPicker().setOnAction(event -> {
-            start_set = true;
-            picker1.setDate(picker1.getPicker().getValue());
-            if (start_set && end_set) {
-                if (!picker1.getPicker().getValue().isBefore(picker2.getPicker().getValue())) {
-                    AlertBox alert = new AlertBox(AlertType.ERROR, "תאריכים לא חוקיים" + "\n" + "אנא הזינו שוב תאריכים", null);
-                }
-                else {
-                    this.getChildren().remove(3);
-                    schedule = new Schedule(table,picker1.getDate(), picker2.getDate());
-                    this.getChildren().add(schedule);
-                }
-            }
-        });
-        picker2.getPicker().setOnAction(event -> {
-            end_set = true;
-            picker2.setDate(picker2.getPicker().getValue());
-            if (start_set && end_set) {
-                if (!picker1.getPicker().getValue().isBefore(picker2.getPicker().getValue())) {
-                    AlertBox alert = new AlertBox(AlertType.ERROR, "תאריכים לא חוקיים" + "\n" + "אנא הזינו שוב תאריכים", null);
-                }
-                else {
-                    this.getChildren().remove(3);
-                    schedule = new Schedule(table,picker1.getDate(), picker2.getDate());
-                    this.getChildren().add(schedule);
-                }
-            }
-        });
+    }
+
+    public void cleanData(LocalDate start, LocalDate end) {
+        picker1.getPicker().setValue(start);
+        picker2.getPicker().setValue(end);
+        this.getChildren().remove(3);
+        schedule = new Schedule(this,start,end);
+        this.getChildren().add(schedule);
 
     }
+
 }

@@ -1,6 +1,4 @@
 package GUI.Components;
-// http://htmlcolorcodes.com/color-chart/ 
-// https://icons8.com/icon/new-icons/all
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -20,9 +18,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-
-	
-
 public class AlertBox {
 	ImageView X_icon;
 	ImageView X_hover_icon;
@@ -34,17 +29,15 @@ public class AlertBox {
 		HBox hbox_title = new HBox();
 		hbox_title.setPadding(new Insets(15, 15, 0, 15)); //0 on bottom
 		String temp;
+		stage.getIcons().add(new Image("/app_icon.png"));
 		if (type == AlertType.ERROR) {
 			temp = "שגיאה";
-			stage.getIcons().add(new Image("/error_icon.png"));
 		}
 		else if (type == AlertType.INFO) {
 			temp = "מידע";
-			stage.getIcons().add(new Image("/info_icon.png"));
 		}
 		else {
 			temp = "אישור";
-			stage.getIcons().add(new Image("/confirm_icon.png"));
 		}
 		Label title_label = new Label(temp);
 		title_label.setFont(Font.font(18));
@@ -98,6 +91,7 @@ public class AlertBox {
 
 		icon_label.setGraphic(new ImageView(icon_image));
 		Label msg_label = new Label(msg);
+		msg_label.setAlignment(Pos.CENTER_RIGHT);
 		hbox_body.getChildren().addAll(msg_label, icon_label);
 
 		HBox hbox_button = new HBox();
@@ -221,7 +215,7 @@ public class AlertBox {
 		border.getChildren().add(vbox);
 		Scene scene = new Scene(border, 504, 194);
 		stage.setScene(scene);
-		stage.showAndWait();
+		stage.show();
 
 	}
 }

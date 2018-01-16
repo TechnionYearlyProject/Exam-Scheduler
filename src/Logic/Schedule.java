@@ -159,16 +159,15 @@ public class Schedule {
         return null;
     }
 
-    public void produceSchedule(Semester semester, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
-        CourseLoader loader = new CourseLoader(semester, cl);
+    public void produceSchedule(CourseLoader courseloader, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
         //sort courses by number of conflicts
-        List<Course> courses = loader.getSortedCourses();
+        List<Course> courses = courseloader.getSortedCourses();
         //First need to schedule courses with constraints
         this.assignConstraints(cl, courses);
         //Now, try to produce a legal (maybe not optimized) schedule
-        produceLegalSchedule(courses, moedA);
+        produceLegalSchedule(courses, moedA, cl);
         //try to optimize schedule in such way, that every day will be ~ same number of exams (do we really want it?)
-        optimizeSchedule(courses, moedA);
+        optimizeSchedule(courses, moedA, cl);
     }
 
     /*The function finds day where exam should be scheduled and assign the exam to the day
@@ -205,7 +204,7 @@ public class Schedule {
         }
         LocalDate moedAExamDate = moedA.getDayWhenScheduled(courseId).getDate();
         LocalDate moedBBeginDate = schedulable_days.get(0).getDate();
-        int index = (int)DAYS.between(moedAExamDate.plusDays(gap), moedBBeginDate);
+        int index = (int)DAYS.between(moedBBeginDate, moedAExamDate.plusDays(gap));
         return index < 0 ? 0: index;
     }
 
@@ -217,10 +216,7 @@ public class Schedule {
         }
         for (int courseId: constraintList.constraints.keySet()){
             Course course = courses.stream().filter(c -> c.getCourseID().equals(courseId)).findFirst().get();
-            LocalDate dateToBeScheduled =
-                    LocalDateTime.ofInstant
-                            (constraintList.getConstraints(courseId).get(0).start.toInstant(),
-                                    ZoneId.systemDefault()).toLocalDate();
+            LocalDate dateToBeScheduled = LocalDateTime.ofInstant(constraintList.getConstraints(courseId).get(0).start.toInstant(),ZoneId.systemDefault()).toLocalDate();
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
@@ -241,7 +237,6 @@ public class Schedule {
                         }
                     }
                     if (!assigned) {
-                        System.out.println(course.getDaysBefore());
                         throw new CanNotBeScheduledException(courseId);
                     }
                 }
@@ -250,7 +245,7 @@ public class Schedule {
     }
 
     //Produce schedule which has not overlapped conflicts
-    private void produceLegalSchedule(List<Course> courses, Schedule moedA) throws CanNotBeScheduledException{
+    private void produceLegalSchedule(List<Course> courses, Schedule moedA, ConstraintList cl) throws CanNotBeScheduledException{
         if (this.schedulable_days.size() / 21.0 < 1){ //lul TODO: improve it
             for (Course course: courses){
                 try{
@@ -262,7 +257,7 @@ public class Schedule {
             }
         }
         for (Course course: courses){
-            if (course.getGoodConstraints().size() != 0){//was getConstraints().
+            if (cl.getConstraints(course.getCourseID()) != null && cl.getConstraints(course.getCourseID()).size() != 0){//was getGoodConstraints().
                 continue;
             }
             int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
@@ -282,10 +277,10 @@ public class Schedule {
         }
     }
 
-    private void optimizeSchedule(List<Course> courses, Schedule moedA){
+    private void optimizeSchedule(List<Course> courses, Schedule moedA, ConstraintList cl){
         for (Course course: courses){
-            if (course.getGoodConstraints().size() != 0){//was getConstraints().
-                continue; //Courses with constraints have to be scheduled where is required by constraint
+            if (cl.getConstraints(course.getCourseID()) != null && cl.getConstraints(course.getCourseID()).size() != 0){//TODO: Change. Need iterate over and find "good" constraint.
+                continue;
             }
             boolean scheduled = false;
             int uniformity = 1;

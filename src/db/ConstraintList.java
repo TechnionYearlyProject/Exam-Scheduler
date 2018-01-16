@@ -3,6 +3,7 @@ package db;
 import db.exception.InvalidConstraint;
 import db.exception.OverlappingConstraints;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class ConstraintList {
@@ -55,5 +56,16 @@ public class ConstraintList {
             list.add(new Constraint(constraint.start, constraint.end));
         }
         return list;
+    }
+
+    public void removeDateConstraint(LocalDate date) {
+        GregorianCalendar calendar = new GregorianCalendar(date.getYear(),date.getMonthValue(),date.getDayOfMonth());
+        for (Integer course_id:constraints.keySet()) {
+            ArrayList<Constraint> copied_constraints = new ArrayList<Constraint>(constraints.get(course_id));
+            for (Constraint constraint:copied_constraints) {
+                if (constraint.getStart().equals(calendar) && constraint.getEnd().equals(calendar))
+                    removeConstraint(course_id,calendar,calendar);
+            }
+        }
     }
 }

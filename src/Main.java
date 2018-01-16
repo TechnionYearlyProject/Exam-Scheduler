@@ -1,14 +1,19 @@
 
+import GUI.Components.Wrapper;
+import Output.CalendarFileWriter;
+import Output.XMLFileWriter;
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import GUI.Components.*;
+
+import java.util.Calendar;
 
 public class Main extends Application {
 
-    public static void main(String[] args) { launch(args);
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -23,8 +28,5 @@ public class Main extends Application {
         primaryStage.getIcons().add(new Image("/app_icon.png"));
         //primaryStage.setResizable(false);
         primaryStage.show();
-
     }
-
-
 }

@@ -27,7 +27,7 @@ public class CourseLoaderTest {
         List<Course> courses = semester.getCourseCollection();
         List<Integer> coursesIds = new LinkedList<>();
         for (Course course: courses) {
-            coursesIds.add(course.id);
+            coursesIds.add(course.courseID);
         }
         loader = new CourseLoader(semester, null);
         Logic.Course prev = null;

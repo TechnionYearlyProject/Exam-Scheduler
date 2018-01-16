@@ -1,0 +1,11 @@
+.table-view {
+    -fx-font-size: 11pt;
+}
+.table-view .column-header .label{
+    -fx-alignment:center-right;
+}
+.check-box > .box {
+    -fx-padding: 0.1em 0.1em 0.1em 0.1em;
+}
+
+

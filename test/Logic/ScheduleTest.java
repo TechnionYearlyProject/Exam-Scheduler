@@ -27,11 +27,11 @@ public class ScheduleTest {
         db.loadSemester(2017, "winter_test");
         semester = db.getSemester(2017, "winter_test");
         loader = new CourseLoader(semester, null);
-        moedA = new Schedule(LocalDate.of(2018, 1, 29), LocalDate.of(2018, 2, 23), null);
+        moedA = new Schedule(LocalDate.of(2018, 1, 16), LocalDate.of(2018, 2, 22), null);
         HashSet<LocalDate> occupied = new HashSet<>();
         occupied.add(LocalDate.of(2018, 3, 1));
         occupied.add(LocalDate.of(2018, 3, 2));
-        moedB = new Schedule(LocalDate.of(2018, 2, 27), LocalDate.of(2018, 3, 19), occupied, 18);
+        moedB = new Schedule(LocalDate.of(2018, 2, 23), LocalDate.of(2018, 3, 19), occupied, 5);
     }
 
     @Test
@@ -86,12 +86,12 @@ public class ScheduleTest {
 
     @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        moedA.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_A), null);
+        moedA.produceSchedule(loader, semester.constraints.get(Semester.Moed.MOED_A), null);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(moedA, course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(moedA, course, true));
         }
-        moedB.produceSchedule(semester, semester.constraints.get(Semester.Moed.MOED_B), moedA);
+        moedB.produceSchedule(loader, semester.constraints.get(Semester.Moed.MOED_B), moedA);
         for (Course course: loader.getSortedCourses()){
             assert(isCourseInSchedule(moedB, course.getCourseID()));
             assert(isCourseConflictsRequirementsMet(moedB, course, false));

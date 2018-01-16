@@ -11,13 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 public class WriteScheduleToDB {
-    public void write(Semester s,List<Day> lst, Schedule sc) {
-        Semester.Moed sm;
-        if(sc == null){
-            sm = Semester.Moed.MOED_A;
-        } else {
-            sm = Semester.Moed.MOED_B;
-        }
+    public void write(Semester s,List<Day> lst, Semester.Moed sm) {
         for (Day d : lst) {
             Date date = Date.from(d.getDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
             Calendar calendar = Calendar.getInstance();

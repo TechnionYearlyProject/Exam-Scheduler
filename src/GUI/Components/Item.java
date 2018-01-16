@@ -1,33 +1,75 @@
 package GUI.Components;
-
-import db.Course;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.Button;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.VBox;
-
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Item {
     CheckBox take;
     String name;
-    Integer study;
+    SimpleStringProperty study;
     ChoiceBox<String> pref;
-    Button connections;
-    public Item(Course course) {
+    Label connections;
+    Manager manager;
+    public Item(Manager parent, Logic.Course course) {
+        manager = parent;
         take = new CheckBox();
-        take.setSelected(true);
-        name = course.id + " - "+ course.name;
-        study = (int)(course.weight);
+        take.setSelected(course.hasExam());
+        take.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            manager.courseloader.getCourse(course.getCourseID()).setHasExam(take.isSelected());
+        });
+        name = String.format("%06d",course.getCourseID()) + " - " + course.getCourseName();
+        study = new SimpleStringProperty((new Integer(course.getCreditPoints().intValue()).toString()));
         pref = new ChoiceBox<String>();
         pref.getItems().addAll("אוטומטי","סוף תקופה","תחילת תקופה");
-        pref.setValue("אוטומטי");
+        if (course.isFirst())
+            pref.setValue("תחילת תקופה");
+        else if (course.isLast())
+                pref.setValue("סוף תקופה");
+        else
+            pref.setValue("אוטומטי");
+        pref.setOnAction(event -> {
+            if (pref.getValue() == "תחילת תקופה")
+                course.setAsFirst(true);
+            else if (pref.getValue() == "סוף תקופה")
+                    course.setAsLast(true);
+            else {
+                course.setAsFirst(false);
+                course.setAsLast(false);
+            }
+        });
         pref.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        connections = new Button();
-        connections.setText("קשרים");
+        pref.setPadding(new Insets(0,-7,0,0));
+        connections = new Label();
+        connections.setGraphic(new ImageView(new Image("/connection_icon.png")));
+        connections.addEventFilter(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton()!= MouseButton.PRIMARY)
+                return;
+            Connections connections = new Connections(manager,course.getCourseID());
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.UNDECORATED);
+            Scene scene = new Scene(connections, 200, 250);
+            stage.setScene(scene);
+            stage.setX(Double.min(mouse_event.getScreenX(),1700));
+            stage.setY(Double.min(mouse_event.getScreenY(),760));
+            stage.getIcons().add(new Image("/app_icon.png"));
+            stage.focusedProperty().addListener(event -> {
+                if (!stage.isFocused()) {
+                    stage.close();
+                }
+            });
+
+            stage.show();
+        });
     }
     public String getName() {
         return name;
@@ -35,14 +77,21 @@ public class Item {
     public CheckBox getTake() {
         return take;
     }
-    public Integer getStudy() {
-        return study;
+    public String getStudy() {
+        return study.get();
+    }
+    public void setStudy(String new_study) {
+        study.set(new_study);
     }
     public ChoiceBox<String> getPref() {
         return pref;
     }
-    public Button getConnections() {
+    public Label getConnections() {
         return connections;
+    }
+    public Integer getCourseID()
+    {
+        return Integer.parseInt(name.split(" - ")[0]);
     }
 
 

@@ -14,10 +14,8 @@ public class Course implements Comparable<Course>{
     private Map<Integer,String> conflictCourses;
     private boolean isLast, isFirst, isRequired, hasExam;
     private double creditPoints;
+    private ArrayList<Constraint> constraints;
     private Set<Pair<String, Integer>> programs;
-    private ArrayList<Constraint> goodConstraints;
-    private ArrayList<Constraint> badConstraints;
-    private boolean assigned;
 
     /*
      * Logic.Course copy c0'tor performing deepCopy.
@@ -30,11 +28,10 @@ public class Course implements Comparable<Course>{
         isFirst = o.isFirst;
         daysBefore = o.daysBefore;
         creditPoints = o.creditPoints;
-        programs = o.programs;
+        constraints = new ArrayList<>(o.getConstraints());
         conflictCourses = new HashMap<>(o.getConflictCourses());
-        goodConstraints = new ArrayList<>(o.goodConstraints);
-        badConstraints = new ArrayList<>(o.badConstraints);
-        assigned = o.assigned;
+        hasExam = o.hasExam;
+        programs = o.programs;
     }
 
     /*
@@ -42,18 +39,16 @@ public class Course implements Comparable<Course>{
      */
     public Course(String courseName, Integer courseID, boolean isRequired, double cPoints) {
         conflictCourses = new HashMap<>();
+        constraints = new ArrayList<>();
         this.courseID = courseID;
         this.courseName = courseName;
         this.isLast = false;
         this.isFirst = false;
         this.isRequired = isRequired;
         this.creditPoints = cPoints;
-        this.daysBefore = (int)floor(creditPoints) - 1; //For now (after many experiments) need to leave as cPoints-1
+        this.daysBefore = (int)floor(creditPoints) - 1;
         this.hasExam = true;
         this.programs = new HashSet<>();
-        goodConstraints = new ArrayList<>();
-        badConstraints = new ArrayList<>();
-        assigned = false;
     }
 
     public Course(String courseName, Integer courseID, boolean isRequired, double cPoints, Map<String, Integer> programs) {
@@ -68,29 +63,10 @@ public class Course implements Comparable<Course>{
      * @Param c0: the Constraint to add.
      */
     void addConstraint(Constraint c){
-        if(c.forbidden){//badConstraint
-            if(badConstraints.contains(c)){
-                return;
-            }
-            badConstraints.add(new Constraint(c.start,c.end,c.forbidden));
-        } else {
-            if(goodConstraints.contains(c)){
-                return;
-            }
-            goodConstraints.add(new Constraint(c.start,c.end));
+        if(constraints.contains(c)){
+            return;
         }
-    }
-
-    /*
-     * Remove constraint(bad or good) from the constraints lists. if there is such constraint it won't affect the list.
-     * @Param c0: the Constraint to remove.
-     */
-    void removeConstraint(Constraint c){
-        if(c.forbidden) {
-            badConstraints.remove(c);
-        } else {
-            goodConstraints.remove(c);
-        }
+        constraints.add(new Constraint(c.start,c.end));
     }
 
     /*
@@ -104,29 +80,11 @@ public class Course implements Comparable<Course>{
     }
 
     /*
-     * returns true if the given Constraint is bad constraint
-     * (the course can not be assigned to this range of days).
+     * Remove constraint from the constraints list. if there is such constraint it won't affect the list.
+     * @Param c0: the Constraint to remove.
      */
-    boolean isBadConstraint(Constraint c){
-        return badConstraints.contains(c);
-    }
-
-    /*
-     * returns true if the given Constraint is good constraint
-     * (the course can not be assigned to this range of days).
-     */
-    boolean isGoodConstraint(Constraint c){
-        return goodConstraints.contains(c);
-    }
-
-    ArrayList<Constraint> getGoodConstraints(){
-        Collections.sort(goodConstraints);
-        return new ArrayList<>(goodConstraints);
-    }
-
-    ArrayList<Constraint> getBadConstraints(){
-        Collections.sort(badConstraints);
-        return new ArrayList<>(badConstraints);
+    void removeConstraint(Constraint c){
+        constraints.remove(c);
     }
 
     /*
@@ -134,7 +92,7 @@ public class Course implements Comparable<Course>{
      * @Param courseID: the ID of the course to be defined as conflict.
      * @Param courseName: the name of the course to be defined as conflict.
      */
-    void addConflictCourse(Integer courseID, String courseName){
+    public void addConflictCourse(Integer courseID, String courseName){
         if(this.courseID == courseID){
             return;
         }
@@ -180,18 +138,18 @@ public class Course implements Comparable<Course>{
     }
 
 
-    void setDaysBefore(int daysBefore) throws IllegalDaysBefore {
+    public void setDaysBefore(int daysBefore) throws IllegalDaysBefore {
         if(daysBefore < 1){
             throw new IllegalDaysBefore();
         }
         this.daysBefore = daysBefore;
     }
-    int getDaysBefore(){
+    public int getDaysBefore(){
         return daysBefore;
     }
 
 
-    void setAsLast(boolean isLast) {
+    public void setAsLast(boolean isLast) {
         if (isLast) {
             this.isFirst = false;
         } //Course can't be as last and as first at the same time
@@ -209,7 +167,7 @@ public class Course implements Comparable<Course>{
         return isLast;
     }
 
-    void setAsFirst(boolean isFirst) {
+    public void setAsFirst(boolean isFirst) {
         if (isFirst) {
             this.isLast = false;
         } //Course can't be as last and as first at the same time
@@ -222,8 +180,14 @@ public class Course implements Comparable<Course>{
     void setAsRequired(boolean isRequired){this.isRequired = isRequired;}
     public boolean isRequired(){return isRequired;}
 
-    Map<Integer,String> getConflictCourses(){
+    public Map<Integer,String> getConflictCourses(){
         return new HashMap<>(conflictCourses);
+
+    }
+
+    public ArrayList<Constraint> getConstraints(){
+        Collections.sort(constraints);
+        return new ArrayList<>(constraints);
     }
 
     /*
@@ -268,19 +232,11 @@ public class Course implements Comparable<Course>{
         }
     }
 
-    public void assign(){
-        assigned = true;
-    }
-
-    public void unAssign(){
-        assigned = false;
-    }
-
-    public boolean isAssigned() {
-        return assigned;
-    }
-
     public Set<Pair<String, Integer>> getPrograms() {
         return programs;
+    }
+
+    public Double getCreditPoints() {
+        return creditPoints;
     }
 }

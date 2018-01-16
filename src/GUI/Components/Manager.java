@@ -1,61 +1,174 @@
 package GUI.Components;
-import db.Course;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.geometry.NodeOrientation;
+import Logic.CourseLoader;
+import db.ConstraintList;
+import db.Database;
+import db.Semester;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import javafx.util.Callback;
-
 import java.time.LocalDate;
+import java.util.HashSet;
 
 public class Manager extends HBox {
-    private Moed A;
-    private Moed B;
-    private CoursesTable courses;
-    private FilteredList<Item> getData() {
-        ObservableList<Item> items = FXCollections.observableArrayList();
-        items.add(new Item(new Course(234141, "קומבינטוריקה למדעי המחשב", 3)));
-        items.add(new Item(new Course(234123, "מערכות הפעלה", 4)));
-        items.add(new Item(new Course(236353, "אוטומטים ושפות פורמליות", 3)));
-        items.add(new Item(new Course(104032, "חשבון אינפיניטסימלי 2מ'", 5)));
-        return new FilteredList<>(items);
-    }
-    public Manager() {
-
-        courses = new CoursesTable();
-        FilteredList<Item> filteredList = getData();
-        TextField filterInput = new TextField();
-        filterInput.setPromptText("חפש קורס...");
-        filterInput.textProperty().addListener(obs->{
-            String filter = filterInput.getText();
-            if(filter == null || filter.length() == 0) {
-                filteredList.setPredicate(s -> true);
-            }
-            else {
-                filteredList.setPredicate(s -> s.name.contains(filter));
-            }
-        });
-        filterInput.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        courses.setItems(filteredList);
-        A = new Moed(courses,"מועד א'");
-        B = new Moed(courses,"מועד ב'");
-        this.getChildren().addAll(B,A,new VBox(filterInput, courses));
+    Moed A;
+    Moed B;
+    CoursesTable coursetable;
+    CourseLoader courseloader;
+    Semester semester;
+    Database db;
+    ConstraintList constraintlistA;
+    ConstraintList constraintlistB;
+    HashSet<LocalDate> occupiedA;
+    HashSet<LocalDate> occupiedB;
+    LocalDate Astart;
+    LocalDate Aend;
+    LocalDate Bstart;
+    LocalDate Bend;
+    Boolean picker_error;
+    Boolean been_scheduled;
+    Wrapper wrapper;
+    Integer semesterYear;
+    String semesterName;
+    Logic.Schedule scheduleA;
+    Logic.Schedule scheduleB;
+    public Manager(Wrapper parent) {
+        try {
+            db = new Database();
+            semesterYear = 2017;
+            semesterName = "winter_test";
+            semester = db.loadSemester(semesterYear, semesterName);
+            courseloader = new CourseLoader(semester,null);
+            constraintlistA = new ConstraintList();
+            constraintlistB = new ConstraintList();
+            occupiedA = new HashSet<LocalDate>();
+            occupiedB = new HashSet<LocalDate>();
+        }
+        catch (Exception e) {
+            //handle exceptions
+        }
+        wrapper = parent;
+        been_scheduled = false;
+        picker_error = true;
+        coursetable = new CoursesTable(this);
+        Astart = LocalDate.now();
+        Aend = LocalDate.now().plusDays(35);
+        Bstart = LocalDate.now().plusDays(36);
+        Bend = LocalDate.now().plusDays(72);
+        A = new Moed(this,"מועד א'",Astart,Aend);
+        B = new Moed(this,"מועד ב'",Bstart,Bend);
+        this.getChildren().addAll(B,A,coursetable);
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
+        A.picker1.getPicker().setOnAction(event -> {
+            if (picker_error == false)
+                return;
+            LocalDate curr = A.picker1.getPicker().getValue();
+            if (datesOkay(curr,Aend,Bstart,Bend)) {
+                Astart = curr;
+                A.getChildren().remove(3);
+                A.schedule = new Schedule(A,Astart, Aend);
+                A.getChildren().add(A.schedule);
+            }
+            else {
+                new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
+                picker_error = false;
+                A.picker1.getPicker().setValue(Astart);
+                picker_error = true;
+            }
+        });
+        A.picker2.getPicker().setOnAction(event -> {
+            if (picker_error == false)
+                return;
+            LocalDate curr = A.picker2.getPicker().getValue();
+            if (datesOkay(Astart,curr,Bstart,Bend)) {
+                Aend = curr;
+                A.getChildren().remove(3);
+                A.schedule = new Schedule(A,Astart, Aend);
+                A.getChildren().add(A.schedule);
+            }
+            else {
+                new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
+                picker_error = false;
+                A.picker2.getPicker().setValue(Aend);
+                picker_error = true;
+            }
+        });
+        B.picker1.getPicker().setOnAction(event -> {
+            if (picker_error == false)
+                return;
+            LocalDate curr = B.picker1.getPicker().getValue();
+            if (datesOkay(Astart,Aend,curr,Bend)) {
+                Bstart = curr;
+                B.getChildren().remove(3);
+                B.schedule = new Schedule(B,Bstart, Bend);
+                B.getChildren().add(B.schedule);
+            }
+            else {
+                new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
+                picker_error = false;
+                B.picker1.getPicker().setValue(Bstart);
+                picker_error = true;
+            }
+        });
+        B.picker2.getPicker().setOnAction(event -> {
+            if (picker_error == false)
+                return;
+            LocalDate curr = B.picker2.getPicker().getValue();
+            if (datesOkay(Astart,Aend,Bstart,curr)) {
+                Bend = curr;
+                B.getChildren().remove(3);
+                B.schedule = new Schedule(B,Bstart, Bend);
+                B.getChildren().add(B.schedule);
+            }
+            else {
+                new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
+                picker_error = false;
+                B.picker2.getPicker().setValue(Bend);
+                picker_error = true;
+            }
+        });
+
+
     }
+
     public void cleanData() {
-        this.getChildren().remove(0);
-        B = new Moed(courses,"מועד ב'");
-        this.getChildren().add(0, B);
-        this.getChildren().remove(1);
-        A = new Moed(courses,"מועד א'");
-        this.getChildren().add(1, A);
+        been_scheduled = false;
+        Astart = LocalDate.now();
+        Aend = LocalDate.now().plusDays(35);
+        Bstart = LocalDate.now().plusDays(36);
+        Bend = LocalDate.now().plusDays(72);
+        A.cleanData(Astart, Aend);
+        B.cleanData(Bstart, Bend);
+        try {
+            constraintlistA = new ConstraintList();
+            constraintlistB = new ConstraintList();
+            occupiedA = new HashSet<LocalDate>();
+            occupiedB = new HashSet<LocalDate>();
+            wrapper.manager.coursetable.setScheduled(false);
+        }
+        catch (Exception e) {
+            //handle exceptions
+        }
+    }
+
+    public boolean datesOkay(LocalDate Astart,LocalDate Aend, LocalDate Bstart, LocalDate Bend) {
+        return ((Astart.isBefore(Aend))&&(Aend.isBefore(Bstart))&&(Bstart.isBefore(Bend)));
+    }
+
+    public void blockDay(LocalDate date) {
+        if (!date.isBefore(Astart) && !date.isAfter(Aend)) {
+            occupiedA.add(date);
+        }
+        else {
+            occupiedB.add(date);
+        }
+    }
+
+    public void unblockDay(LocalDate date) {
+        if (!date.isBefore(Astart) && !date.isAfter(Aend)) {
+            occupiedA.remove(date);
+        }
+        else {
+            occupiedB.remove(date);
+        }
     }
 }
