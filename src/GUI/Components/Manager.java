@@ -21,7 +21,8 @@ public class Manager extends HBox {
     LocalDate Aend;
     LocalDate Bstart;
     LocalDate Bend;
-    Boolean flag;
+    Boolean picker_error;
+    Boolean been_scheduled;
     Wrapper wrapper;
     public Manager(Wrapper parent) {
         try {
@@ -36,7 +37,8 @@ public class Manager extends HBox {
             //handle exceptions
         }
         wrapper = parent;
-        flag = true;
+        been_scheduled = false;
+        picker_error = true;
         coursetable = new CoursesTable(this);
         Astart = LocalDate.now();
         Aend = LocalDate.now().plusDays(35);
@@ -48,7 +50,7 @@ public class Manager extends HBox {
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
         A.picker1.getPicker().setOnAction(event -> {
-            if (flag == false)
+            if (picker_error == false)
                 return;
             LocalDate curr = A.picker1.getPicker().getValue();
             if (datesOkay(curr,Aend,Bstart,Bend)) {
@@ -59,13 +61,13 @@ public class Manager extends HBox {
             }
             else {
                 new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
-                flag = false;
+                picker_error = false;
                 A.picker1.getPicker().setValue(Astart);
-                flag = true;
+                picker_error = true;
             }
         });
         A.picker2.getPicker().setOnAction(event -> {
-            if (flag == false)
+            if (picker_error == false)
                 return;
             LocalDate curr = A.picker2.getPicker().getValue();
             if (datesOkay(Astart,curr,Bstart,Bend)) {
@@ -76,13 +78,13 @@ public class Manager extends HBox {
             }
             else {
                 new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
-                flag = false;
+                picker_error = false;
                 A.picker2.getPicker().setValue(Aend);
-                flag = true;
+                picker_error = true;
             }
         });
         B.picker1.getPicker().setOnAction(event -> {
-            if (flag == false)
+            if (picker_error == false)
                 return;
             LocalDate curr = B.picker1.getPicker().getValue();
             if (datesOkay(Astart,Aend,curr,Bend)) {
@@ -93,13 +95,13 @@ public class Manager extends HBox {
             }
             else {
                 new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
-                flag = false;
+                picker_error = false;
                 B.picker1.getPicker().setValue(Bstart);
-                flag = true;
+                picker_error = true;
             }
         });
         B.picker2.getPicker().setOnAction(event -> {
-            if (flag == false)
+            if (picker_error == false)
                 return;
             LocalDate curr = B.picker2.getPicker().getValue();
             if (datesOkay(Astart,Aend,Bstart,curr)) {
@@ -110,9 +112,9 @@ public class Manager extends HBox {
             }
             else {
                 new AlertBox(AlertType.ERROR, "טווח תאריכים לא חוקי. אנא הזינו תאריכים מחדש." ,null);
-                flag = false;
+                picker_error = false;
                 B.picker2.getPicker().setValue(Bend);
-                flag = true;
+                picker_error = true;
             }
         });
 
@@ -120,6 +122,7 @@ public class Manager extends HBox {
     }
 
     public void cleanData() {
+        been_scheduled = false;
         Astart = LocalDate.now();
         Aend = LocalDate.now().plusDays(35);
         Bstart = LocalDate.now().plusDays(36);

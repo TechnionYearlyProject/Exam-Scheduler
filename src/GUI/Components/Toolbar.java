@@ -37,6 +37,11 @@ public class Toolbar extends HBox{
     }
 
     public void scheduleFunction(){
+        if (wrapper.manager.been_scheduled) {
+            new AlertBox(AlertType.INFO,"לא ניתן לשבץ על לוח קיים. לחצו ניקוי ונסו שוב.",null);
+            return;
+        }
+        wrapper.manager.been_scheduled = true;
         LoadingBox alert = new LoadingBox(()->  {
             try {
                 Logic.Schedule scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
