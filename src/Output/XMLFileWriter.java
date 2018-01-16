@@ -1,5 +1,6 @@
 package Output;
 
+import Logic.CourseLoader;
 import Logic.Day;
 import Output.Exceptions.ErrorOpeningFile;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -26,10 +27,10 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XMLIFileWriter implements IFileWriter {
+public class XMLFileWriter implements IFileWriter {
 
     @Override
-    public void write(String fileName, List<Day> lst) throws ErrorOpeningFile {
+    public void write(String fileName, List<Day> lst, CourseLoader cl) throws ErrorOpeningFile {
         try {
 
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
