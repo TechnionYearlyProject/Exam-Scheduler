@@ -13,8 +13,6 @@ public class Manager extends HBox {
     Moed B;
     CoursesTable coursetable;
     CourseLoader courseloader;
-    int semesterYear;
-    String semesterName;
     Semester semester;
     Database db;
     ConstraintList constraintlistA;
@@ -28,6 +26,10 @@ public class Manager extends HBox {
     Boolean picker_error;
     Boolean been_scheduled;
     Wrapper wrapper;
+    Integer semesterYear;
+    String semesterName;
+    Logic.Schedule scheduleA;
+    Logic.Schedule scheduleB;
     public Manager(Wrapper parent) {
         try {
             db = new Database();
@@ -37,8 +39,8 @@ public class Manager extends HBox {
             courseloader = new CourseLoader(semester,null);
             constraintlistA = new ConstraintList();
             constraintlistB = new ConstraintList();
-            occupiedA = new HashSet<>();
-            occupiedB = new HashSet<>();
+            occupiedA = new HashSet<LocalDate>();
+            occupiedB = new HashSet<LocalDate>();
         }
         catch (Exception e) {
             //handle exceptions

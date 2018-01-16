@@ -82,7 +82,7 @@ public class Toolbar extends HBox{
             return;
         }
         wrapper.manager.been_scheduled = true;
-        new LoadingBox(() -> {
+        LoadingBox alert = new LoadingBox(()->  {
             try {
                 Schedule scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
                 Schedule scheduleB = new Schedule(wrapper.manager.Bstart, wrapper.manager.Bend, wrapper.manager.occupiedB);
@@ -91,6 +91,12 @@ public class Toolbar extends HBox{
                 wrapper.updateSchdule(scheduleA, scheduleB);
             } catch (Exception ignored) {
             }
+                wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart,wrapper.manager.Aend,wrapper.manager.occupiedA);
+                wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart,wrapper.manager.Bend,wrapper.manager.occupiedB);
+                wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
+                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
+                wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
+            } catch (Exception e){}
         });
         wrapper.manager.coursetable.setScheduled(true);
 

@@ -101,13 +101,13 @@ public class CoursesTable extends VBox{
         filterInput.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         filterInput.setStyle("-fx-focus-color: transparent; -fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         table.setItems(filteredList);
-        table.setStyle("-fx-focus-color: lightgrey;");
+        table.setStyle("-fx-focus-color: lightgrey; -fx-faint-focus-color: transparent;");
         this.getChildren().addAll(filterInput,table);
     }
     public ObservableList<Item> getData() {
         ObservableList<Item> items = FXCollections.observableArrayList();
         for (Logic.Course course:manager.courseloader.getCourses().values()) {
-            items.add(new Item(course));
+            items.add(new Item(manager,course));
         }
         return items;
     }
