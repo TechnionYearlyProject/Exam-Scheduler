@@ -215,7 +215,7 @@ public class AlertBox {
 		border.getChildren().add(vbox);
 		Scene scene = new Scene(border, 504, 194);
 		stage.setScene(scene);
-		stage.showAndWait();
+		stage.show();
 
 	}
 }
