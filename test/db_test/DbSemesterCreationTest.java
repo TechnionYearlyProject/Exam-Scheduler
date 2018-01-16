@@ -1,6 +1,5 @@
 package db_test;
 
-import db.Constraint;
 import db.Course;
 import db.Database;
 import db.Semester;
@@ -145,11 +144,11 @@ public class DbSemesterCreationTest {
         coursesPrograms.put(104031, tmp);
         assertEquals(coursesRef.size(), semester.getCourseCollection().size());
         for (Course course: semester.getCourseCollection()) {
-            assertEquals(true, coursesRef.contains(course.id));
-            assertEquals(course.name, coursesNames.get(course.id));
-            assertEquals(course.weight, coursesWeights.get(course.id));
-            assertEquals(course.studyProgramSize(), coursesPrograms.get(course.id).size());
-            tmp = coursesPrograms.get(course.id);
+            assertEquals(true, coursesRef.contains(course.courseID));
+            assertEquals(course.courseName, coursesNames.get(course.courseID));
+            assertEquals(course.creditPoints, coursesWeights.get(course.courseID));
+            assertEquals(course.studyProgramSize(), coursesPrograms.get(course.courseID).size());
+            tmp = coursesPrograms.get(course.courseID);
             for (String program: tmp.keySet()) {
                 if (course.getStudyProgramSemester(program) != 0) {
                     assertEquals((int) tmp.get(program), course.getStudyProgramSemester(program));

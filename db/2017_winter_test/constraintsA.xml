@@ -56,6 +56,11 @@
         <end_date>2018-02-09</end_date>
     </constraint>
     <constraint>
+        <course_id>234218</course_id>
+        <start_date>2018-02-12</start_date>
+        <end_date>2018-02-12</end_date>
+    </constraint>
+    <constraint>
         <course_id>104031</course_id>
         <start_date>2018-02-04</start_date>
         <end_date>2018-02-04</end_date>

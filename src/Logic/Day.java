@@ -49,12 +49,13 @@ public class Day {
                 continue;
             }
             if (distance <= 0 || course.getDaysBefore() >= distance){ //A student has not time to prepare to any of two courses
+                //System.out.println("Course " + course.getCourseID() + " conflicts with " + course_id + " distances " + distance + ": " + course.getDaysBefore() + " " + getDate());
                 return false;
             }
         }
         for (Constraint constraint: course.getConstraints()){//was getBadConstraints()
             if (LocalDateTime.ofInstant(constraint.start.toInstant(), ZoneId.systemDefault()).toLocalDate().equals(getDate())){
-                System.out.println(course.getCourseID());
+                //System.out.println(course.getCourseID());
                 return false;
             }
         }

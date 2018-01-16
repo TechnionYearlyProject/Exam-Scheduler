@@ -108,6 +108,19 @@ public class DbSemesterManipulationTest {
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }
+        try {
+            Course c = semester.getCourse(1234);
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+        try {
+            Course c = semester.getCourse(123);
+            fail("Should have thrown CourseUnknown exception");
+        } catch (CourseUnknown e) {
+            // Expected
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
     }
 
     @Test
@@ -130,7 +143,7 @@ public class DbSemesterManipulationTest {
             semester.registerCourse(123, "I see dead people", 1);
             semester.registerCourse(123, "Hasta la vista baby", 3);
             semester.registerCourse(123, "Zed is dead", 2);
-            semester.registerCourse(456, "There is no spoon", 4);
+            semester.registerCourse(456, "There is no spoon", 1);
             semester.registerCourse(456, "I see dead people", 4);
             semester.registerCourse(456, "Hasta la vista baby", 4);
             semester.registerCourse(456, "Zed is dead", 4);
@@ -138,11 +151,11 @@ public class DbSemesterManipulationTest {
             semester.registerCourse(111, "I see dead people", 1);
             semester.registerCourse(111, "Hasta la vista baby", 1);
             semester.registerCourse(111, "Zed is dead", 1);
-            semester.registerCourse(7777, "There is no spoon", 3);
+            semester.registerCourse(7777, "There is no spoon", 1);
             semester.registerCourse(7777, "I see dead people", 5);
             semester.registerCourse(7777, "Hasta la vista baby", 7);
             semester.registerCourse(7777, "Zed is dead", 99);
-            semester.registerCourse(1234, "There is no spoon", 4);
+            semester.registerCourse(1234, "There is no spoon", 1);
             semester.registerCourse(1234, "I see dead people", 3);
             semester.registerCourse(1234, "Hasta la vista baby", 2);
             semester.registerCourse(1234, "Zed is dead", 123);
@@ -165,6 +178,16 @@ public class DbSemesterManipulationTest {
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }
+        try {
+            List<Course> tmp = semester.getCourseBySemester(1);
+            int idArray[] = {123, 456, 7777, 1234, 111};
+            assertEquals(idArray.length, tmp.size());
+
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e.toString());
+        }
+
+
         List<Course> courses = semester.getCourseCollection();
         List<String> programs = semester.getStudyProgramCollection();
         for (Course c: courses) {
@@ -183,7 +206,7 @@ public class DbSemesterManipulationTest {
         courses = semester.getCourseCollection();
         for (Course c: courses) {
             for (String p: programs) {
-                if (c.id == 123) {
+                if (c.courseID == 123) {
                     assertEquals(0, c.getStudyProgramSemester(p));
                 } else {
                     assertNotSame(0, c.getStudyProgramSemester(p));
@@ -209,6 +232,8 @@ public class DbSemesterManipulationTest {
         }
         try {
             semester.removeStudyProgram("Zed is dead");
+            semester.unregisterCourse(1, "Zed is dead");
+            semester.unregisterCourse(123, "Zed is dead");
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }
