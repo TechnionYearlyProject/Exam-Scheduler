@@ -58,6 +58,12 @@ public class Picker extends HBox{
         this.getChildren().addAll(picker,label);
     }
 
+    public void disable(){
+        picker.setDisable(true);
+    }
+    public void enable(){
+        picker.setDisable(false);
+    }
     public LocalDate getDate() {
         return date;
     }

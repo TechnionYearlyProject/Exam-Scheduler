@@ -5,6 +5,7 @@
  ******************************************************************************/
 .date-picker {
     -fx-focus-color: lightgrey;
+    -fx-faint-focus-color: transparent;
 }
 
 

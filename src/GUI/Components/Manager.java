@@ -2,6 +2,7 @@ package GUI.Components;
 import Logic.CourseLoader;
 import db.ConstraintList;
 import db.Database;
+import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public class Manager extends HBox {
     Moed B;
     CoursesTable coursetable;
     CourseLoader courseloader;
+    Semester semester;
     Database db;
     ConstraintList constraintlistA;
     ConstraintList constraintlistB;
@@ -24,10 +26,17 @@ public class Manager extends HBox {
     Boolean picker_error;
     Boolean been_scheduled;
     Wrapper wrapper;
+    Integer semesterYear;
+    String semesterName;
+    Logic.Schedule scheduleA;
+    Logic.Schedule scheduleB;
     public Manager(Wrapper parent) {
         try {
             db = new Database();
-            courseloader = new CourseLoader(db.loadSemester(2017, "winter_test"),null);
+            semesterYear = 2017;
+            semesterName = "winter_test";
+            semester = db.loadSemester(semesterYear, semesterName);
+            courseloader = new CourseLoader(semester,null);
             constraintlistA = new ConstraintList();
             constraintlistB = new ConstraintList();
             occupiedA = new HashSet<LocalDate>();
@@ -134,6 +143,7 @@ public class Manager extends HBox {
             constraintlistB = new ConstraintList();
             occupiedA = new HashSet<LocalDate>();
             occupiedB = new HashSet<LocalDate>();
+            wrapper.manager.coursetable.setScheduled(false);
         }
         catch (Exception e) {
             //handle exceptions

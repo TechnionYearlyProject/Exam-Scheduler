@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <programs>
+    <program>תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה</program>
     <program>מסלול כללי ארבע-שנתי</program>
+    <program>תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה</program>
     <program>הנדסת תוכנה</program>
-    <program>מסלול כללי תלת-שנתי</program>
     <program>מערכות מידע</program>
+    <program>מסלול כללי תלת-שנתי</program>
     <program>הנדסת מחשבים</program>
     <program>המסלול למדעי המחשב עם התמקדות בביואינפורמטיקה</program>
-    <program>תוכנית לימודים משולבת לתואר בוגר למדעים במדעי המחשב ובמתמטיקה</program>
-    <program>תוכנית לימודים משולבת לתואר מוסמך למדעים במדעי המחשב ובפיזיקה</program>
 </programs>
