@@ -66,24 +66,30 @@ public class Toolbar extends HBox{
 
     public void exportFunction() {
         export_button.setOnMouseClicked(event->{
+            if(!wrapper.manager.been_scheduled){
+                new AlertBox(AlertType.ERROR, "לא ניתן לייצא לפני שיבוץ.", null);
+                return;
+            }
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
             CustomButton CSVButton = new CustomButton("יצא בתור CSV",null, ()->{
                 CSVFileWriter writer = new CSVFileWriter();
                 try {
-                    writer.write("temp.csv",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                    writer.write("output.csv",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                    stage.close();
                 } catch (ErrorOpeningFile errorOpeningFile) {
-                    errorOpeningFile.printStackTrace();
+                    new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
                 }
             }, 30,110);
             CSVButton.setRectangle();
             CustomButton XMLButton = new CustomButton("יצא בתור XML",null, ()->{
                 XMLFileWriter writer = new XMLFileWriter();
-/*                try {
-                    //writer.write("temp.xml",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                try {
+                    writer.write("output.xml",wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                    stage.close();
                 } catch (ErrorOpeningFile errorOpeningFile) {
-                    errorOpeningFile.printStackTrace();
-                }*/
+                    new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+                }
             }, 30 ,110);
             XMLButton.setRectangle();
             Scene scene = new Scene(new VBox(CSVButton,XMLButton));

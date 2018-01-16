@@ -8,5 +8,5 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public interface IFileWriter {
-    public void write(String fileName, List<Day> lst, CourseLoader cl) throws ErrorOpeningFile;
+    void write(String fileName, List<Day> lst, CourseLoader cl) throws ErrorOpeningFile;
 }
