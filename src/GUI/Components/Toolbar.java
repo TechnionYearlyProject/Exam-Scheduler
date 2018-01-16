@@ -42,6 +42,12 @@ public class Toolbar extends HBox{
     }
     public void cleanFunction() {
         new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", () -> wrapper.manager.cleanData());
+        for (Day day : wrapper.manager.A.schedule.days.values()){
+            day.enableBlocking();
+        }
+        for (Day day : wrapper.manager.B.schedule.days.values()){
+            day.enableBlocking();
+        }
     }
 
     public void saveFunction() {
@@ -91,6 +97,12 @@ public class Toolbar extends HBox{
                 wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
             } catch (Exception ignored) {}});
         wrapper.manager.coursetable.setScheduled(true);
+        for (Day day : wrapper.manager.A.schedule.days.values()){
+            day.disableBlocking();
+        }
+        for (Day day : wrapper.manager.B.schedule.days.values()){
+            day.disableBlocking();
+        }
 
 
 
