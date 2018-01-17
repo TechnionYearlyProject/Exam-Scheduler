@@ -1,4 +1,5 @@
 package GUI.Components;
+import Logic.Course;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
@@ -19,10 +20,20 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.HashMap;
+
 public class AddCourse {
 	ImageView X_icon;
 	ImageView X_hover_icon;
 	CoursesTable coursestable;
+    TextField course_id;
+    TextField course_name;
+    TextField weight;
+    AddSemester add_semester1;
+    AddSemester add_semester2;
+    AddSemester add_semester3;
+    AddSemester add_semester4;
+    Label label;
 	public AddCourse(CoursesTable parent) {
 	    coursestable = parent;
 		Stage stage = new Stage();
@@ -69,30 +80,31 @@ public class AddCourse {
 		body.setPadding(new Insets(20, 20, 0, 20)); //0 on bottom
 		body.setAlignment(Pos.CENTER_RIGHT);
 		body.setSpacing(10);
-        TextField course_id = new TextField();
+        course_id = new TextField();
         course_id.setFocusTraversable(false);
         course_id.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         course_id.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         course_id.setPromptText("מספר הקורס");
-        TextField course_name = new TextField();
+        course_name = new TextField();
         course_name.setFocusTraversable(false);
         course_name.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         course_name.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         course_name.setPromptText("שם הקורס");
-        TextField weight = new TextField();
+        weight = new TextField();
         weight.setFocusTraversable(false);
         weight.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         weight.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         weight.setPromptText("נקודות זכות");
 
-        Label label = new Label("בחירת מסלולים וסימטרים:");
+        label = new Label("חלק מהשדות אינם מלאים כדרוש.");
         label.setAlignment(Pos.CENTER_RIGHT);
+        label.setStyle("-fx-text-fill: white");
 
-        AddSemester add_semester1 = new AddSemester(coursestable);
-        AddSemester add_semester2 = new AddSemester(coursestable);
-        AddSemester add_semester3 = new AddSemester(coursestable);
-        AddSemester add_semester4 = new AddSemester(coursestable);
-        body.getChildren().addAll(course_id,course_name,weight,label,add_semester1,add_semester2,add_semester3,add_semester4);
+        add_semester1 = new AddSemester(coursestable);
+        add_semester2 = new AddSemester(coursestable);
+        add_semester3 = new AddSemester(coursestable);
+        add_semester4 = new AddSemester(coursestable);
+        body.getChildren().addAll(course_id,course_name,weight,add_semester1,add_semester2,add_semester3,add_semester4,label);
 
 		HBox hbox_button = new HBox();
 		hbox_button.setPadding(new Insets(20, 0, 15, 15)); //0 on bottom
@@ -117,9 +129,47 @@ public class AddCourse {
 		first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouse_event) {
+			    Integer new_course_id;
+                Double new_weight;
 				if (mouse_event.getButton() != MouseButton.PRIMARY)
 					return;
-				//func.run();
+				try {
+                    new_course_id = Integer.valueOf(course_id.getText());
+                    new_weight = Double.valueOf(weight.getText());
+                }
+				catch (Exception e) {
+                    label.setStyle("-fx-text-fill: red");
+                    return;
+                }
+                Boolean flag = false;
+				if (   ((add_semester1.program.getValue()!= "מסלול פקולטי") && (add_semester1.semester.getValue()!="סמסטר"))
+				    || ((add_semester2.program.getValue()!= "מסלול פקולטי") && (add_semester2.semester.getValue()!="סמסטר"))
+                    || ((add_semester3.program.getValue()!= "מסלול פקולטי") && (add_semester3.semester.getValue()!="סמסטר"))
+                    || ((add_semester4.program.getValue()!= "מסלול פקולטי") && (add_semester4.semester.getValue()!="סמסטר")) )
+				    flag = true;
+				if (   ((add_semester1.program.getValue()!= "מסלול פקולטי") != (add_semester1.semester.getValue()!="סמסטר"))
+                    || ((add_semester2.program.getValue()!= "מסלול פקולטי") != (add_semester2.semester.getValue()!="סמסטר"))
+                    || ((add_semester3.program.getValue()!= "מסלול פקולטי") != (add_semester3.semester.getValue()!="סמסטר"))
+                    || ((add_semester4.program.getValue()!= "מסלול פקולטי") != (add_semester4.semester.getValue()!="סמסטר")) )
+                    flag = false;
+				if ( (course_name.getText().equals("")) || (!flag) || ((new_weight % 0.5) != 0) || (coursestable.manager.courseloader.getCourse(new_course_id) != null) ) {
+                    label.setStyle("-fx-text-fill: red");
+                    return;
+                }
+                HashMap<String,Integer> semesters = new HashMap<String,Integer>();
+                if (add_semester1.program.getValue()!= "מסלול פקולטי")
+                    semesters.put(add_semester1.program.getValue(),Integer.valueOf(add_semester1.semester.getValue()));
+                if (add_semester2.program.getValue()!= "מסלול פקולטי")
+                    semesters.put(add_semester2.program.getValue(),Integer.valueOf(add_semester2.semester.getValue()));
+                if (add_semester3.program.getValue()!= "מסלול פקולטי")
+                    semesters.put(add_semester3.program.getValue(),Integer.valueOf(add_semester3.semester.getValue()));
+                if (add_semester4.program.getValue()!= "מסלול פקולטי")
+                    semesters.put(add_semester4.program.getValue(),Integer.valueOf(add_semester4.semester.getValue()));
+                Course new_course = new Course(course_name.getText(), new_course_id,true,new_weight,semesters);
+                coursestable.manager.courseloader.getCourses().put(new_course_id,new_course);
+                coursestable.items.add(new Item(coursestable.manager,new_course));
+
+
 				stage.close();
 			}
 		});
