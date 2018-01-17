@@ -54,21 +54,7 @@ public class Item {
         connections.addEventFilter(MouseEvent.MOUSE_CLICKED, mouse_event -> {
             if (mouse_event.getButton()!= MouseButton.PRIMARY)
                 return;
-            Connections connections = new Connections(manager,course.getCourseID());
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.UNDECORATED);
-            Scene scene = new Scene(connections, 200, 250);
-            stage.setScene(scene);
-            stage.setX(Double.min(mouse_event.getScreenX(),1700));
-            stage.setY(Double.min(mouse_event.getScreenY(),760));
-            stage.getIcons().add(new Image("/app_icon.png"));
-            stage.focusedProperty().addListener(event -> {
-                if (!stage.isFocused()) {
-                    stage.close();
-                }
-            });
-
-            stage.show();
+            AddConnection connections = new AddConnection(manager,course.getCourseID());
         });
     }
     public String getName() {
