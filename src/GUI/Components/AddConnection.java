@@ -200,6 +200,7 @@ public class AddConnection {
 				if (curr_course.getConflictCourses() == null || curr_course.getConflictCourses().size() == 0)
 					return;
 				curr_course.removeConflictCourse(course_num);
+				remove_course.removeConflictCourse(courseid);
 				items.remove(courses.getSelectionModel().getSelectedItem());
 				courses.setItems(items);
 			}

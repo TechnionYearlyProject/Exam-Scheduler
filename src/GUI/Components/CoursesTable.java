@@ -75,7 +75,7 @@ public class CoursesTable extends VBox{
                         content.putString(course_str);
                         db.setContent(content);
                         Course course = manager.courseloader.getCourse(Integer.parseInt(course_str));
-                        Scene scene = new Scene(new Test(course,false));
+                        Scene scene = new Scene(new Test(null, course,false));
                         db.setDragView(scene.snapshot(null));
                     }
                 }

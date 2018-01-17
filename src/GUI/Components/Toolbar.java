@@ -6,10 +6,11 @@ import Output.CalendarFileWriter;
 import Output.Exceptions.ErrorOpeningFile;
 import Output.IFileWriter;
 import Output.XMLFileWriter;
-import com.sun.prism.paint.Color;
 import db.Semester;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,8 +18,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,7 +93,8 @@ public class Toolbar extends HBox{
                     "xml",new XMLFileWriter(), stage);
             CustomButton CalendarButton = buildExportOption("יצא בתור Calendar","calendar",
                     "csv",new CalendarFileWriter(), stage);
-            VBox vbox = new VBox(CSVButton,XMLButton,CalendarButton);
+            CustomButton ImageButton = buildExportImage("יצא בתור PNG",stage);
+            VBox vbox = new VBox(CSVButton,XMLButton,CalendarButton, ImageButton);
             vbox.setSpacing(1);
             vbox.setStyle("-fx-background-color: transparent;");
             Scene scene = new Scene(vbox);
@@ -116,6 +119,24 @@ public class Toolbar extends HBox{
                 writer.write(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
                 stage.close();
             } catch (ErrorOpeningFile errorOpeningFile) {
+                new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+            }
+        }, 40,160);
+        button.setCircular();
+        return button;
+    }
+
+    private CustomButton buildExportImage(String msg, Stage stage){
+        CustomButton button = new CustomButton(msg,null, ()->{
+            try {
+                Image imageA = wrapper.manager.A.snapshot(new SnapshotParameters(), null);
+                Image imageB = wrapper.manager.B.snapshot(new SnapshotParameters(), null);
+                File fileA = new File(System.getProperty("user.home") + "\\Desktop\\MoedA_output.png");
+                File fileB = new File(System.getProperty("user.home") + "\\Desktop\\MoedB_output.png");
+                ImageIO.write(SwingFXUtils.fromFXImage(imageA, null),"png",fileA);
+                ImageIO.write(SwingFXUtils.fromFXImage(imageB, null),"png",fileB);
+                stage.close();
+            } catch (Exception e) {
                 new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
             }
         }, 40,160);
