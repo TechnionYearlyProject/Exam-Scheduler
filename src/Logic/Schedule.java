@@ -216,7 +216,7 @@ public class Schedule {
         }
         for (int courseId: constraintList.constraints.keySet()){
             Course course = courses.stream().filter(c -> c.getCourseID().equals(courseId)).findFirst().get();
-            LocalDate dateToBeScheduled = constraintList.getConstraints(courseId).get(0).date;
+            LocalDate dateToBeScheduled = findDateToScheduleConstraint(constraintList.getConstraints(courseId));
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
@@ -257,7 +257,7 @@ public class Schedule {
             }
         }
         for (Course course: courses){
-            if (cl.getConstraints(course.getCourseID()) != null && cl.getConstraints(course.getCourseID()).size() != 0){//was getGoodConstraints().
+            if (findDateToScheduleConstraint(cl.getConstraints(course.getCourseID())) != null){
                 continue;
             }
             int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
@@ -279,7 +279,7 @@ public class Schedule {
 
     private void optimizeSchedule(List<Course> courses, Schedule moedA, ConstraintList cl){
         for (Course course: courses){
-            if (cl.getConstraints(course.getCourseID()) != null && cl.getConstraints(course.getCourseID()).size() != 0){//TODO: Change. Need iterate over and find "good" constraint.
+            if (findDateToScheduleConstraint(cl.getConstraints(course.getCourseID())) != null){
                 continue;
             }
             boolean scheduled = false;
@@ -341,4 +341,12 @@ public class Schedule {
         return true;
     }
 
+    private LocalDate findDateToScheduleConstraint(List<Constraint> constraints){
+        for (Constraint constraint: constraints){
+            if (!constraint.forbidden){
+                return constraint.date;
+            }
+        }
+        return null;
+    }
 }
