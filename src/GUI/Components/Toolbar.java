@@ -90,10 +90,13 @@ public class Toolbar extends HBox{
                     "xml",new XMLFileWriter(), stage);
             CustomButton CalendarButton = buildExportOption("יצא בתור Calendar","calendar",
                     "csv",new CalendarFileWriter(), stage);
-            Scene scene = new Scene(new VBox(CSVButton,XMLButton,CalendarButton));
+            VBox vbox = new VBox(CSVButton,XMLButton,CalendarButton);
+            vbox.setSpacing(1);
+            //vbox.setStyle("-fx-background-color: transparent;");
+            Scene scene = new Scene(vbox);
             stage.setScene(scene);
-            stage.setX(event.getScreenX());
-            stage.setY(event.getScreenY());
+            stage.setX(wrapper.getScene().getWindow().getX()+195);
+            stage.setY(wrapper.getScene().getWindow().getY()+95);
             stage.getIcons().add(new Image("/app_icon.png"));
             stage.focusedProperty().addListener(event2 -> {
                 if (!stage.isFocused()) {
@@ -113,8 +116,8 @@ public class Toolbar extends HBox{
             } catch (ErrorOpeningFile errorOpeningFile) {
                 new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
             }
-        }, 30,110);
-        button.setRectangle();
+        }, 40,160);
+        button.setCircular();
         return button;
     }
 
