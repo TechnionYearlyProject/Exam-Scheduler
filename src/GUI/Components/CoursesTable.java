@@ -99,6 +99,10 @@ public class CoursesTable extends VBox{
                 func(manager.A,false,row);
                 func(manager.B,false,row);
             });
+            row.setOnScroll(event->{
+                func(manager.A,false,row);
+                func(manager.B,false,row);
+            });
             return row;
         });
         filteredList = new FilteredList<>(getData());
