@@ -39,36 +39,9 @@ public class LoadingBox {
         Label title_label = new Label("משבץ לוח מבחנים");
         title_label.setFont(Font.font(18));
         title_label.setAlignment(Pos.CENTER_RIGHT);
-        title_label.setMinWidth(440);
+        title_label.setMinWidth(470);
         title_label.setStyle("-fx-font-weight: bold;");
-        Label close_label = new Label();
-        close_label.setPrefWidth(30);
-        close_label.setPrefHeight(30);
-        X_icon = new ImageView(new Image("/X_icon.png"));
-        X_hover_icon = new ImageView(new Image("/X_hover_icon.png"));
-        close_label.setGraphic(X_icon);
-        close_label.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                if (mouse_event.getButton()!= MouseButton.PRIMARY)
-                    return;
-                stage.close();
-            }
-        });
-        close_label.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                close_label.setGraphic(X_hover_icon);
-            }
-        });
-        close_label.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouse_event) {
-                close_label.setGraphic(X_icon);
-
-            }
-        });
-        hbox_title.getChildren().addAll(close_label, title_label);
+        hbox_title.getChildren().addAll(title_label);
         HBox hbox_body = new HBox();
         hbox_body.setPadding(new Insets(20, 20, 0, 20)); //0 on bottom
         hbox_body.setAlignment(Pos.CENTER_RIGHT);
