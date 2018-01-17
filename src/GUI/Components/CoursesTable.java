@@ -16,6 +16,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
@@ -132,15 +133,17 @@ public class CoursesTable extends VBox{
         this.getChildren().addAll(filterInput,table,hbox);
     }
     private void func(Moed moed, boolean brighten, TableRow<Item> row){
+        if (manager.been_scheduled) {
             String courseNum = (name.getCellData(row.getIndex())).split(" - ")[0];
-            for(Day day : moed.schedule.days.values()){
-                for(Test test : day.testList){
-                    if(test.course.getCourseID().equals(
-                            Integer.parseInt(courseNum))){
+            for (Day day : moed.schedule.days.values()) {
+                for (Test test : day.testList) {
+                    if (test.course.getCourseID().equals(
+                            Integer.parseInt(courseNum))) {
                         test.setColor(brighten);
                     }
                 }
             }
+        }
     }
     public ObservableList<Item> getData() {
         items = FXCollections.observableArrayList();
