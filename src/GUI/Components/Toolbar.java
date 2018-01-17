@@ -110,11 +110,10 @@ public class Toolbar extends HBox{
             stage.show();
         });
     }
-    private CustomButton buildExportOption(String msg, String fileType,
-                                           String fileFormat, IFileWriter writer,Stage stage){
+    private CustomButton buildExportOption(String msg, String fileType, String fileFormat, IFileWriter writer,Stage stage){
         CustomButton button = new CustomButton(msg,null, ()->{
             try {
-                writer.write(fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                writer.write(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
                 stage.close();
             } catch (ErrorOpeningFile errorOpeningFile) {
                 new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
