@@ -4,16 +4,22 @@ import Logic.Course;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseButton;
+import javafx.scene.input.*;
 import javafx.scene.paint.Paint;
+import javafx.util.Pair;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Test extends Label{
     Course course;
+    Day day;
     private static List<String> colors = new ArrayList<>(Arrays.asList(
             "#26A69A","#FFA726","#FFEB3B","#9CCC65","#EF5350","#AB47BC","#42A5F5",
             "#8D6E63", "#EC407A", "#66BB6A", "#78909C"));
@@ -30,7 +36,8 @@ public class Test extends Label{
      * course- the course to display in the schedule
      * setTooltip - true if we want the full course information to appear when hovering
      */
-    public Test(Course course, boolean setTooltip) {
+    public Test(Day parent, Course course, boolean setTooltip) {
+        day = parent;
         this.course = course;
         this.setTextFill(Paint.valueOf("white"));
         this.setText(course.getCourseName());
@@ -41,13 +48,24 @@ public class Test extends Label{
             this.setPrefHeight(16);
             this.setMaxHeight(16);
             Tooltip msg = new Tooltip();
-            msg.setGraphic(new Test(course,false));
+            msg.setGraphic(new Test(null, course,false));
             msg.setStyle("-fx-background-color: rgba(30,30,30,0.0);\n");
             bindTooltip(this, msg);
         }
         setColor(false);
-    }
 
+        this.setOnDragDetected(event -> {
+            Dragboard db = this.startDragAndDrop(TransferMode.ANY);
+            ClipboardContent content = new ClipboardContent();
+            String course_ID = course.getCourseID().toString();
+            String date_str = day.date.format(DateTimeFormatter.ofPattern("dd~LLLL~yyyy"));
+            content.putString("DAY~"+course_ID+"~"+date_str);
+            db.setContent(content);
+            Scene scene = new Scene(new Test(null, course,false));
+            db.setDragView(scene.snapshot(null));
+            event.consume();
+        });
+    }
     public void setColor(boolean isBright){
         if(isBright) {
             this.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; " +

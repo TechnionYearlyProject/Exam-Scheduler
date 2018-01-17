@@ -74,33 +74,37 @@ public class Day extends VBox{
         this.setStyle("-fx-background-color: white");
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
         this.setOnDragDropped(event->{
+            Integer course_id;
             Dragboard db = event.getDragboard();
             if (db.hasString() && !isBlocked) {
-                Integer course_id = Integer.parseInt(db.getString());
-                GregorianCalendar calendar = new GregorianCalendar(date.getYear(),date.getMonthValue(),date.getDayOfMonth());
+                if (db.getString().split("~")[0].equals("DAY")) {
+                    Course course = schedule.moed.manager.courseloader.getCourse(Integer.parseInt(db.getString().split("~")[1]));
+                    LocalDate date = LocalDate.of(Integer.parseInt(db.getString().split("~")[4]),Integer.parseInt(db.getString().split("~")[3]),Integer.parseInt(db.getString().split("~")[2]));
+                    Day day =schedule.days.get(date);
+                    day.removeCourse(course);
+                    course_id = course.getCourseID();
+                } else
+                    course_id = Integer.parseInt(db.getString());
+                GregorianCalendar calendar = new GregorianCalendar(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
                 if (schedule.moed.moedType == Moed.MoedType.A) {
-                    if (schedule.moed.manager.constraintlistA.getConstraints(course_id)!=null) {
-                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size()!=0) {
+                    if (schedule.moed.manager.constraintlistA.getConstraints(course_id) != null) {
+                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
                             return;
                         }
                     }
-                    else {
-                        try {
-                            schedule.moed.manager.constraintlistA.addConstraint(course_id, calendar, calendar);
-                        } catch (Exception e) {}
-                    }
-                }
-                else {
-                    if (schedule.moed.manager.constraintlistB.getConstraints(course_id)!=null) {
-                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size()!=0) {
+                try {
+                        schedule.moed.manager.constraintlistA.addConstraint(course_id, calendar, calendar);
+                    } catch (Exception e) {}
+
+                } else {
+                    if (schedule.moed.manager.constraintlistB.getConstraints(course_id) != null) {
+                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
                             return;
                         }
                     }
-                    else {
-                        try {
-                            schedule.moed.manager.constraintlistB.addConstraint(course_id, calendar, calendar);
-                        } catch (Exception e) {}
-                    }
+                    try {
+                        schedule.moed.manager.constraintlistB.addConstraint(course_id, calendar, calendar);
+                    } catch (Exception e) {}
                 }
                 this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
             }
@@ -156,8 +160,35 @@ public class Day extends VBox{
     }
 
     public void addTest(Course course) {
-        Test test = new Test(course,true);
+        Test test = new Test(this,course,true);
         tests.getChildren().add(test);
         testList.add(test);
     }
+
+    public void removeCourse(Course course){
+        List<Test> temp = new ArrayList<>(testList);
+        int i=0;
+        for (Test test:temp)
+        {
+            if (test.course.getCourseID().equals(course.getCourseID())) {
+                testList.remove(i);
+                tests.getChildren().remove(i);
+                GregorianCalendar calendar = new GregorianCalendar(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+                if (schedule.moed.moedType == Moed.MoedType.A) {
+                    try {
+                        schedule.moed.manager.constraintlistA.removeConstraint(course.getCourseID(), calendar, calendar);
+                    } catch (Exception e) { }
+                }
+                else
+                {
+                    try {
+                        schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), calendar, calendar);
+                    } catch (Exception e) { }
+                }
+                break;
+            }
+            i+=1;
+        }
+    }
+
 }
