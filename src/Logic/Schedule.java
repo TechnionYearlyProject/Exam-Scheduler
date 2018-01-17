@@ -216,7 +216,7 @@ public class Schedule {
         }
         for (int courseId: constraintList.constraints.keySet()){
             Course course = courses.stream().filter(c -> c.getCourseID().equals(courseId)).findFirst().get();
-            LocalDate dateToBeScheduled = LocalDateTime.ofInstant(constraintList.getConstraints(courseId).get(0).start.toInstant(),ZoneId.systemDefault()).toLocalDate();
+            LocalDate dateToBeScheduled = constraintList.getConstraints(courseId).get(0).date;
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){

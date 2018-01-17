@@ -54,7 +54,7 @@ public class Day {
             }
         }
         for (Constraint constraint: course.getConstraints()){//was getBadConstraints()
-            if (LocalDateTime.ofInstant(constraint.start.toInstant(), ZoneId.systemDefault()).toLocalDate().equals(getDate())){
+            if (constraint.date.equals(getDate())){
                 //System.out.println(course.getCourseID());
                 return false;
             }

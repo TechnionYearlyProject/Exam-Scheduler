@@ -19,6 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,9 +31,9 @@ public class Database {
     private Map<String, Semester> semesters;
     private DocumentBuilder builder;
     private Transformer transformer;
-    private SimpleDateFormat dateParser;
     private Map<String, Validator> validators;
     private String XSDFilesDir;
+    private DateTimeFormatter formatter;
 
     public Database() {
         baseDirectory = System.getProperty("user.dir");
@@ -54,7 +57,7 @@ public class Database {
         }
         XSDFilesDir = baseDirectory + sep + "src" + sep + "db" + sep + "xsd";
         baseDirectory = baseDirectory + sep + "db";
-        dateParser = new SimpleDateFormat("yyyy-MM-dd");
+        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     }
 
     public Map<Integer,Course> getCourses() {
@@ -236,17 +239,11 @@ public class Database {
         }
     }
 
-    private Calendar stringToDate(String dateStr, Semester.Moed moed) throws InvalidDatabase {
+    private LocalDate parseDate(String dateStr) {
         if (dateStr.equals("None")) {
             return null;
         }
-        try {
-            Calendar date = Calendar.getInstance();
-            date.setTime(dateParser.parse(dateStr));
-            return date;
-        } catch (ParseException e) {
-            throw new InvalidDatabase("Schedule '" + moed.str + "' contains invalid date : '" + dateStr + "'");
-        }
+        return LocalDate.parse(dateStr);
     }
 
     private void parseSchedules(String filePath1, String filePath2, Semester semester) throws InvalidDatabase {
@@ -259,8 +256,8 @@ public class Database {
             Element root = XMLTree.getDocumentElement();
             String startDateStr = root.getElementsByTagName("start_date").item(0).getTextContent();
             String endDateStr = root.getElementsByTagName("end_date").item(0).getTextContent();
-            Calendar startDate = stringToDate(startDateStr, moed);
-            Calendar endDate = stringToDate(endDateStr, moed);
+            LocalDate startDate = parseDate(startDateStr);
+            LocalDate endDate = parseDate(endDateStr);
             if (startDate != null && endDate != null) {
                 try {
                     semester.setStartDate(moed, startDate);
@@ -277,7 +274,7 @@ public class Database {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     Element dayElement = (Element) n;
                     String dateStr = dayElement.getAttribute("date");
-                    Calendar date = stringToDate(dateStr, moed);
+                    LocalDate date = parseDate(dateStr);
                     assert date != null;
                     NodeList exams = dayElement.getElementsByTagName("exam");
                     for (int j = 0; j < exams.getLength(); j++) {
@@ -317,16 +314,11 @@ public class Database {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     Element constraintElement = (Element) n;
                     int courseId = Integer.parseInt(constraintElement.getElementsByTagName("course_id").item(0).getTextContent());
-                    String startDateStr = constraintElement.getElementsByTagName("start_date").item(0).getTextContent();
-                    String endDateStr = constraintElement.getElementsByTagName("end_date").item(0).getTextContent();
+                    String dateStr = constraintElement.getElementsByTagName("start_date").item(0).getTextContent();
                     boolean forbidden = constraintElement.getElementsByTagName("forbidden").getLength() == 1;
-                    Calendar startDate = stringToDate(startDateStr, moed);
-                    Calendar endDate = stringToDate(endDateStr, moed);
+                    LocalDate date = parseDate(dateStr);
                     try {
-                        semester.addConstraint(courseId, moed, startDate, endDate, forbidden);
-                    } catch (InvalidConstraint e) {
-                        throw new InvalidDatabase("Course '" + courseId + "' has invalid constraint date : '" +
-                                startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
+                        semester.addConstraint(courseId, moed, date, forbidden);
                     } catch (UninitializedSchedule e) {
                         throw new InvalidDatabase("Start/End date missing in schedule " + moed.str);
                     } catch (CourseUnknown e) {
@@ -334,10 +326,10 @@ public class Database {
                                 courseId + "'");
                     } catch (DateOutOfSchedule e) {
                         throw new InvalidDatabase("Course '" + courseId + "' constraint is out of the schedule dates : '" +
-                                startDateStr + "/" + endDateStr + "' in schedule '" + moed.str + "'");
+                                dateStr + "' in schedule '" + moed.str + "'");
                     } catch (OverlappingConstraints e) {
-                        throw new InvalidDatabase("Course '" + courseId + "' has overlapping constraint : '" +
-                                startDateStr + " - " + endDateStr + "' in schedule '" + moed.str + "'");
+                        throw new InvalidDatabase("Course '" + courseId + "' has duplicate constraint : '" +
+                                dateStr + "' in schedule '" + moed.str + "'");
                     }
                 }
             }
@@ -356,6 +348,19 @@ public class Database {
             return dir1Attr[1].compareTo(dir2Attr[1]);
         }
         return -(dir1Attr[0].compareTo(dir2Attr[0]));
+    }
+
+    private Element createDateElement(Document doc, String name, LocalDate date) {
+        Element element = doc.createElement(name);
+        String str;
+        if (date != null) {
+            str = date.format(formatter);
+        } else {
+            str = "None";
+        }
+        Text text = doc.createTextNode(str);
+        element.appendChild(text);
+        return element;
     }
 
     private void writeSemester(String path, Semester semester) {
@@ -447,19 +452,6 @@ public class Database {
         writeXMLFile(filePath, document);
     }
 
-    private Element createDateElement(Document doc, String name, Calendar date) {
-        Element element = doc.createElement(name);
-        String str;
-        if (date != null) {
-            str = dateParser.format(date.getTime());
-        } else {
-            str = "None";
-        }
-        Text text = doc.createTextNode(str);
-        element.appendChild(text);
-        return element;
-    }
-
     private void writeSchedules(String filePath1, String filePath2, Semester semester) {
         Map<Semester.Moed, Document> docs = new HashMap<>();
         Map<Semester.Moed, String> paths = new HashMap<>();
@@ -482,8 +474,8 @@ public class Database {
 
             // Date ordering
             Map<String, List<Integer>> dates = new HashMap<>();
-            for (Map.Entry<Integer, Calendar> dateEntry: semester.schedules.get(moed).schedule.entrySet()){
-                String dateStr = dateParser.format(dateEntry.getValue().getTime());
+            for (Map.Entry<Integer, LocalDate> dateEntry: semester.schedules.get(moed).schedule.entrySet()){
+                String dateStr = dateEntry.getValue().format(formatter);
                 if (!dates.containsKey(dateStr)) {
                     dates.put(dateStr, new ArrayList<>());
                 }
@@ -528,11 +520,8 @@ public class Database {
                     courseIdElement.appendChild(courseIdText);
                     constraintElement.appendChild(courseIdElement);
 
-                    Element startDate = createDateElement(document, "start_date", constraint.start);
+                    Element startDate = createDateElement(document, "date", constraint.date);
                     constraintElement.appendChild(startDate);
-
-                    Element endDate = createDateElement(document, "end_date", constraint.end);
-                    constraintElement.appendChild(endDate);
 
                     if (constraint.forbidden) {
                         Element forbiddenFlag = document.createElement("forbidden");

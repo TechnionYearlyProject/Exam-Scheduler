@@ -66,7 +66,7 @@ public class Course implements Comparable<Course>{
         if(constraints.contains(c)){
             return;
         }
-        constraints.add(new Constraint(c.start,c.end));
+        constraints.add(new Constraint(c.date));
     }
 
     /*

@@ -3,6 +3,7 @@ package db;
 
 import db.exception.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -122,43 +123,27 @@ public class Semester {
     }
 
     private void updateConstraints(Moed moed) {
-        for (int courseId: constraints.get(moed).constraints.keySet()) {
-            for (Constraint c: constraints.get(moed).getConstraints(courseId)) {
-                Constraint old = new Constraint(c.start, c.end);
-                boolean update = false;
-                if (c.start.before(schedules.get(moed).start)) {
-                    update = true;
-                    c.start = schedules.get(moed).start;
-                }
-                if (c.end.after(schedules.get(moed).end)) {
-                    update = true;
-                    c.end = schedules.get(moed).end;
-                }
-                if (update) {
-                    constraints.get(moed).removeConstraint(courseId, old.start, old.end);
-                    try {
-                        constraints.get(moed).addConstraint(courseId, c.start, c.end);
-                    } catch (InvalidConstraint | OverlappingConstraints ignored) {}
-                }
-            }
+        for (List<Constraint> list: constraints.get(moed).constraints.values()) {
+            list.removeIf(c ->
+                    c.date.isBefore(schedules.get(moed).start) || c.date.isAfter(schedules.get(moed).end));
         }
     }
 
-    public Calendar getStartDate(Moed moed) {
+    public LocalDate getStartDate(Moed moed) {
         if (schedules.get(moed).start == null) {
             return null;
         }
-        return (Calendar) schedules.get(moed).start.clone();
+        return schedules.get(moed).start;
     }
 
-    public Calendar getEndDate(Moed moed) {
+    public LocalDate getEndDate(Moed moed) {
         if (schedules.get(moed).end == null) {
             return null;
         }
-        return (Calendar) schedules.get(moed).end.clone();
+        return schedules.get(moed).end;
     }
 
-    public void setStartDate(Moed moed, Calendar start) throws InvalidSchedule {
+    public void setStartDate(Moed moed, LocalDate start) throws InvalidSchedule {
         boolean wasNull = schedules.get(moed).start == null;
         schedules.get(moed).setStartDate(start);
         // Schedules are already updated
@@ -167,7 +152,7 @@ public class Semester {
         }
     }
 
-    public void setEndDate(Moed moed, Calendar end) throws InvalidSchedule {
+    public void setEndDate(Moed moed, LocalDate end) throws InvalidSchedule {
         boolean wasNull = schedules.get(moed).end == null;
         schedules.get(moed).setEndDate(end);
         // Schedules are already updated
@@ -176,12 +161,12 @@ public class Semester {
         }
     }
 
-    public void scheduleCourse(int courseId, Moed moed, Calendar date) throws CourseUnknown, DateOutOfSchedule,
+    public void scheduleCourse(int courseId, Moed moed, LocalDate date) throws CourseUnknown, DateOutOfSchedule,
             UninitializedSchedule {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        if (date.before(schedules.get(moed).start) || date.after(schedules.get(moed).end)) {
+        if (date.isBefore(schedules.get(moed).start) || date.isAfter(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }
         schedules.get(moed).scheduleCourse(courseId, date);
@@ -191,10 +176,10 @@ public class Semester {
         schedules.get(moed).unscheduleCourse(courseId);
     }
 
-    public Map<Integer, Calendar> getSchedule(Moed moed) {
-        Map<Integer, Calendar> schedule = new HashMap<>();
+    public Map<Integer, LocalDate> getSchedule(Moed moed) {
+        Map<Integer, LocalDate> schedule = new HashMap<>();
         for (int courseId: courses.keySet()) {
-            Calendar date = schedules.get(moed).getCourseSchedule(courseId);
+            LocalDate date = schedules.get(moed).getCourseSchedule(courseId);
             if (date != null) {
                 schedule.put(courseId, date);
             }
@@ -202,27 +187,27 @@ public class Semester {
         return schedule;
     }
 
-    public void addConstraint(int courseId, Moed moed, Calendar start, Calendar end, boolean forbidden)
-            throws UninitializedSchedule, DateOutOfSchedule, InvalidConstraint, CourseUnknown, OverlappingConstraints {
+    public void addConstraint(int courseId, Moed moed, LocalDate date, boolean forbidden)
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
-        if (start.before(schedules.get(moed).start) || end.after(schedules.get(moed).end)) {
+        if (date.isBefore(schedules.get(moed).start) || date.isAfter(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
-        constraints.get(moed).addConstraint(courseId, start, end, forbidden);
+        constraints.get(moed).addConstraint(courseId, date, forbidden);
     }
 
-    public void addConstraint(int courseId, Moed moed, Calendar start, Calendar end)
-            throws UninitializedSchedule, DateOutOfSchedule, InvalidConstraint, CourseUnknown, OverlappingConstraints {
-        addConstraint(courseId, moed, start, end, false);
+    public void addConstraint(int courseId, Moed moed, LocalDate date)
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+        addConstraint(courseId, moed, date, false);
     }
 
-    public void removeConstraint(int courseId, Moed moed, Calendar start, Calendar end) {
-        constraints.get(moed).removeConstraint(courseId, start, end);
+    public void removeConstraint(int courseId, Moed moed, LocalDate date) {
+        constraints.get(moed).removeConstraint(courseId, date);
     }
 
     public List<Constraint> getConstraintList(Moed moed, int courseId) {
