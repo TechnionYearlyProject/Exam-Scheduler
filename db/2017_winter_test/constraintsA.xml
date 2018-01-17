@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<constraints>
+    <constraint>
+        <course_id>104032</course_id>
+        <date>2018-02-07</date>
+    </constraint>
+    <constraint>
+        <course_id>94323</course_id>
+        <date>2018-02-22</date>
+    </constraint>
+    <constraint>
+        <course_id>324033</course_id>
+        <date>2018-01-29</date>
+    </constraint>
+    <constraint>
+        <course_id>114071</course_id>
+        <date>2018-01-29</date>
+    </constraint>
+    <constraint>
+        <course_id>94423</course_id>
+        <date>2018-02-11</date>
+    </constraint>
+    <constraint>
+        <course_id>104166</course_id>
+        <date>2018-02-09</date>
+    </constraint>
+    <constraint>
+        <course_id>104134</course_id>
+        <date>2018-02-22</date>
+    </constraint>
+    <constraint>
+        <course_id>94313</course_id>
+        <date>2018-02-05</date>
+    </constraint>
+    <constraint>
+        <course_id>94314</course_id>
+        <date>2018-02-06</date>
+    </constraint>
+    <constraint>
+        <course_id>114074</course_id>
+        <date>2018-01-29</date>
+    </constraint>
+    <constraint>
+        <course_id>94412</course_id>
+        <date>2018-02-08</date>
+    </constraint>
+    <constraint>
+        <course_id>234218</course_id>
+        <date>2018-02-12</date>
+    </constraint>
+    <constraint>
+        <course_id>104031</course_id>
+        <date>2018-02-04</date>
+    </constraint>
+</constraints>
+
