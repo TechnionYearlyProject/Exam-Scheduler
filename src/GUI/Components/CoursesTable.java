@@ -1,38 +1,28 @@
 package GUI.Components;
-import javafx.beans.property.SimpleStringProperty;
+import Logic.Course;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
-import javafx.event.Event;
-import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import Logic.Course;
-import javafx.util.Callback;
-import javafx.util.converter.IntegerStringConverter;
 
 public class CoursesTable extends VBox{
-    TableColumn<Item,CheckBox> take;
-    TableColumn<Item,String> name;
-    TableColumn<Item,String> study;
-    TableColumn<Item,CheckBox> pref;
-    TableColumn<Item,Label> connections;
-    TableView<Item> table;
-    FilteredList<Item> filteredList;
+    private TableColumn<Item,CheckBox> take;
+    private TableColumn<Item,String> name;
+    private TableColumn<Item,String> study;
+    private TableColumn<Item,CheckBox> pref;
+    private TableColumn<Item,Label> connections;
+    private TableView<Item> table;
+    private FilteredList<Item> filteredList;
     Manager manager;
     private boolean scheduled;
     HBox hbox;
@@ -92,16 +82,16 @@ public class CoursesTable extends VBox{
                 event.consume();
             });
             row.setOnMouseEntered(event->{
-                func(manager.A,true,row);
-                func(manager.B,true,row);
+                hover(manager.A,true,row);
+                hover(manager.B,true,row);
             });
             row.setOnMouseExited(event->{
-                func(manager.A,false,row);
-                func(manager.B,false,row);
+                hover(manager.A,false,row);
+                hover(manager.B,false,row);
             });
             row.setOnScroll(event->{
-                func(manager.A,false,row);
-                func(manager.B,false,row);
+                hover(manager.A,false,row);
+                hover(manager.B,false,row);
             });
             return row;
         });
@@ -136,12 +126,12 @@ public class CoursesTable extends VBox{
         this.setSpacing(10);
         this.getChildren().addAll(filterInput,table,hbox);
     }
-    private void func(Moed moed, boolean brighten, TableRow<Item> row){
+    private void hover(Moed moed, boolean brighten, TableRow<Item> row){
         if (manager.been_scheduled) {
             String courseNum = (name.getCellData(row.getIndex())).split(" - ")[0];
             for (Day day : moed.schedule.days.values()) {
                 for (Test test : day.testList) {
-                    if (test.course.getCourseID().equals(
+                    if (!test.course.getCourseID().equals(
                             Integer.parseInt(courseNum))) {
                         test.setColor(brighten);
                     }
@@ -149,7 +139,7 @@ public class CoursesTable extends VBox{
             }
         }
     }
-    public ObservableList<Item> getData() {
+    private ObservableList<Item> getData() {
         items = FXCollections.observableArrayList();
         for (Logic.Course course:manager.courseloader.getCourses().values()) {
             items.add(new Item(manager,course));
@@ -160,7 +150,7 @@ public class CoursesTable extends VBox{
         scheduled = value;
     }
 
-    public void removeFunction() {
+    private void removeFunction() {
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
         manager.courseloader.getCourses().remove(courseID);
         Item to_remove = null;
@@ -173,7 +163,7 @@ public class CoursesTable extends VBox{
         items.remove(to_remove);
     }
 
-    public void AddFunction() {
+    private void AddFunction() {
         new AddCourse(this);
     }
 
