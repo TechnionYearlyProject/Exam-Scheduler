@@ -1,7 +1,5 @@
 package GUI.Components;
 import Logic.Course;
-import db.Constraint;
-import db.ConstraintList;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,12 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class Day extends VBox{
@@ -101,7 +95,6 @@ public class Day extends VBox{
                     course_id = course.getCourseID();
                 } else
                     course_id = Integer.parseInt(db.getString());
-                GregorianCalendar calendar = new GregorianCalendar(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
                 if (schedule.moed.moedType == Moed.MoedType.A) {
                     if (schedule.moed.manager.constraintlistA.getConstraints(course_id) != null) {
                         if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
@@ -109,7 +102,7 @@ public class Day extends VBox{
                         }
                     }
                 try {
-                        schedule.moed.manager.constraintlistA.addConstraint(course_id, calendar, calendar);
+                        schedule.moed.manager.constraintlistA.addConstraint(course_id, date);
                     } catch (Exception e) {}
 
                 } else {
@@ -119,7 +112,7 @@ public class Day extends VBox{
                         }
                     }
                     try {
-                        schedule.moed.manager.constraintlistB.addConstraint(course_id, calendar, calendar);
+                        schedule.moed.manager.constraintlistB.addConstraint(course_id, date);
                     } catch (Exception e) {}
                 }
                 this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
@@ -139,9 +132,9 @@ public class Day extends VBox{
             tests.setStyle("-fx-background-color: #ECEFF1");
             isBlocked = true;
             if (schedule.moed.moedType == Moed.MoedType.A)
-                schedule.moed.manager.constraintlistA.removeDateConstraint(date);
+                schedule.moed.manager.constraintlistA.removeConstraint(date);
             else
-                schedule.moed.manager.constraintlistB.removeDateConstraint(date);
+                schedule.moed.manager.constraintlistB.removeConstraint(date);
             this.getChildren().remove(1);
             tests = new VBox();
             tests.setSpacing(1);
@@ -189,16 +182,15 @@ public class Day extends VBox{
             if (test.course.getCourseID().equals(course.getCourseID())) {
                 testList.remove(i);
                 tests.getChildren().remove(i);
-                GregorianCalendar calendar = new GregorianCalendar(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
                 if (schedule.moed.moedType == Moed.MoedType.A) {
                     try {
-                        schedule.moed.manager.constraintlistA.removeConstraint(course.getCourseID(), calendar, calendar);
+                        schedule.moed.manager.constraintlistA.removeConstraint(course.getCourseID(), date);
                     } catch (Exception e) { }
                 }
                 else
                 {
                     try {
-                        schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), calendar, calendar);
+                        schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), date);
                     } catch (Exception e) { }
                 }
                 break;

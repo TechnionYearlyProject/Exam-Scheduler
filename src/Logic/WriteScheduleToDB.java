@@ -5,6 +5,7 @@ import db.exception.CourseUnknown;
 import db.exception.DateOutOfSchedule;
 import db.exception.UninitializedSchedule;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,12 +14,10 @@ import java.util.List;
 public class WriteScheduleToDB {
     public void write(Semester s,List<Day> lst, Semester.Moed sm) {
         for (Day d : lst) {
-            Date date = Date.from(d.getDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            LocalDate date = d.getDate();
             for (Integer id : d.getCoursesScheduledToTheDay()) {
                 try {
-                    s.scheduleCourse(id, sm, calendar);
+                    s.scheduleCourse(id, sm, date);
                 } catch (CourseUnknown | DateOutOfSchedule | UninitializedSchedule courseUnknown) {
                     courseUnknown.printStackTrace();
                 }

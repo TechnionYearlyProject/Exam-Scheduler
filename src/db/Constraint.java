@@ -1,48 +1,30 @@
 package db;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 
 public class Constraint implements Comparable<Constraint>{
-    public Calendar start;
-    public Calendar end;
+    public LocalDate date;
     public boolean forbidden;
 
-    public Constraint(Calendar start, Calendar end, boolean forbidden) {
-        this.start = (Calendar) start.clone();
-        this.end = (Calendar) end.clone();
+    public Constraint(LocalDate date, boolean forbidden) {
+        this.date = date;
         this.forbidden = forbidden;
     }
 
-    public Constraint(Calendar start, Calendar end) {
-        this.start = (Calendar) start.clone();
-        this.end = (Calendar) end.clone();
+    public Constraint(LocalDate date) {
+        this.date = date;
         this.forbidden = false;
     }
 
     @Override
     public int compareTo(Constraint other) {
-        if (start.before(other.start)) {
+        if (date.isBefore(other.date)) {
             return -1;
         }
-        if (start.after(other.start)) {
+        if (date.isAfter(other.date)) {
             return 1;
         }
         return 0;
-    }
-
-    public Calendar getStart(){
-        return (Calendar)start.clone();
-    }
-
-    public Calendar getEnd(){
-        return (Calendar)end.clone();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null){
-            return false;
-        }
-        return obj instanceof Constraint && (start.equals(((Constraint)obj).start) && end.equals(((Constraint)obj).end));
     }
 }

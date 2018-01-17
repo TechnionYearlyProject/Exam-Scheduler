@@ -4,12 +4,13 @@ import db.exception.DateOutOfSchedule;
 import db.exception.InvalidSchedule;
 import db.exception.UninitializedSchedule;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Schedule {
-    public Calendar start;
-    public Calendar end;
-    Map<Integer, Calendar> schedule;
+    public LocalDate start;
+    public LocalDate end;
+    Map<Integer, LocalDate> schedule;
 
     public Schedule() {
         this.start = null;
@@ -23,47 +24,47 @@ public class Schedule {
 
     private void updateSchedules() {
         if (start != null) {
-            schedule.entrySet().removeIf(entry -> entry.getValue().before(start));
+            schedule.entrySet().removeIf(entry -> entry.getValue().isBefore(start));
         }
         if (end != null) {
-            schedule.entrySet().removeIf(entry -> entry.getValue().after(end));
+            schedule.entrySet().removeIf(entry -> entry.getValue().isAfter(end));
         }
     }
 
-    public void setStartDate(Calendar start) throws InvalidSchedule {
-        if (end != null && start.after(end)) {
+    public void setStartDate(LocalDate start) throws InvalidSchedule {
+        if (end != null && start.isAfter(end)) {
             throw new InvalidSchedule();
         }
-        this.start = (Calendar) start.clone();
+        this.start = start;
         updateSchedules();
     }
 
-    public void setEndDate(Calendar end) throws InvalidSchedule {
-        if (start != null && end.before(start)) {
+    public void setEndDate(LocalDate end) throws InvalidSchedule {
+        if (start != null && end.isBefore(start)) {
             throw new InvalidSchedule();
         }
-        this.end = (Calendar) end.clone();
+        this.end = end;
         updateSchedules();
     }
 
-    public void scheduleCourse(int courseId, Calendar date) throws DateOutOfSchedule, UninitializedSchedule {
+    public void scheduleCourse(int courseId, LocalDate date) throws DateOutOfSchedule, UninitializedSchedule {
         if (undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
-        if (date.before(start) || date.after(end)) {
+        if (date.isBefore(start) || date.isAfter(end)) {
             throw new DateOutOfSchedule();
         }
-        schedule.put(courseId, (Calendar) date.clone());
+        schedule.put(courseId, date);
     }
 
     public void unscheduleCourse(int id) {
         schedule.remove(id);
     }
 
-    public Calendar getCourseSchedule(int courseId) {
+    public LocalDate getCourseSchedule(int courseId) {
         if (!schedule.containsKey(courseId)) {
             return null;
         }
-        return (Calendar) schedule.get(courseId).clone();
+        return schedule.get(courseId);
     }
 }

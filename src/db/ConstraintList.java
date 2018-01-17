@@ -13,37 +13,38 @@ public class ConstraintList {
         constraints = new HashMap<>();
     }
 
-    public void addConstraint(int courseId, Calendar start, Calendar end, boolean forbidden) throws InvalidConstraint,
-            OverlappingConstraints {
-        if (end.before(start)) {
-            throw new InvalidConstraint();
-        }
+    public void addConstraint(int courseId, LocalDate date, boolean forbidden) throws OverlappingConstraints {
         if (!constraints.containsKey(courseId)) {
             constraints.put(courseId, new ArrayList<>());
         }
         for (Constraint constraint: constraints.get(courseId)) {
-            if (start.after(constraint.end) || end.before(constraint.start)) {
+            if (date.isEqual(constraint.date)) {
                 continue;
             }
             throw new OverlappingConstraints();
         }
-        constraints.get(courseId).add(new Constraint(start, end, forbidden));
+        constraints.get(courseId).add(new Constraint(date, forbidden));
         Collections.sort(constraints.get(courseId)); // Ordered by start date
     }
 
-    public  void addConstraint(int courseId, Calendar start, Calendar end) throws OverlappingConstraints,
-            InvalidConstraint {
-        addConstraint(courseId, start, end, false);
+    public  void addConstraint(int courseId, LocalDate date) throws OverlappingConstraints {
+        addConstraint(courseId, date, false);
     }
 
-    public void removeConstraint(int courseId, Calendar start, Calendar end) {
+    public void removeConstraint(int courseId, LocalDate date) {
         Iterator<Constraint> it = constraints.get(courseId).iterator();
         while (it.hasNext()) {
             Constraint constraint = it.next();
-            if (constraint.start.equals(start) && constraint.end.equals(end)) {
+            if (constraint.date.isEqual(date)) {
                 it.remove();
                 break;
             }
+        }
+    }
+
+    public void removeConstraint(LocalDate date) {
+        for (Integer courseId: constraints.keySet()) {
+            removeConstraint(courseId, date);
         }
     }
 
@@ -53,19 +54,8 @@ public class ConstraintList {
         }
         List<Constraint> list = new ArrayList<>();
         for (Constraint constraint: constraints.get(courseId)) {
-            list.add(new Constraint(constraint.start, constraint.end));
+            list.add(new Constraint(constraint.date));
         }
         return list;
-    }
-
-    public void removeDateConstraint(LocalDate date) {
-        GregorianCalendar calendar = new GregorianCalendar(date.getYear(),date.getMonthValue(),date.getDayOfMonth());
-        for (Integer course_id:constraints.keySet()) {
-            ArrayList<Constraint> copied_constraints = new ArrayList<Constraint>(constraints.get(course_id));
-            for (Constraint constraint:copied_constraints) {
-                if (constraint.getStart().equals(calendar) && constraint.getEnd().equals(calendar))
-                    removeConstraint(course_id,calendar,calendar);
-            }
-        }
     }
 }
