@@ -85,7 +85,7 @@ public class AddCourse {
         weight.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         weight.setPromptText("נקודות זכות");
 
-        Label label = new Label("בחירת מסלולים וסימטרים:");
+        Label label = new Label("בחירת מסלולים וסימסטרים:");
         label.setAlignment(Pos.CENTER_RIGHT);
 
         AddSemester add_semester1 = new AddSemester(coursestable);
