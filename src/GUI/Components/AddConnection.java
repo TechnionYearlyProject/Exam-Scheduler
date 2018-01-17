@@ -81,7 +81,7 @@ public class AddConnection {
 		hbox_title.getChildren().addAll(close_label, title_label);
 
 		VBox body = new VBox();
-		body.setPadding(new Insets(20, 20, 10, 20)); //0 on bottom
+		body.setPadding(new Insets(20, 20, 0, 20)); //0 on bottom
 		body.setAlignment(Pos.CENTER_RIGHT);
 		body.setSpacing(10);
 		Map<Integer,String> conflicts = manager.courseloader.getCourse(courseid).getConflictCourses();
@@ -145,15 +145,90 @@ public class AddConnection {
 		body.getChildren().addAll(courses,newcourse);
 
 
+		HBox hbox_button = new HBox();
+		hbox_button.setPadding(new Insets(20, 20, 15, 20)); //0 on bottom
+		hbox_button.setAlignment(Pos.CENTER_LEFT);
+		hbox_button.setSpacing(287);
+		Label first_button = new Label();
+		first_button.setTextFill(Color.WHITE);
+		first_button.setAlignment(Pos.CENTER);
+		first_button.setText("אישור");
+		first_button.setPrefWidth(90);
+		first_button.setPrefHeight(40);
+		Label second_button = new Label();
+		second_button.setTextFill(Color.WHITE);
+		second_button.setAlignment(Pos.CENTER);
+		second_button.setText("הסרת קישור");
+		second_button.setVisible(true);
+		second_button.setPrefWidth(90);
+		second_button.setPrefHeight(40);
+		hbox_button.getChildren().addAll(first_button, second_button);
+		first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
+		second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
+		first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouse_event) {
+				if (mouse_event.getButton() != MouseButton.PRIMARY)
+					return;
+				//func.run();
+				stage.close();
+			}
+		});
+		first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouse_event) {
+				first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #455A64;");
+			}
+		});
+		first_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouse_event) {
+				first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
+			}
+		});
+		second_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouse_event) {
+				if (mouse_event.getButton() != MouseButton.PRIMARY)
+					return;
+				if (courses.getSelectionModel().getSelectedItem() == null)
+					return;
+
+				Integer course_num = Integer.parseInt(courses.getSelectionModel().getSelectedItem().split(" - ")[0]);
+				Course remove_course = manager.courseloader.getCourse(course_num);
+				Course curr_course = manager.courseloader.getCourse(courseid);
+				if (curr_course.getConflictCourses() == null || curr_course.getConflictCourses().size() == 0)
+					return;
+				curr_course.removeConflictCourse(course_num);
+				items.remove(courses.getSelectionModel().getSelectedItem());
+				courses.setItems(items);
+			}
+		});
+		second_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouse_event) {
+				second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #455A64;");
+			}
+		});
+		second_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouse_event) {
+				second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
+			}
+		});
+
+
+
+
 
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(1, 1, 1, 1));
 		vbox.setStyle("-fx-background-color: white;");
-		vbox.getChildren().addAll(hbox_title, body);
+		vbox.getChildren().addAll(hbox_title, body,hbox_button);
 		FlowPane border = new FlowPane();
 		border.setStyle("-fx-border-color: #CFD8DC;");
 		border.getChildren().add(vbox);
-		Scene scene = new Scene(border, 504, 354);
+		Scene scene = new Scene(border, 511, 419);
 		stage.setScene(scene);
 		stage.show();
 

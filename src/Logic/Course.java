@@ -106,7 +106,7 @@ public class Course implements Comparable<Course>{
      * Remove the course from the conflict courses list. if there is no course with such id, the list won't be effected.
      * @Param c0: the id of the course to remove.
      */
-    void removeConflictCourse(Integer c){
+    public void removeConflictCourse(Integer c){
         conflictCourses.remove(c);
     }
 
