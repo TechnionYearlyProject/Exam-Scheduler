@@ -311,4 +311,34 @@ public class Schedule {
             schedulable_days.get(i).deleteCourse(course.getCourseID());
         }
     }
+
+    public Boolean isMovePossible(Course course, LocalDate new_date) {
+        Integer days_before = course.getDaysBefore();
+        Integer index = 0;
+        Set<Integer> other_courses = null;
+        Day day = null;
+        for (Day curr_day:schedulable_days) {
+            if (curr_day.date.isEqual(new_date)) {
+                day = curr_day;
+                other_courses = day.courses.keySet();
+                break;
+            }
+            index++;
+        }
+        for (Integer other_course:other_courses) {
+            Integer other_days_before = day.courses.get(other_course);
+            if (other_days_before <= 0) {
+                if (course.getConflictCourses().get(other_course) != null)
+                    return false;
+            }
+            else {
+                if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<=days_before))
+                    return false;
+            }
+        }
+        this.unassignCourse(course);
+        this.assignCourse(course,index);
+        return true;
+    }
+
 }

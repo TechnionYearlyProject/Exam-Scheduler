@@ -28,7 +28,7 @@ public class Item {
             manager.courseloader.getCourse(course.getCourseID()).setHasExam(take.isSelected());
         });
         name = String.format("%06d",course.getCourseID()) + " - " + course.getCourseName();
-        study = new SimpleStringProperty((new Integer(course.getCreditPoints().intValue()).toString()));
+        study = new SimpleStringProperty(new Integer(course.getDaysBefore()).toString());
         pref = new ChoiceBox<String>();
         pref.getItems().addAll("אוטומטי","סוף תקופה","תחילת תקופה");
         if (course.isFirst())
