@@ -1,0 +1,11 @@
+.choice-box .label {
+    -fx-background-color: white;
+    -fx-border-color: lightgrey;
+    -fx-border-radius: 3;
+
+
+}
+.choice-box .menu-item > .label {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}

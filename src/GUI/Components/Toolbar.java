@@ -6,6 +6,7 @@ import Output.CalendarFileWriter;
 import Output.Exceptions.ErrorOpeningFile;
 import Output.IFileWriter;
 import Output.XMLFileWriter;
+import com.sun.prism.paint.Color;
 import db.Semester;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -92,9 +93,11 @@ public class Toolbar extends HBox{
                     "csv",new CalendarFileWriter(), stage);
             VBox vbox = new VBox(CSVButton,XMLButton,CalendarButton);
             vbox.setSpacing(1);
-            //vbox.setStyle("-fx-background-color: transparent;");
+            vbox.setStyle("-fx-background-color: transparent;");
             Scene scene = new Scene(vbox);
+            scene.setFill(javafx.scene.paint.Color.color(0,0,0,0));
             stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setX(wrapper.getScene().getWindow().getX()+195);
             stage.setY(wrapper.getScene().getWindow().getY()+95);
             stage.getIcons().add(new Image("/app_icon.png"));
@@ -137,7 +140,7 @@ public class Toolbar extends HBox{
             }
             try {
                 wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, null);
+                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, wrapper.manager.scheduleA);
             } catch (Logic.Schedule.CanNotBeScheduledException e) {
                 new AlertBox(AlertType.ERROR, "השיבוץ נכשל. נסו להסיר העדפות " +
                         "או להגדיל את טווח התאריכים.", null);

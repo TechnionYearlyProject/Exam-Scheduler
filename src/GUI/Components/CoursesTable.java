@@ -174,7 +174,7 @@ public class CoursesTable extends VBox{
     }
 
     public void AddFunction() {
-        new AddCourse();
+        new AddCourse(this);
     }
 
 }

@@ -22,13 +22,15 @@ import javafx.stage.StageStyle;
 public class AddCourse {
 	ImageView X_icon;
 	ImageView X_hover_icon;
-	public AddCourse() {
+	CoursesTable coursestable;
+	public AddCourse(CoursesTable parent) {
+	    coursestable = parent;
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initStyle(StageStyle.UNDECORATED);
 		HBox hbox_title = new HBox();
 		hbox_title.setPadding(new Insets(15, 15, 0, 15)); //0 on bottom
-		String temp = "הוספת קורס";
+		String temp = "הוספת קורס למסד הנתונים";
 		stage.getIcons().add(new Image("/app_icon.png"));
 		Label title_label = new Label(temp);
 		title_label.setFont(Font.font(18));
@@ -83,7 +85,14 @@ public class AddCourse {
         weight.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         weight.setPromptText("נקודות זכות");
 
-        body.getChildren().addAll(course_id,course_name,weight);
+        Label label = new Label("בחירת מסלולים וסימטרים:");
+        label.setAlignment(Pos.CENTER_RIGHT);
+
+        AddSemester add_semester1 = new AddSemester(coursestable);
+        AddSemester add_semester2 = new AddSemester(coursestable);
+        AddSemester add_semester3 = new AddSemester(coursestable);
+        AddSemester add_semester4 = new AddSemester(coursestable);
+        body.getChildren().addAll(course_id,course_name,weight,label,add_semester1,add_semester2,add_semester3,add_semester4);
 
 		HBox hbox_button = new HBox();
 		hbox_button.setPadding(new Insets(20, 0, 15, 15)); //0 on bottom
@@ -92,19 +101,17 @@ public class AddCourse {
 		Label first_button = new Label();
 		first_button.setTextFill(Color.WHITE);
 		first_button.setAlignment(Pos.CENTER);
-		first_button.setText("אישור");
+		first_button.setText("הוסף");
 		first_button.setPrefWidth(75);
 		first_button.setPrefHeight(40);
 		Label second_button = new Label();
 		second_button.setTextFill(Color.WHITE);
 		second_button.setAlignment(Pos.CENTER);
 		second_button.setText("ביטול");
+		second_button.setVisible(true);
 		second_button.setPrefWidth(75);
 		second_button.setPrefHeight(40);
-		second_button.setVisible(false);
 		hbox_button.getChildren().addAll(first_button, second_button);
-		second_button.setVisible(true);
-		second_button.setText("ביטול");
 		first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
 		second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
 		first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -156,7 +163,7 @@ public class AddCourse {
 		FlowPane border = new FlowPane();
 		border.setStyle("-fx-border-color: #CFD8DC;");
 		border.getChildren().add(vbox);
-		Scene scene = new Scene(border, 504, 258);
+		Scene scene = new Scene(border, 504, 460);
 		stage.setScene(scene);
 		stage.showAndWait();
 

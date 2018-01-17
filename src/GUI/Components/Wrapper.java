@@ -17,6 +17,7 @@ public class Wrapper extends ScrollPane {
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(15, 15, 15, 15));
+        this.setStyle("-fx-focus-color: lightgrey;");//"-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");
         this.setContent(vbox);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
