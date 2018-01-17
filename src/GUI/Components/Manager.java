@@ -148,6 +148,10 @@ public class Manager extends HBox {
         catch (Exception e) {
             //handle exceptions
         }
+        A.picker1.enable();
+        A.picker2.enable();
+        B.picker1.enable();
+        B.picker2.enable();
     }
 
     public boolean datesOkay(LocalDate Astart,LocalDate Aend, LocalDate Bstart, LocalDate Bend) {
