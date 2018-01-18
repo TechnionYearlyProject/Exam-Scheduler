@@ -69,7 +69,7 @@ public class Toolbar extends HBox{
 
     public void guideFunction() {
         Path curr = Paths.get("");
-        String s = curr.toAbsolutePath().toString() + "\\documentation\\Manual.docx";
+        String s = curr.toAbsolutePath().toString() + "\\documentation\\Manual.pdf";
         File file = new File(s);
         try {
             Desktop.getDesktop().open(file);

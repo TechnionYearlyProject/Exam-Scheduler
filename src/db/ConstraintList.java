@@ -31,6 +31,8 @@ public class ConstraintList {
     }
 
     public void removeConstraint(int courseId, LocalDate date) {
+        if (constraints.get(courseId) == null)
+            return;
         Iterator<Constraint> it = constraints.get(courseId).iterator();
         while (it.hasNext()) {
             Constraint constraint = it.next();
