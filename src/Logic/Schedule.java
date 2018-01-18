@@ -210,7 +210,7 @@ public class Schedule {
 
     //this function assigns all courses listed in constraint list to associated days
     //If constraints of conflicted courses overlap: throws exception
-    private void assignConstraints(ConstraintList constraintList, List<Course> courses) throws CanNotBeScheduledException{
+    private void assignConstraints(ConstraintList constraintList, List<Course> courses) {
         if (constraintList == null){
             return;
         }
@@ -220,25 +220,7 @@ public class Schedule {
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
-                    boolean assigned = false;
-                    for (int param = course.getDaysBefore()/2; param >= 0; param--){
-                        try {
-                            if(day.canBeAssigned(course)){
-                                this.assignCourse(course, i);
-                                assigned = true;
-                            } else {
-                                course.setDaysBefore(course.getDaysBefore() - 1);
-                            }
-                        } catch (IllegalDaysBefore e){
-                            throw new CanNotBeScheduledException(courseId);
-                        }
-                        if (assigned){
-                            break;
-                        }
-                    }
-                    if (!assigned) {
-                        throw new CanNotBeScheduledException(courseId);
-                    }
+                    this.assignCourse(course, i);
                 }
             }
         }
