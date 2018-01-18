@@ -166,10 +166,8 @@ public class AddCourse {
                 if (add_semester4.program.getValue()!= "מסלול פקולטי")
                     semesters.put(add_semester4.program.getValue(),Integer.valueOf(add_semester4.semester.getValue()));
                 Course new_course = new Course(course_name.getText(), new_course_id,true,new_weight,semesters);
-                coursestable.manager.courseloader.getCourses().put(new_course_id,new_course);
+                coursestable.manager.courseloader.addNewCourse(new_course);
                 coursestable.items.add(new Item(coursestable.manager,new_course));
-
-
 				stage.close();
 			}
 		});

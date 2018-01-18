@@ -1,9 +1,7 @@
 package Logic;
-
 import db.*;
 import db.Course;
 import javafx.util.Pair;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,4 +92,29 @@ public class CourseLoader {
         }
         Collections.sort(sortedCoursesList);
     }
+
+    public void removeCourseCompletely(Integer courseID) {
+        for (Logic.Course other_course:courses.values()) {
+            other_course.removeConflictCourse(courseID);
+        }
+        courses.remove(courseID);
+        dbCourses.remove(courseID);
+        sortCourses();
+    }
+
+    public void addNewCourse(Logic.Course course) {
+        Integer id = course.getCourseID();
+        String name = course.getCourseName();
+        for (Pair<String,Integer> programs:course.getPrograms())
+            for (Logic.Course other_course:courses.values())
+                if (other_course.getPrograms().contains(programs)) {
+                    other_course.addConflictCourse(id,name);
+                    course.addConflictCourse(other_course.getCourseID(),other_course.getCourseName());
+                }
+        courses.put(id,course);
+        db.Course dbcourse = new db.Course(id,name,course.getCreditPoints(),course.getDaysBefore(),course.isFirst(),course.isLast(),course.isRequired(),course.hasExam());
+        dbCourses.put(id,dbcourse);
+        sortCourses();
+    }
+
 }
