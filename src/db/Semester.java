@@ -24,6 +24,7 @@ public class Semester {
     Set<String> programs;
     Map<Moed, Schedule> schedules;
     public Map<Moed, ConstraintList> constraints;
+    public Map<Integer, Set<Integer>> conflicts;
 
     public Semester() {
         courses = new HashMap<>();
@@ -34,6 +35,7 @@ public class Semester {
         constraints = new HashMap<>();
         constraints.put(Moed.MOED_A, new ConstraintList());
         constraints.put(Moed.MOED_B, new ConstraintList());
+        conflicts = new HashMap<>();
     }
 
     public void addStudyProgram(String program) throws StudyProgramAlreadyExist {

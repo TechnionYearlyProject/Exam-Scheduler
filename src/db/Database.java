@@ -161,12 +161,14 @@ public class Database {
         XMLFiles.put("scheduleB", path + sep + "scheduleB.xml");
         XMLFiles.put("constraintsA", path + sep + "constraintsA.xml");
         XMLFiles.put("constraintsB", path + sep + "constraintsB.xml");
+        XMLFiles.put("conflicts", path + sep + "conflicts.xml");
         checkXMLFiles(XMLFiles.values());
         Semester semester = new Semester();
         parseStudyPrograms(XMLFiles.get("study_programs"), semester);
         parseCourses(XMLFiles.get("courses"), semester);
         parseSchedules(XMLFiles.get("scheduleA"), XMLFiles.get("scheduleB"), semester);
         parseConstraints(XMLFiles.get("constraintsA"), XMLFiles.get("constraintsB"), semester);
+        parseConflicts(XMLFiles.get("conflicts"), semester);
         return semester;
     }
 
@@ -336,6 +338,37 @@ public class Database {
         }
     }
 
+    private void parseConflicts(String filePath, Semester semester) throws InvalidDatabase {
+        Document XMLTree = loadXMLFile(filePath);
+        Element root = XMLTree.getDocumentElement();
+        NodeList courses = root.getChildNodes();
+        for (int i = 0; i < courses.getLength(); i++) {
+            Node n = courses.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element conflictList = (Element) n;
+                int courseId = Integer.parseInt(conflictList.getAttribute("course_id"));
+                if (!semester.courses.containsKey(courseId)) {
+                    throw new InvalidDatabase("Conflict list contains unknown course ID : " + courseId);
+                }
+                if (!semester.conflicts.containsKey(courseId)) {
+                    semester.conflicts.put(courseId, new HashSet<>());
+                }
+                NodeList conflictCourses = conflictList.getElementsByTagName("course_id");
+                for (int j = 0; j < conflictCourses.getLength(); j++) {
+                    Node m = conflictCourses.item(j);
+                    if (m.getNodeType() == Node.ELEMENT_NODE) {
+                        Element conflictCourse = (Element) m;
+                        int conflictCourseId = Integer.parseInt(conflictCourse.getTextContent());
+                        if (!semester.courses.containsKey(conflictCourseId)) {
+                            throw new InvalidDatabase("Conflict list contains unknown course ID : " + courseId);
+                        }
+                        semester.conflicts.get(courseId).add(conflictCourseId);
+                    }
+                }
+            }
+        }
+    }
+
     private int compareDirs(String dir1, String dir2) {
         // Compare semesters so that most recent semester will be first after ordering
         String[] dir1Attr = dir1.split("_");
@@ -375,6 +408,7 @@ public class Database {
         writeCourses(path + sep + "courses.xml", semester);
         writeSchedules(path + sep + "scheduleA.xml", path + sep + "scheduleB.xml", semester);
         writeConstraints(path + sep + "constraintsA.xml", path + sep + "constraintsB.xml", semester);
+        writeConflicts(path + sep + "conflicts.xml", semester);
     }
 
     private void writeStudyPrograms(String filePath, Semester semester) {
@@ -534,6 +568,26 @@ public class Database {
             document.appendChild(constraints);
             writeXMLFile(paths.get(moed), document);
         }
+    }
+
+    private void writeConflicts(String filePath, Semester semester) {
+        Document document = builder.newDocument();
+        Element conflicts = document.createElement("conflicts");
+        for (Map.Entry<Integer, Set<Integer>> entry: semester.conflicts.entrySet()) {
+            Element conflictListElement = document.createElement("conflict_list");
+            conflictListElement.setAttribute("course_id", entry.getKey().toString());
+
+            for (Integer conflictCourseId : entry.getValue()) {
+                Element conflictCourseElement = document.createElement("course_id");
+                Text conflictCourseText = document.createTextNode(conflictCourseId.toString());
+                conflictCourseElement.appendChild(conflictCourseText);
+                conflictListElement.appendChild(conflictCourseElement);
+            }
+
+            conflicts.appendChild(conflictListElement);
+        }
+        document.appendChild(conflicts);
+        writeXMLFile(filePath, document);
     }
 
     public Semester createSemester(int year, String sem) throws SemesterAlreadyExist {
