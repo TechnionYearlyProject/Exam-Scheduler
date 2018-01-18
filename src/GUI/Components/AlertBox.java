@@ -1,5 +1,4 @@
 package GUI.Components;
-
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,7 +20,10 @@ import javafx.stage.StageStyle;
 public class AlertBox {
 	ImageView X_icon;
 	ImageView X_hover_icon;
-	public AlertBox(AlertType type, String msg, Runnable func) {
+    public AlertBox(AlertType type, String msg, Runnable func) {
+        this(type,msg,func, false);
+    }
+	public AlertBox(AlertType type, String msg, Runnable func, Boolean wait) {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initStyle(StageStyle.UNDECORATED);
@@ -215,8 +217,10 @@ public class AlertBox {
 		border.getChildren().add(vbox);
 		Scene scene = new Scene(border, 504, 194);
 		stage.setScene(scene);
-		stage.show();
-
+		if (wait)
+			stage.showAndWait();
+		else
+			stage.show();
 	}
 }
 		
