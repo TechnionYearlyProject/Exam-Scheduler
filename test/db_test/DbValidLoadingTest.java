@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static junit.framework.TestCase.assertEquals;
@@ -28,14 +31,14 @@ public class DbValidLoadingTest {
         dateParser = new SimpleDateFormat("yyyy-MM-dd");
     }
 
-    private Calendar parse(String str, SimpleDateFormat parser) {
+    private LocalDate parse(String str, SimpleDateFormat parser) {
         Calendar cal = Calendar.getInstance();
         try {
             cal.setTime(parser.parse(str));
         } catch (ParseException e) {
             return null;
         }
-        return cal;
+        return LocalDateTime.ofInstant(cal.toInstant(), ZoneId.systemDefault()).toLocalDate();
     }
 
     @Test
@@ -108,15 +111,15 @@ public class DbValidLoadingTest {
         }
 
         // Check schedules
-        Calendar startDateA = parse("2017-01-01", dateParser);
-        Calendar endDateA = parse("2017-02-01", dateParser);
-        Calendar startDateB = parse("None", dateParser);
-        Calendar endDateB = parse("None", dateParser);
+        LocalDate startDateA = parse("2017-01-01", dateParser);
+        LocalDate endDateA = parse("2017-02-01", dateParser);
+        LocalDate startDateB = parse("None", dateParser);
+        LocalDate endDateB = parse("None", dateParser);
         assertEquals(startDateA, semester.getStartDate(Semester.Moed.MOED_A));
         assertEquals(endDateA, semester.getEndDate(Semester.Moed.MOED_A));
         assertEquals(startDateB, semester.getStartDate(Semester.Moed.MOED_B));
         assertEquals(endDateB, semester.getEndDate(Semester.Moed.MOED_B));
-        Map<Integer, Calendar> schedulesRef = new HashMap<>();
+        Map<Integer, LocalDate> schedulesRef = new HashMap<>();
         schedulesRef.put(104166, parse("2017-01-03", dateParser));
         schedulesRef.put(104031, parse("2017-01-03", dateParser));
         schedulesRef.put(234114, parse("2017-01-07", dateParser));
@@ -131,13 +134,13 @@ public class DbValidLoadingTest {
             assertEquals(null, semester.getConstraintList(Semester.Moed.MOED_B, courseId));
         }
         List<Constraint> constraintsRef = new ArrayList<>();
-        constraintsRef.add(new Constraint(parse("2017-01-01", dateParser), parse("2017-01-03", dateParser)));
-        constraintsRef.add(new Constraint(parse("2017-01-04", dateParser), parse("2017-01-07", dateParser)));
+        constraintsRef.add(new Constraint(parse("2017-01-01", dateParser)));
+        constraintsRef.add(new Constraint(parse("2017-01-04", dateParser)));
         assertEquals(constraintsRef.size(), semester.getConstraintList(Semester.Moed.MOED_A, 104031).size());
         for (Constraint ref: constraintsRef) {
             boolean check = false;
             for (Constraint constrait: semester.getConstraintList(Semester.Moed.MOED_A, 104031)) {
-                if (constrait.start.equals(ref.start) && constrait.end.equals(ref.end)) {
+                if (constrait.date.equals(ref.date)) {
                     check = true;
                     break;
                 }

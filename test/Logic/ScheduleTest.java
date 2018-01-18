@@ -1,5 +1,6 @@
 package Logic;
 
+import db.ConstraintList;
 import db.Database;
 import db.Semester;
 import org.junit.Before;
@@ -19,7 +20,7 @@ public class ScheduleTest {
     Schedule moedA;
     Schedule moedB;
 
-    final static int EXAM_DAYS_MOED_A = 23;
+    final static int EXAM_DAYS_MOED_A = 22;
     final static int EXAM_DAYS_MOED_B = 16;
     @Before
     public void setUp() throws Exception {
@@ -31,7 +32,7 @@ public class ScheduleTest {
         HashSet<LocalDate> occupied = new HashSet<>();
         occupied.add(LocalDate.of(2018, 3, 1));
         occupied.add(LocalDate.of(2018, 3, 2));
-        moedB = new Schedule(LocalDate.of(2018, 2, 23), LocalDate.of(2018, 3, 19), occupied,  20);
+        moedB = new Schedule(LocalDate.of(2018, 2, 27), LocalDate.of(2018, 3, 19), occupied,  20);
     }
 
     @Test

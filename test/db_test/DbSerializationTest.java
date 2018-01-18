@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 import static junit.framework.TestCase.*;
@@ -18,6 +19,11 @@ public class DbSerializationTest {
     public static Database db;
     private static String baseDir;
     private static SimpleDateFormat dateParser;
+
+    private LocalDate parse(String str) {
+        String[] dates = str.split("-");
+        return LocalDate.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[0]),  Integer.parseInt(dates[0]));
+    }
 
     @Before
     public void initDb() {
@@ -45,16 +51,6 @@ public class DbSerializationTest {
             }
             sem.delete();
         }
-    }
-
-    private Calendar parse(String str) {
-        Calendar cal = Calendar.getInstance();
-        try {
-            cal.setTime(dateParser.parse(str));
-        } catch (ParseException e) {
-            return null;
-        }
-        return cal;
     }
 
     @Test
@@ -95,15 +91,15 @@ public class DbSerializationTest {
         courses.put(236777, "Abbey Road");
         courses.put(234126, "A Night at the Opera");
 
-        Calendar startDateA = parse("2018-01-01");
-        Calendar endDateA = parse("2018-01-31");
+        LocalDate startDateA = parse("2018-01-01");
+        LocalDate endDateA = parse("2018-01-31");
 
-        Map<Integer, Calendar> exams = new HashMap<>();
+        Map<Integer, LocalDate> exams = new HashMap<>();
         exams.put(234123, parse("2018-01-04"));
         exams.put(236315, parse("2018-01-13"));
         exams.put(236777, parse("2018-01-19"));
 
-        Map<Integer, Calendar> constraints = new HashMap<>();
+        Map<Integer, LocalDate> constraints = new HashMap<>();
         constraints.put(234123, parse("2018-01-04"));
         constraints.put(236315, parse("2018-01-13"));
         constraints.put(234126, parse("2018-01-21"));
@@ -130,7 +126,7 @@ public class DbSerializationTest {
                 semester.scheduleCourse(courseId, Semester.Moed.MOED_A, exams.get(courseId));
             }
             for (Integer courseId: constraints.keySet()) {
-                semester.addConstraint(courseId, Semester.Moed.MOED_A, constraints.get(courseId), constraints.get(courseId));
+                semester.addConstraint(courseId, Semester.Moed.MOED_A, constraints.get(courseId), false);
             }
             db.saveSemester(2018, "winter");
             initDb(); // Create new db without loaded semesters
@@ -158,8 +154,8 @@ public class DbSerializationTest {
         assertNull(semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(3, semester.getConstraintLists(Semester.Moed.MOED_A).size());
         for (int courseId: semester.getConstraintLists(Semester.Moed.MOED_A).keySet()) {
-            assertEquals(constraints.get(courseId), semester.getConstraintList(Semester.Moed.MOED_A, courseId).get(0).start);
-            assertEquals(constraints.get(courseId), semester.getConstraintList(Semester.Moed.MOED_A, courseId).get(0).end);
+            assertEquals(constraints.get(courseId), semester.getConstraintList(Semester.Moed.MOED_A, courseId).get(0).date);
+            assertEquals(constraints.get(courseId), semester.getConstraintList(Semester.Moed.MOED_A, courseId).get(0).date);
         }
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_B).size());
     }
