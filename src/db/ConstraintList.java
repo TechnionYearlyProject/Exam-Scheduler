@@ -56,7 +56,7 @@ public class ConstraintList {
         }
         List<Constraint> list = new ArrayList<>();
         for (Constraint constraint: constraints.get(courseId)) {
-            list.add(new Constraint(constraint.date));
+            list.add(new Constraint(constraint));
         }
         return list;
     }

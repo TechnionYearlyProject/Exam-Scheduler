@@ -17,6 +17,11 @@ public class Constraint implements Comparable<Constraint>{
         this.forbidden = false;
     }
 
+    public Constraint(Constraint other) {
+        this.date = other.date;
+        this.forbidden = other.forbidden;
+    }
+
     @Override
     public int compareTo(Constraint other) {
         if (date.isBefore(other.date)) {
