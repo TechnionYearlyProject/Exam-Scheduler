@@ -216,7 +216,7 @@ public class Schedule {
         }
         for (int courseId: constraintList.constraints.keySet()){
             Course course = courses.stream().filter(c -> c.getCourseID().equals(courseId)).findFirst().get();
-            LocalDate dateToBeScheduled = constraintList.getConstraints(courseId).get(0).date;
+            LocalDate dateToBeScheduled = findDateToScheduleConstraint(constraintList.getConstraints(courseId));
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
@@ -257,7 +257,7 @@ public class Schedule {
             }
         }
         for (Course course: courses){
-            if (cl.getConstraints(course.getCourseID()) != null && cl.getConstraints(course.getCourseID()).size() != 0){//was getGoodConstraints().
+            if (findDateToScheduleConstraint(cl.getConstraints(course.getCourseID())) != null){
                 continue;
             }
             int indexOfDayToSchedule = heuristic.findIndexOfBestDayForScheduling(course, getFirstIndexOfDayWhenCanBeScheduled(moedA, course.getCourseID()));
@@ -279,7 +279,7 @@ public class Schedule {
 
     private void optimizeSchedule(List<Course> courses, Schedule moedA, ConstraintList cl){
         for (Course course: courses){
-            if (cl.getConstraints(course.getCourseID()) != null && cl.getConstraints(course.getCourseID()).size() != 0){//TODO: Change. Need iterate over and find "good" constraint.
+            if (findDateToScheduleConstraint(cl.getConstraints(course.getCourseID())) != null){
                 continue;
             }
             boolean scheduled = false;
@@ -310,5 +310,43 @@ public class Schedule {
         for (int i = 0; i < schedulable_days.size(); i++){
             schedulable_days.get(i).deleteCourse(course.getCourseID());
         }
+    }
+
+    public Boolean isMovePossible(Course course, LocalDate new_date) {
+        Integer days_before = course.getDaysBefore();
+        Integer index = 0;
+        Set<Integer> other_courses = null;
+        Day day = null;
+        for (Day curr_day:schedulable_days) {
+            if (curr_day.date.isEqual(new_date)) {
+                day = curr_day;
+                other_courses = day.courses.keySet();
+                break;
+            }
+            index++;
+        }
+        for (Integer other_course:other_courses) {
+            Integer other_days_before = day.courses.get(other_course);
+            if (other_days_before <= 0) {
+                if (course.getConflictCourses().get(other_course) != null)
+                    return false;
+            }
+            else {
+                if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<=days_before))
+                    return false;
+            }
+        }
+        this.unassignCourse(course);
+        this.assignCourse(course,index);
+        return true;
+    }
+
+    private LocalDate findDateToScheduleConstraint(List<Constraint> constraints){
+        for (Constraint constraint: constraints){
+            if (!constraint.forbidden){
+                return constraint.date;
+            }
+        }
+        return null;
     }
 }
