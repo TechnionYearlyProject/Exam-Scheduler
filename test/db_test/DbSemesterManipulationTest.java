@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 
@@ -22,14 +23,9 @@ public class DbSemesterManipulationTest {
     private static String baseDir;
     private static SimpleDateFormat dateParser;
 
-    private Calendar parse(String str) {
-        Calendar cal = Calendar.getInstance();
-        try {
-            cal.setTime(dateParser.parse(str));
-        } catch (ParseException e) {
-            return null;
-        }
-        return cal;
+    private LocalDate parse(String str) {
+        String[] dates = str.split("-");
+        return LocalDate.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[0]),  Integer.parseInt(dates[0]));
     }
 
     @Before
@@ -251,7 +247,7 @@ public class DbSemesterManipulationTest {
             semester.addCourse(3, "Ringo", 4.5);
             semester.addCourse(4, "Georges", 4.5);
             // Can't schedule exam before setting start and end date of exam period
-            semester.scheduleCourse(1, Semester.Moed.MOED_A, parse("2018-01-01"));
+            semester.scheduleCourse(1, Semester.Moed.MOED_A, LocalDate.of(2018, 1, 1));
             fail("Should have thrown UninitializedSchedule exception");
         } catch (UninitializedSchedule e) {
             // Expected
@@ -261,7 +257,7 @@ public class DbSemesterManipulationTest {
 
         // Set start date
         try {
-            semester.setStartDate(Semester.Moed.MOED_A, parse("2018-01-01"));
+            semester.setStartDate(Semester.Moed.MOED_A, LocalDate.of(2018, 1, 1));
         } catch (Exception e) {
             fail("Unexpected exception: " + e.toString());
         }
