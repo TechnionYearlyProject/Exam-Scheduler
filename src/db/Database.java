@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -202,6 +203,9 @@ public class Database {
                     int daysBefore = Integer.parseInt(l.item(0).getTextContent());
                     boolean isFirst = courseElement.getElementsByTagName("isFirst").getLength() == 1;
                     boolean isLast = courseElement.getElementsByTagName("isLast").getLength() == 1;
+                    if (isFirst && isLast) {
+                        throw new CourseFirstAndLast();
+                    }
                     boolean isRequired = courseElement.getElementsByTagName("isRequired").getLength() == 1;
                     boolean hasExam = courseElement.getElementsByTagName("hasExam").getLength() == 1;
                     semester.addCourse(courseID, name, weight, daysBefore, isFirst, isLast, isRequired, hasExam);
@@ -213,7 +217,7 @@ public class Database {
                         Element programElement = (Element) m;
                         String program = programElement.getAttribute("program");
                         if (!programList.contains(program)) {
-                            throw new CourseUnknown();
+                            throw new StudyProgramUnknown();
                         }
                         int semesterNum = Integer.parseInt(programElement.getTextContent());
                         semester.registerCourse(courseID, program, semesterNum);
@@ -240,13 +244,18 @@ public class Database {
             Element root = XMLTree.getDocumentElement();
             String startDateStr = root.getElementsByTagName("start_date").item(0).getTextContent();
             String endDateStr = root.getElementsByTagName("end_date").item(0).getTextContent();
-            LocalDate startDate = parseDate(startDateStr);
-            LocalDate endDate = parseDate(endDateStr);
-            if (startDate != null && endDate != null) {
+            LocalDate startDate, endDate;
+            try {
+                startDate = parseDate(startDateStr);
+                endDate = parseDate(endDateStr);
+            } catch (DateTimeParseException e) {
+                throw new InvalidSchedule();
+            }
+            if (startDate != null) {
                 semester.setStartDate(moed, startDate);
+            }
+            if (endDate != null) {
                 semester.setEndDate(moed, endDate);
-            } else {
-                continue;
             }
             NodeList days = root.getElementsByTagName("day");
             for (int i = 0; i < days.getLength(); i++) {

@@ -168,6 +168,9 @@ public class Semester {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
+        if (schedules.get(moed).undefinedStartOrEnd()) {
+            throw new UninitializedSchedule();
+        }
         if (date.isBefore(schedules.get(moed).start) || date.isAfter(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }

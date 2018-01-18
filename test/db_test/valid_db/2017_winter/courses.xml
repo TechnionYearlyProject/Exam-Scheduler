@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <courses>
     <course>
-        <course_id>234114</course_id>
-        <course_name>מבוא למדעי המחשב מ</course_name>
+        <course_id>101</course_id>
+        <course_name>Physical Graffiti</course_name>
         <credit_points>3.5</credit_points>
-        <semester program="מסלול כללי ארבע-שנתי">1</semester>
-        <semester program="הנדסת תוכנה">2</semester>
-        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <days_before>2</days_before>
+        <isFirst/>
+        <isRequired/>
+        <hasExam/>
+        <semester program="Led Zeppelin">1</semester>
+        <semester program="Pink Floyd">1</semester>
+        <semester program="Dire Strait">1</semester>
     </course>
     <course>
-        <course_id>234145</course_id>
-        <course_name>מערכות ספרתיות</course_name>
+        <course_id>102</course_id>
+        <course_name>A Night At The Opera</course_name>
         <credit_points>3.0</credit_points>
-        <semester program="הנדסת תוכנה">1</semester>
-        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <days_before>2</days_before>
+        <isRequired/>
+        <hasExam/>
+        <semester program="Led Zeppelin">2</semester>
+        <semester program="Pink Floyd">2</semester>
+        <semester program="Dire Strait">2</semester>
     </course>
     <course>
-        <course_id>104166</course_id>
-        <course_name>אלגברה א</course_name>
+        <course_id>103</course_id>
+        <course_name>Dark Side Of The Moon</course_name>
         <credit_points>5.0</credit_points>
-        <semester program="מסלול כללי ארבע-שנתי">2</semester>
-        <semester program="מסלול כללי תלת-שנתי">3</semester>
+        <days_before>4</days_before>
+        <hasExam/>
+        <semester program="Led Zeppelin">3</semester>
+        <semester program="Pink Floyd">3</semester>
     </course>
     <course>
-        <course_id>104031</course_id>
-        <course_name>חשבון אינפיניטסימלי 1מ</course_name>
+        <course_id>104</course_id>
+        <course_name>Brothers In Arm</course_name>
         <credit_points>5.5</credit_points>
-        <semester program="מסלול כללי ארבע-שנתי">2</semester>
-        <semester program="מסלול כללי תלת-שנתי">2</semester>
+        <days_before>2</days_before>
+        <isLast/>
+        <isRequired/>
+        <semester program="Led Zeppelin">4</semester>
+        <semester program="Pink Floyd">4</semester>
     </course>
 </courses>

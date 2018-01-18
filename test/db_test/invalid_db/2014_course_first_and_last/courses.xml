@@ -6,6 +6,7 @@
         <credit_points>3.5</credit_points>
         <days_before>2</days_before>
         <isFirst/>
+        <isLast/>
         <isRequired/>
         <hasExam/>
         <semester program="Led Zeppelin">1</semester>
