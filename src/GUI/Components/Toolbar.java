@@ -149,7 +149,6 @@ public class Toolbar extends HBox{
             new AlertBox(AlertType.INFO,"לא ניתן לשבץ על לוח קיים. לחצו ניקוי ונסו שוב.",null);
             return;
         }
-        wrapper.manager.been_scheduled = true;
         new LoadingBox(()-> {
             try {
                 wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
@@ -166,6 +165,7 @@ public class Toolbar extends HBox{
                         "או להגדיל את טווח התאריכים.", null);
                 return;
             }
+            wrapper.manager.been_scheduled = true;
             wrapper.updateSchdule(wrapper.manager.scheduleA, wrapper.manager.scheduleB);
             wrapper.manager.coursetable.setScheduled(true);
             for (Day day : wrapper.manager.A.schedule.days.values()) {
