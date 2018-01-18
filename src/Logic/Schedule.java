@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+/*
+* The class is intent for producing optimized schedule.
+*/
 
 public class Schedule {
     ArrayList<Day> schedulable_days;
@@ -28,23 +31,38 @@ public class Schedule {
         }
     };
     private ScheduleHeuristic heuristic;
+    /*This inner class intented for finding day for course to be assigned when legal schedule is going to be produced.
+    * The search for the day is based on heuristic, which tries to maximize remaining space for all specializations*/
     private class ScheduleHeuristic {
+        //In this field contained mapping between pair (specialization, semester) and list of days
+        //List of days show what days are free for scheduling for the pair
         private HashMap<Pair<String, Integer>, ArrayList<Integer>> specializationMapping;
+
         public ScheduleHeuristic(){
             specializationMapping = new HashMap<>();
         }
+
+        /*Find and return best index for exams of the course
+        * Params:
+        *   course - course to be scheduled
+        *   beginFrom - index of schedulable_days that search should start from
+        * Returns index of the recommended day or -1 in case there no possibility to schedule the course*/
         public int findIndexOfBestDayForScheduling(Course course, int beginFrom){
             int bestIndex = -1;
+            //Initial value is maximum available (all days for all programs of the course are busy)
             int heuristicValue = schedulable_days.size() * (course.getPrograms().size() + 1);
+            //Current value is heuristic value of the course as for now.
             int currentValue = getHeuristicValue(course);
             for (int i = beginFrom; i < schedulable_days.size(); i++){
                 if (!schedulable_days.get(i).canBeAssigned(course)){
                     continue;
                 }
+                //For calculation of new heuristic value, we get current value and add num of days that are going to
+                //be added to busy days, in case we assign the exam to the day
                 int newHeuristicValue = currentValue;
                 for (Pair<String, Integer> program: course.getPrograms()){
                     ArrayList<Integer> days = specializationMapping.get(program);
-                    if (days == null){
+                    if (days == null){ //lazy initialization
                         days = new ArrayList<>(schedulable_days.size());
                         for (int k = 0; k < schedulable_days.size(); k++){
                             days.add(null);
@@ -61,6 +79,7 @@ public class Schedule {
                         }
                     }
                 }
+                //Check if heuristic value in the day is better than all previous
                 if (newHeuristicValue < heuristicValue) {
                     bestIndex = i;
                     heuristicValue = newHeuristicValue;
@@ -69,6 +88,7 @@ public class Schedule {
             return bestIndex;
         }
 
+        /*Calculates current heuristic value for the course*/
         private int getHeuristicValue(Course course){
             int value = 0;
             for (Pair<String, Integer> program: course.getPrograms()) {
@@ -84,6 +104,10 @@ public class Schedule {
             return value;
         }
 
+        /*Updates heuristic value after course is assigned.
+        * Params:
+        *   course - course that was assigned
+        *   index - index of day where exam was assigned*/
         public void updateHeuristic(Course course, int index){
             for (Pair<String, Integer> program: course.getPrograms()) {
                 ArrayList<Integer> days = specializationMapping.get(program);
@@ -100,13 +124,19 @@ public class Schedule {
             }
         }
     }
+
+    /*Params:
+    *   begin - first day of exams period
+    *   end - last day of exams period
+    *   occupied - days when impossible to schedule.
+    *       All Saturdays excluded from scheduling automatically, no need to worry about them*/
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied) throws IllegalRange {
         if (occupied == null){
-            occupied = new HashSet<LocalDate>();
+            occupied = new HashSet<>();
         }
         if (!end.isAfter(begin))
             throw new IllegalRange();
-        schedulable_days = new ArrayList<Day>();
+        schedulable_days = new ArrayList<>();
         LocalDate curr=begin;
         while (!curr.isAfter(end)) {
             if (!(curr.getDayOfWeek()==DayOfWeek.SATURDAY) && !(occupied.contains(curr)))
@@ -116,6 +146,12 @@ public class Schedule {
         this.heuristic = new ScheduleHeuristic();
     }
 
+    /*Constructor for moed B schedule.
+    * begin - first day of exams period
+    * end - last day of exams period
+    * occupied - days when impossible to schedule.
+    *     All Saturdays excluded from scheduling automatically, no need to worry about them*
+    * gap - number of days that should be between two exams for same course (moed A and moed B). By default: 20*/
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied, int gap) throws IllegalRange {
         this(begin, end, occupied);
         this.gap = gap;
@@ -129,13 +165,15 @@ public class Schedule {
         return schedulable_days;
     }
 
+    /*The function assigns course to day (in index of schedulable_days) and updates other days to know how much distance is between a day
+    * and the day, when the course exam is scheduled*/
     public void assignCourse(Course course, int index) {
         int course_id = course.getCourseID();
         (schedulable_days.get(index)).insertCourse(course_id,0);
         int days_before = -1*course.getDaysBefore();
         index = index + days_before;
         if (index < 0){
-            days_before += (-index);
+            days_before += (-index); //We are not interested in days before exam period
             index = 0;
         }
         while (index < schedulable_days.size()){
