@@ -190,7 +190,7 @@ public class Semester {
     }
 
     public void addConstraint(int courseId, Moed moed, LocalDate date, boolean forbidden)
-            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, DuplicateConstraints {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
@@ -204,7 +204,7 @@ public class Semester {
     }
 
     public void addConstraint(int courseId, Moed moed, LocalDate date)
-            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, DuplicateConstraints {
         addConstraint(courseId, moed, date, false);
     }
 

@@ -1,3 +1,3 @@
 package db.exception;
 
-public class CourseAlreadyExist extends Exception {}
+public class CourseAlreadyExist extends InvalidDatabase {}

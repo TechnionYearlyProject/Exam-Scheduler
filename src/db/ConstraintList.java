@@ -1,7 +1,6 @@
 package db;
 
-import db.exception.InvalidConstraint;
-import db.exception.OverlappingConstraints;
+import db.exception.DuplicateConstraints;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -13,20 +12,20 @@ public class ConstraintList {
         constraints = new HashMap<>();
     }
 
-    public void addConstraint(int courseId, LocalDate date, boolean forbidden) throws OverlappingConstraints {
+    public void addConstraint(int courseId, LocalDate date, boolean forbidden) throws DuplicateConstraints {
         if (!constraints.containsKey(courseId)) {
             constraints.put(courseId, new ArrayList<>());
         }
         for (Constraint constraint: constraints.get(courseId)) {
             if (date.isEqual(constraint.date)) {
-                throw new OverlappingConstraints();
+                throw new DuplicateConstraints();
             }
         }
         constraints.get(courseId).add(new Constraint(date, forbidden));
         Collections.sort(constraints.get(courseId)); // Ordered by start date
     }
 
-    public  void addConstraint(int courseId, LocalDate date) throws OverlappingConstraints {
+    public  void addConstraint(int courseId, LocalDate date) throws DuplicateConstraints {
         addConstraint(courseId, date, false);
     }
 

@@ -17,11 +17,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -97,7 +94,7 @@ public class Database {
                 Validator validator = schema.newValidator();
                 validators.put(path, validator);
             } catch (SAXException e) {
-                throw new InvalidDatabase( e.toString());
+                throw new InvalidDatabase(e.toString());
             }
         }
         return validators.get(path);
@@ -110,7 +107,7 @@ public class Database {
         try {
             v.validate(new StreamSource(XMLFile));
         } catch (SAXException e) {
-            throw new InvalidDatabase("Invalid XML file " + XMLFile.getName() + " :\n" + e.toString());
+            throw new InvalidXMLFile(e.toString());
         } catch (IOException e) {
             throw new InvalidDatabase(e.toString());
         }
@@ -123,7 +120,7 @@ public class Database {
         try {
             XMLTree = builder.parse(XMLFile);
         } catch (SAXException | IOException e) {
-            throw new InvalidDatabase( e.toString());
+            throw new InvalidDatabase(e.toString());
         }
         assert XMLTree != null;
         return XMLTree;
@@ -181,11 +178,7 @@ public class Database {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element program = (Element) n;
                 String programName = program.getTextContent();
-                try {
-                    semester.addStudyProgram(programName);
-                } catch (StudyProgramAlreadyExist e) {
-                    throw new InvalidDatabase("Duplicate study program in database: '" + programName + "'");
-                }
+                semester.addStudyProgram(programName);
             }
         }
     }
@@ -204,22 +197,14 @@ public class Database {
                 String name = courseElement.getElementsByTagName("course_name").item(0).getTextContent();
                 NodeList l = courseElement.getElementsByTagName("days_before");
                 if (l.getLength() == 0) {
-                    try {
-                        semester.addCourse(courseID, name, weight);
-                    } catch (CourseAlreadyExist e) {
-                        throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
-                    }
+                    semester.addCourse(courseID, name, weight);
                 } else {
                     int daysBefore = Integer.parseInt(l.item(0).getTextContent());
                     boolean isFirst = courseElement.getElementsByTagName("isFirst").getLength() == 1;
                     boolean isLast = courseElement.getElementsByTagName("isLast").getLength() == 1;
                     boolean isRequired = courseElement.getElementsByTagName("isRequired").getLength() == 1;
                     boolean hasExam = courseElement.getElementsByTagName("hasExam").getLength() == 1;
-                    try {
-                        semester.addCourse(courseID, name, weight, daysBefore, isFirst, isLast, isRequired, hasExam);
-                    } catch (CourseAlreadyExist e) {
-                        throw new InvalidDatabase("Duplicate course in database: '" + name + "'");
-                    }
+                    semester.addCourse(courseID, name, weight, daysBefore, isFirst, isLast, isRequired, hasExam);
                 }
                 NodeList programs = courseElement.getElementsByTagName("semester");
                 for (int j = 0; j < programs.getLength(); j++) {
@@ -228,13 +213,10 @@ public class Database {
                         Element programElement = (Element) m;
                         String program = programElement.getAttribute("program");
                         if (!programList.contains(program)) {
-                            throw new InvalidDatabase("Course '" + name +
-                                    "' contains unknown program study: '" + program + "'");
+                            throw new CourseUnknown();
                         }
                         int semesterNum = Integer.parseInt(programElement.getTextContent());
-                        try {
-                            semester.registerCourse(courseID, program, semesterNum);
-                        } catch (CourseUnknown | StudyProgramUnknown ignored) {} // should not happen
+                        semester.registerCourse(courseID, program, semesterNum);
                     }
                 }
             }
@@ -261,12 +243,8 @@ public class Database {
             LocalDate startDate = parseDate(startDateStr);
             LocalDate endDate = parseDate(endDateStr);
             if (startDate != null && endDate != null) {
-                try {
-                    semester.setStartDate(moed, startDate);
-                    semester.setEndDate(moed, endDate);
-                } catch (InvalidSchedule e) {
-                    throw new InvalidDatabase("Schedule '" + moed.str + "' end date is before start date");
-                }
+                semester.setStartDate(moed, startDate);
+                semester.setEndDate(moed, endDate);
             } else {
                 continue;
             }
@@ -276,25 +254,14 @@ public class Database {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     Element dayElement = (Element) n;
                     String dateStr = dayElement.getAttribute("date");
-                    LocalDate date = parseDate(dateStr);
-                    assert date != null;
+                    LocalDate date = LocalDate.parse(dateStr);
                     NodeList exams = dayElement.getElementsByTagName("exam");
                     for (int j = 0; j < exams.getLength(); j++) {
                         Node m = exams.item(j);
                         if (m.getNodeType() == Node.ELEMENT_NODE) {
                             Element examElement = (Element) m;
                             int courseId = Integer.parseInt(examElement.getTextContent());
-                            try {
-                                semester.scheduleCourse(courseId, moed, date);
-                            } catch (UninitializedSchedule e) {
-                                throw new InvalidDatabase("Start/End date missing in schedule " + moed.str);
-                            } catch (CourseUnknown e) {
-                                throw new InvalidDatabase("Schedule '" + moed.str + "' contain unknown course : '" +
-                                        courseId + "'");
-                            } catch (DateOutOfSchedule e) {
-                                throw new InvalidDatabase("Course '" + courseId + "' has invalid schedule date : '" +
-                                        dateStr + "' in schedule '" + moed.str + "'");
-                            }
+                            semester.scheduleCourse(courseId, moed, date);
                         }
                     }
                 }
@@ -319,20 +286,7 @@ public class Database {
                     String dateStr = constraintElement.getElementsByTagName("date").item(0).getTextContent();
                     boolean forbidden = constraintElement.getElementsByTagName("forbidden").getLength() == 1;
                     LocalDate date = parseDate(dateStr);
-                    try {
-                        semester.addConstraint(courseId, moed, date, forbidden);
-                    } catch (UninitializedSchedule e) {
-                        throw new InvalidDatabase("Start/End date missing in schedule " + moed.str);
-                    } catch (CourseUnknown e) {
-                        throw new InvalidDatabase("Constraint List '" + moed.str + "' contain unknown course : '" +
-                                courseId + "'");
-                    } catch (DateOutOfSchedule e) {
-                        throw new InvalidDatabase("Course '" + courseId + "' constraint is out of the schedule dates : '" +
-                                dateStr + "' in schedule '" + moed.str + "'");
-                    } catch (OverlappingConstraints e) {
-                        throw new InvalidDatabase("Course '" + courseId + "' has duplicate constraint : '" +
-                                dateStr + "' in schedule '" + moed.str + "'");
-                    }
+                    semester.addConstraint(courseId, moed, date, forbidden);
                 }
             }
         }
@@ -348,7 +302,7 @@ public class Database {
                 Element conflictList = (Element) n;
                 int courseId = Integer.parseInt(conflictList.getAttribute("course_id"));
                 if (!semester.courses.containsKey(courseId)) {
-                    throw new InvalidDatabase("Conflict list contains unknown course ID : " + courseId);
+                    throw new CourseUnknown();
                 }
                 if (!semester.conflicts.containsKey(courseId)) {
                     semester.conflicts.put(courseId, new HashSet<>());
@@ -360,7 +314,7 @@ public class Database {
                         Element conflictCourse = (Element) m;
                         int conflictCourseId = Integer.parseInt(conflictCourse.getTextContent());
                         if (!semester.courses.containsKey(conflictCourseId)) {
-                            throw new InvalidDatabase("Conflict list contains unknown course ID : " + courseId);
+                            throw new CourseUnknown();
                         }
                         semester.conflicts.get(courseId).add(conflictCourseId);
                     }
