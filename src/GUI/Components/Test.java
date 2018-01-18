@@ -41,7 +41,7 @@ public class Test extends Label{
         this.course = course;
         this.setTextFill(Paint.valueOf("white"));
         this.setText(course.getCourseName());
-        this.setPadding(new Insets(0,3,0,0));
+        this.setPadding(new Insets(0,3,0,3));
         this.setAlignment(Pos.CENTER_RIGHT);
         if(setTooltip){
             this.setPrefWidth(86);

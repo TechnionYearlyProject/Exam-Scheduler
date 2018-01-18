@@ -178,6 +178,11 @@ public class Toolbar extends HBox{
             wrapper.manager.A.picker2.disable();
             wrapper.manager.B.picker1.disable();
             wrapper.manager.B.picker2.disable();
+            for(Day current:wrapper.manager.A.schedule.days.values())
+                current.lock_label.setVisible(false);
+            for(Day current:wrapper.manager.B.schedule.days.values())
+                current.lock_label.setVisible(false);
+
         });
     }
 }

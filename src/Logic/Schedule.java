@@ -331,4 +331,20 @@ public class Schedule {
         }
         return null;
     }
+
+    public int daysBetween(LocalDate date1, LocalDate date2) {
+        int index1 = -1;
+        int index2 = -1;
+        int index = 0;
+        for (Day day:schedulable_days) {
+            if (day.date.isEqual(date1))
+                index1=index;
+            if (day.date.isEqual(date2))
+                index2=index;
+            index++;
+        }
+        if (index1<index2)
+            return index2-index1;
+        return index1-index2;
+    }
 }

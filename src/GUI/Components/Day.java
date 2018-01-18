@@ -1,5 +1,7 @@
 package GUI.Components;
 import Logic.Course;
+import db.Constraint;
+import db.ConstraintList;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,6 +17,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Day extends VBox{
     static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
@@ -90,11 +95,54 @@ public class Day extends VBox{
                                 return;
                             }
                     }
-                    Day old_day =schedule.days.get(old_date);
+                    Day old_day = schedule.days.get(old_date);
                     old_day.removeCourse(course);
                     course_id = course.getCourseID();
                 } else
                     course_id = Integer.parseInt(db.getString());
+
+                Course curr_course = schedule.moed.manager.courseloader.getCourse(course_id);
+                if (!schedule.moed.manager.been_scheduled) {
+                    ConstraintList cl = null;
+                    Logic.Schedule temp_schedule = null;
+                    if (schedule.moed.moedType == Moed.MoedType.A) {
+                        cl = schedule.moed.manager.constraintlistA;
+                        try {
+                            temp_schedule = new Logic.Schedule(schedule.start, schedule.finish, schedule.moed.manager.occupiedA);
+                        } catch (Exception e) {}
+                    }
+                    else {
+                        cl = schedule.moed.manager.constraintlistB;
+                        try {
+                            temp_schedule = new Logic.Schedule(schedule.start, schedule.finish, schedule.moed.manager.occupiedB);
+                        } catch (Exception e) {}
+                    }
+                    for (Map.Entry<Integer, List<Constraint>> curr_map : cl.constraints.entrySet()) {
+                        if (curr_course.getConflictCourses().containsKey(curr_map.getKey())) {
+                            for (Constraint curr_cons : curr_map.getValue()) {
+                                if (curr_cons.forbidden)
+                                    continue;
+                                LocalDate date1 = date;
+                                LocalDate date2 = curr_cons.date;
+                                Course course1 = curr_course;
+                                Course course2 = schedule.moed.manager.courseloader.getCourse(curr_map.getKey());
+                                if (date1.isAfter(date2)) {
+                                    LocalDate date_temp = date1;
+                                    Course course_temp = course1;
+                                    date1 = date2;
+                                    course1 = course2;
+                                    date2 = date_temp;
+                                    course2 = course_temp;
+                                }
+                                int between = temp_schedule.daysBetween(date1, date2);
+                                if (between == 0 || course2.getDaysBefore() > between) {
+                                    new AlertBox(AlertType.INFO, "מועדי הבחינות שקבעת לא מקיימים את ימי הלמידה שהוגדרו.", null);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (schedule.moed.moedType == Moed.MoedType.A) {
                     if (schedule.moed.manager.constraintlistA.getConstraints(course_id) != null) {
                         if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
@@ -126,7 +174,7 @@ public class Day extends VBox{
         });
     }
     private void Block() {
-        if(blockingAllowed) {
+        if(!schedule.moed.manager.been_scheduled) {
             schedule.moed.manager.blockDay(date);
             this.setStyle("-fx-background-color: #ECEFF1");
             tests.setStyle("-fx-background-color: #ECEFF1");
