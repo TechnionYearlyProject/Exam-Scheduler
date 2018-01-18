@@ -314,7 +314,7 @@ public class Database {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     Element constraintElement = (Element) n;
                     int courseId = Integer.parseInt(constraintElement.getElementsByTagName("course_id").item(0).getTextContent());
-                    String dateStr = constraintElement.getElementsByTagName("start_date").item(0).getTextContent();
+                    String dateStr = constraintElement.getElementsByTagName("date").item(0).getTextContent();
                     boolean forbidden = constraintElement.getElementsByTagName("forbidden").getLength() == 1;
                     LocalDate date = parseDate(dateStr);
                     try {

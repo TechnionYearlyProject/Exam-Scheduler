@@ -19,9 +19,8 @@ public class ConstraintList {
         }
         for (Constraint constraint: constraints.get(courseId)) {
             if (date.isEqual(constraint.date)) {
-                continue;
+                throw new OverlappingConstraints();
             }
-            throw new OverlappingConstraints();
         }
         constraints.get(courseId).add(new Constraint(date, forbidden));
         Collections.sort(constraints.get(courseId)); // Ordered by start date

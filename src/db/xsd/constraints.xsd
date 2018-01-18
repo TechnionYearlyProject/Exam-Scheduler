@@ -7,8 +7,7 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="course_id" type="xs:integer"/>
-                            <xs:element name="start_date" type="xs:date"/>
-                            <xs:element name="end_date" type="xs:date"/>
+                            <xs:element name="date" type="xs:date"/>
                             <xs:element name="forbidden" minOccurs="0">
                                 <xs:complexType/>
                             </xs:element>
