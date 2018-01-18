@@ -49,7 +49,7 @@ public class ConstraintList {
 
     public List<Constraint> getConstraints(int courseId) {
         if (!constraints.containsKey(courseId)) {
-            return null;
+            return new ArrayList<Constraint>();
         }
         List<Constraint> list = new ArrayList<>();
         for (Constraint constraint: constraints.get(courseId)) {
