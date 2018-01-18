@@ -95,4 +95,14 @@ public class Schedule extends GridPane{
         }
 
     }
+
+    public void removeTest(Integer CourseID) {
+        Day day_to_remove = null;
+        for (Day day: days.values())
+            for (Test test:day.testList)
+                if (test.course.getCourseID().equals(CourseID))
+                    day_to_remove = day;
+        if (day_to_remove != null)
+            day_to_remove.removeTest(CourseID);
+    }
 }

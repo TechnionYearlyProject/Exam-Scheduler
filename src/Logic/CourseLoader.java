@@ -1,9 +1,7 @@
 package Logic;
-
 import db.*;
 import db.Course;
 import javafx.util.Pair;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,4 +92,14 @@ public class CourseLoader {
         }
         Collections.sort(sortedCoursesList);
     }
+
+    public void removeCourseCompletely(Integer courseID) {
+        for (Logic.Course other_course:courses.values()) {
+            other_course.removeConflictCourse(courseID);
+        }
+        courses.remove(courseID);
+        dbCourses.remove(courseID);
+        sortCourses();
+    }
+
 }
