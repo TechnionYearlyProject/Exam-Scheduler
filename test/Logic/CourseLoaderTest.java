@@ -1,11 +1,11 @@
 package Logic;
 
+import db.*;
 import db.Course;
-import db.Database;
-import db.Semester;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,4 +44,21 @@ public class CourseLoaderTest {
         }
     }
 
+    @Test
+    public void constraintsAssignedCorrectTest(){
+        ConstraintList cl = new ConstraintList();
+        cl.constraints = semester.getConstraintLists(Semester.Moed.MOED_A);
+        loader = new CourseLoader(semester, cl);
+        List<Logic.Course> courses = loader.getSortedCourses();
+        for (Logic.Course course: courses){
+            List<Constraint> constraints= cl.getConstraints(course.getCourseID());
+            if (constraints == null || constraints.size() == 0){
+                continue;
+            }
+            List<Constraint> constraintsInCourse = course.getConstraints();
+            for (Constraint constraint: constraints){
+                assert (constraintsInCourse.contains(constraint));
+            }
+        }
+    }
 }

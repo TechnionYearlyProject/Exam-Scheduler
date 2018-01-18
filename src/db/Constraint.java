@@ -27,4 +27,9 @@ public class Constraint implements Comparable<Constraint>{
         }
         return 0;
     }
+
+    @Override
+    public boolean equals(Object o){
+        return this.date.equals(((Constraint)o).date);
+    }
 }
