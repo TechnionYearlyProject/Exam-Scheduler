@@ -1,5 +1,7 @@
 package GUI.Components;
 import Logic.Course;
+import Logic.Exceptions.IllegalDaysBefore;
+import Logic.Exceptions.IllegalRange;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -21,7 +23,7 @@ public class CoursesTable extends VBox{
     private TableColumn<Item,String> study;
     private TableColumn<Item,CheckBox> pref;
     private TableColumn<Item,Label> connections;
-    private TableView<Item> table;
+    TableView<Item> table;
     private FilteredList<Item> filteredList;
     Manager manager;
     private boolean scheduled;
@@ -47,9 +49,12 @@ public class CoursesTable extends VBox{
         study.setCellFactory(TextFieldTableCell.forTableColumn());
         study.setOnEditCommit(event -> {
             try {
-                event.getRowValue().setStudy(event.getNewValue());
                 manager.courseloader.getCourse(event.getRowValue().getCourseID()).setDaysBefore(Integer.parseInt(event.getNewValue()));
-            } catch (Exception e) {}
+                event.getRowValue().setStudy(event.getNewValue());
+            } catch (IllegalDaysBefore e) {
+                new AlertBox(AlertType.ERROR,"מספר ימי הלמידה שהוזן אינו חוקי.",null);
+                table.refresh();
+            }
         });
         pref = new TableColumn<>("העדפת שיבוץ");
         pref.setCellValueFactory(new PropertyValueFactory<>("pref"));

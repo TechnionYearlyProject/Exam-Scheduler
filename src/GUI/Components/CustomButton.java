@@ -1,6 +1,4 @@
 package GUI.Components;
-
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -10,9 +8,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-
-import java.util.function.Function;
-
 
 public class CustomButton extends HBox {
     private Runnable function;

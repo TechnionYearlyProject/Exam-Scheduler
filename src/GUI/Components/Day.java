@@ -1,7 +1,9 @@
 package GUI.Components;
 import Logic.Course;
+import Logic.Exceptions.IllegalRange;
 import db.Constraint;
 import db.ConstraintList;
+import db.exception.OverlappingConstraints;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,8 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Day extends VBox{
     static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
@@ -109,13 +109,13 @@ public class Day extends VBox{
                         cl = schedule.moed.manager.constraintlistA;
                         try {
                             temp_schedule = new Logic.Schedule(schedule.start, schedule.finish, schedule.moed.manager.occupiedA);
-                        } catch (Exception e) {}
+                        } catch (IllegalRange e) {}
                     }
                     else {
                         cl = schedule.moed.manager.constraintlistB;
                         try {
                             temp_schedule = new Logic.Schedule(schedule.start, schedule.finish, schedule.moed.manager.occupiedB);
-                        } catch (Exception e) {}
+                        } catch (IllegalRange e) {}
                     }
                     for (Map.Entry<Integer, List<Constraint>> curr_map : cl.constraints.entrySet()) {
                         if (curr_course.getConflictCourses().containsKey(curr_map.getKey())) {
@@ -151,7 +151,7 @@ public class Day extends VBox{
                     }
                 try {
                         schedule.moed.manager.constraintlistA.addConstraint(course_id, date);
-                    } catch (Exception e) {}
+                    } catch (OverlappingConstraints e) {}
 
                 } else {
                     if (schedule.moed.manager.constraintlistB.getConstraints(course_id) != null) {
@@ -161,7 +161,7 @@ public class Day extends VBox{
                     }
                     try {
                         schedule.moed.manager.constraintlistB.addConstraint(course_id, date);
-                    } catch (Exception e) {}
+                    } catch (OverlappingConstraints e) {}
                 }
                 this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
             }
@@ -230,17 +230,10 @@ public class Day extends VBox{
             if (test.course.getCourseID().equals(course.getCourseID())) {
                 testList.remove(i);
                 tests.getChildren().remove(i);
-                if (schedule.moed.moedType == Moed.MoedType.A) {
-                    try {
-                        schedule.moed.manager.constraintlistA.removeConstraint(course.getCourseID(), date);
-                    } catch (Exception e) { }
-                }
+                if (schedule.moed.moedType == Moed.MoedType.A)
+                    schedule.moed.manager.constraintlistA.removeConstraint(course.getCourseID(), date);
                 else
-                {
-                    try {
-                        schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), date);
-                    } catch (Exception e) { }
-                }
+                    schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), date);
                 break;
             }
             i+=1;

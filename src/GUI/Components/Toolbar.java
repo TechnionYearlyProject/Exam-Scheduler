@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -75,7 +74,7 @@ public class Toolbar extends HBox{
         try {
             Desktop.getDesktop().open(file);
         } catch (Exception e){
-            System.out.print(e);
+            new AlertBox(AlertType.ERROR,"שגיאה בפתיחת הקובץ.",null);
         }
     }
 
@@ -182,7 +181,6 @@ public class Toolbar extends HBox{
                 current.lock_label.setVisible(false);
             for(Day current:wrapper.manager.B.schedule.days.values())
                 current.lock_label.setVisible(false);
-
         });
     }
 }

@@ -1,6 +1,5 @@
 package GUI.Components;
 import Logic.CourseLoader;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
