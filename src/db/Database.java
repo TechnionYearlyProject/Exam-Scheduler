@@ -594,7 +594,8 @@ public class Database {
             }
             for (Course course: courses) {
                 try {
-                    semester.addCourse(course.courseID, course.courseName, course.creditPoints);
+                    semester.addCourse(course.courseID, course.courseName, course.creditPoints, course.daysBefore,
+                            course.isFirst, course.isLast, course.isRequired, course.hasExam);
                     for (String program: programs) {
                         int programSemester = course.getStudyProgramSemester(program);
                         try {
@@ -612,7 +613,10 @@ public class Database {
 
     private Semester loadSemester(String directory) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         String[] dirSplit = directory.split("_");
-        return loadSemester(Integer.parseInt(dirSplit[0]), dirSplit[1]);
+        int year = Integer.parseInt(dirSplit[0]);
+        dirSplit = Arrays.copyOfRange(dirSplit, 1, dirSplit.length);
+        String semester = String.join("_", dirSplit);
+        return loadSemester(year, semester);
     }
 
     public Semester loadSemester(int year, String sem) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
