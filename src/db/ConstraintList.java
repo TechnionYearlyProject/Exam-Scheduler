@@ -47,6 +47,10 @@ public class ConstraintList {
         }
     }
 
+    public void removeConstraint(Integer courseID) {
+        constraints.remove(courseID);
+    }
+
     public List<Constraint> getConstraints(int courseId) {
         if (!constraints.containsKey(courseId)) {
             return new ArrayList<Constraint>();

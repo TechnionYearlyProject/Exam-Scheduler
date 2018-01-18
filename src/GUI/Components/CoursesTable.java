@@ -67,6 +67,8 @@ public class CoursesTable extends VBox{
         table.setRowFactory(tv -> {
             TableRow<Item> row = new TableRow<>();
             row.setOnDragDetected(event -> {
+                if (row.getItem() == null)
+                    return;
                 if(!scheduled) {
                     if (take.getCellData(row.getIndex()).isSelected()) {
                         Dragboard db = row.startDragAndDrop(TransferMode.ANY);
@@ -127,6 +129,8 @@ public class CoursesTable extends VBox{
         this.getChildren().addAll(filterInput,table,hbox);
     }
     private void hover(Moed moed, boolean brighten, TableRow<Item> row){
+        if (row.getItem() == null)
+            return;
         if (manager.been_scheduled) {
             String courseNum = (name.getCellData(row.getIndex())).split(" - ")[0];
             for (Day day : moed.schedule.days.values()) {
@@ -152,10 +156,14 @@ public class CoursesTable extends VBox{
 
     private void removeFunction() {
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
-        new AlertBox(AlertType.CONFIRM,"האם אתה בטוח שברצונך למחוק את קורס מספר " + courseID.toString() + "?", () -> {
-            manager.courseloader.getCourses().remove(courseID);
+        new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " + courseID.toString() + "?", () -> {
+            manager.A.schedule.removeTest(courseID);
+            manager.B.schedule.removeTest(courseID);
+            manager.constraintlistA.removeConstraint(courseID);
+            manager.constraintlistB.removeConstraint(courseID);
+            manager.courseloader.removeCourseCompletely(courseID);
             Item to_remove = null;
-            for (Item item:items) {
+            for (Item item : items) {
                 if (item.getCourseID().equals(courseID)) {
                     to_remove = item;
                     break;
@@ -164,6 +172,7 @@ public class CoursesTable extends VBox{
             items.remove(to_remove);
         });
     }
+
 
     private void AddFunction() {
         new AddCourse(this);

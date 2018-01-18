@@ -107,7 +107,7 @@ public class Day extends VBox{
 
                 } else {
                     if (schedule.moed.manager.constraintlistB.getConstraints(course_id) != null) {
-                        if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
+                        if (schedule.moed.manager.constraintlistB.getConstraints(course_id).size() != 0) {
                             return;
                         }
                     }
@@ -193,6 +193,19 @@ public class Day extends VBox{
                         schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), date);
                     } catch (Exception e) { }
                 }
+                break;
+            }
+            i+=1;
+        }
+    }
+
+    public void removeTest(Integer courseID) {
+        List<Test> temp = new ArrayList<>(testList);
+        int i=0;
+        for (Test test:temp) {
+            if (test.course.getCourseID().equals(courseID)) {
+                testList.remove(i);
+                tests.getChildren().remove(i);
                 break;
             }
             i+=1;
