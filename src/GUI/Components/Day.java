@@ -85,12 +85,12 @@ public class Day extends VBox{
                     }
                     if (schedule.moed.manager.been_scheduled) {
                         if (schedule.moed.moedType == Moed.MoedType.A)
-                            if (!schedule.moed.manager.scheduleA.isMovePossible(course, date)) {
+                            if (!schedule.moed.manager.scheduleA.isMovePossible(course, date,schedule.moed.manager.courseloader)) {
                                 new AlertBox(AlertType.ERROR, "השיבוץ שניסית לבצע לא מקיים את ההגבלות שהגדרת", null);
                                 return;
                             }
                         if (schedule.moed.moedType == Moed.MoedType.B)
-                            if (!schedule.moed.manager.scheduleB.isMovePossible(course, date)) {
+                            if (!schedule.moed.manager.scheduleB.isMovePossible(course, date,schedule.moed.manager.courseloader)) {
                                 new AlertBox(AlertType.ERROR, "השיבוץ שניסית לבצע לא מקיים את ההגבלות שהגדרת", null);
                                 return;
                             }

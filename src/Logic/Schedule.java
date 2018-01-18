@@ -294,7 +294,7 @@ public class Schedule {
         }
     }
 
-    public Boolean isMovePossible(Course course, LocalDate new_date) {
+    public Boolean isMovePossible(Course course, LocalDate new_date, CourseLoader courseLoader) {
         Integer days_before = course.getDaysBefore();
         Integer index = 0;
         Set<Integer> other_courses = null;
@@ -311,10 +311,11 @@ public class Schedule {
             Integer other_days_before = day.courses.get(other_course);
             if (other_days_before <= 0) {
                 if (course.getConflictCourses().get(other_course) != null)
-                    return false;
+                    if (courseLoader.getCourse(other_course).getDaysBefore() != (-1*other_days_before))
+                        return false;
             }
             else {
-                if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<=days_before))
+                if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<days_before))
                     return false;
             }
         }
