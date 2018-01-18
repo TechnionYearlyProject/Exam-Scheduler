@@ -152,15 +152,17 @@ public class CoursesTable extends VBox{
 
     private void removeFunction() {
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
-        manager.courseloader.getCourses().remove(courseID);
-        Item to_remove = null;
-        for (Item item:items) {
-            if (item.getCourseID().equals(courseID)) {
-                to_remove = item;
-                break;
+        new AlertBox(AlertType.CONFIRM,"האם אתה בטוח שברצונך למחוק את קורס מספר " + courseID.toString() + "?", () -> {
+            manager.courseloader.getCourses().remove(courseID);
+            Item to_remove = null;
+            for (Item item:items) {
+                if (item.getCourseID().equals(courseID)) {
+                    to_remove = item;
+                    break;
+                }
             }
-        }
-        items.remove(to_remove);
+            items.remove(to_remove);
+        });
     }
 
     private void AddFunction() {
