@@ -15,10 +15,10 @@ public class Course {
     public int courseID;
     public String courseName;
     public double creditPoints;
-    int daysBefore;
+    public int daysBefore;
     public boolean isRequired, hasExam;
-    boolean isLast, isFirst;
-    Map<String, Integer> programs;
+    public boolean isLast, isFirst;
+    public Map<String, Integer> programs;
 
     public Course(int courseID, String courseName, double creditPoints, int daysBefore, boolean isFirst, boolean isLast,
                   boolean isRequired, boolean hasExam) {
