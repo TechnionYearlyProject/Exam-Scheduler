@@ -84,7 +84,7 @@ public class CourseLoader {
         return this.sortedCoursesList;
     }
 
-    private void sortCourses(){
+    public void sortCourses(){
         sortedCoursesList = new ArrayList<>();
         for (Map.Entry<Integer, Logic.Course> entry: courses.entrySet()) {
             sortedCoursesList.add(new Logic.Course(entry.getValue()));
