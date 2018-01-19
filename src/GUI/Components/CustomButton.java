@@ -18,7 +18,7 @@ import javafx.scene.text.Text;
 public class CustomButton extends HBox {
     private Runnable function;
     private boolean isCircle;
-    public CustomButton(String title, String url, Runnable func, int height, int width) {
+    CustomButton(String title, String url, Runnable func, int height, int width) {
         function = func;
         Text text = new Text(title);
         text.setFill(Color.WHITE);
@@ -51,10 +51,6 @@ public class CustomButton extends HBox {
     public void setCircular(){
         this.setStyle("-fx-background-radius: 6 6 6 6;  -fx-background-color: #607D8B");
         isCircle = true;
-    }
-    public void setRectangle(){
-        this.setStyle("-fx-background-color: #607D8B");
-        isCircle = false;
     }
     private void ChangeBackground (String color)
     {

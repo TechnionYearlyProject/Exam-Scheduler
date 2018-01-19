@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
 
 public class Picker extends HBox{
     LocalDate date;
-    DatePicker picker;
-    public Picker(String title) {
+    private DatePicker picker;
+    Picker(String title) {
         this.setAlignment(Pos.TOP_RIGHT);
         Label label = new Label(title);
         label.setPrefWidth(140);

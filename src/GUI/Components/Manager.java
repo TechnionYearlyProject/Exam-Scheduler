@@ -29,14 +29,14 @@ public class Manager extends HBox {
     LocalDate Aend;
     LocalDate Bstart;
     LocalDate Bend;
-    Boolean picker_error;
+    private Boolean picker_error;
     Boolean been_scheduled;
-    Wrapper wrapper;
+    private Wrapper wrapper;
     Integer semesterYear;
     String semesterName;
     Logic.Schedule scheduleA;
     Logic.Schedule scheduleB;
-    public Manager(Wrapper parent) {
+    Manager(Wrapper parent) {
         try {
             db = new Database();
             semesterYear = 2017;
@@ -45,8 +45,8 @@ public class Manager extends HBox {
             courseloader = new CourseLoader(semester,null);
             constraintlistA = new ConstraintList();
             constraintlistB = new ConstraintList();
-            occupiedA = new HashSet<LocalDate>();
-            occupiedB = new HashSet<LocalDate>();
+            occupiedA = new HashSet<>();
+            occupiedB = new HashSet<>();
         }
         catch (Exception e) {
             new AlertBox(AlertType.ERROR,"שגיאה בקריאה ממסד הנתונים. התוכנית תיסגר.",null,true);
@@ -66,7 +66,7 @@ public class Manager extends HBox {
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(20);
         A.picker1.getPicker().setOnAction(event -> {
-            if (picker_error == false)
+            if (!picker_error)
                 return;
             LocalDate curr = A.picker1.getPicker().getValue();
             if (datesOkay(curr,Aend,Bstart,Bend)) {
@@ -83,7 +83,7 @@ public class Manager extends HBox {
             }
         });
         A.picker2.getPicker().setOnAction(event -> {
-            if (picker_error == false)
+            if (!picker_error)
                 return;
             LocalDate curr = A.picker2.getPicker().getValue();
             if (datesOkay(Astart,curr,Bstart,Bend)) {
@@ -100,7 +100,7 @@ public class Manager extends HBox {
             }
         });
         B.picker1.getPicker().setOnAction(event -> {
-            if (picker_error == false)
+            if (!picker_error)
                 return;
             LocalDate curr = B.picker1.getPicker().getValue();
             if (datesOkay(Astart,Aend,curr,Bend)) {
@@ -117,7 +117,7 @@ public class Manager extends HBox {
             }
         });
         B.picker2.getPicker().setOnAction(event -> {
-            if (picker_error == false)
+            if (!picker_error)
                 return;
             LocalDate curr = B.picker2.getPicker().getValue();
             if (datesOkay(Astart,Aend,Bstart,curr)) {
@@ -147,8 +147,8 @@ public class Manager extends HBox {
         B.cleanData(Bstart, Bend);
         constraintlistA = new ConstraintList();
         constraintlistB = new ConstraintList();
-        occupiedA = new HashSet<LocalDate>();
-        occupiedB = new HashSet<LocalDate>();
+        occupiedA = new HashSet<>();
+        occupiedB = new HashSet<>();
         wrapper.manager.coursetable.setScheduled(false);
         A.picker1.enable();
         A.picker2.enable();
@@ -156,7 +156,7 @@ public class Manager extends HBox {
         B.picker2.enable();
     }
 
-    public boolean datesOkay(LocalDate Astart,LocalDate Aend, LocalDate Bstart, LocalDate Bend) {
+    private boolean datesOkay(LocalDate Astart, LocalDate Aend, LocalDate Bstart, LocalDate Bend) {
         return ((Astart.isBefore(Aend))&&(Aend.isBefore(Bstart))&&(Bstart.isBefore(Bend)));
     }
 

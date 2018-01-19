@@ -28,15 +28,14 @@ import java.util.Map;
  * date and the tests taking place.
  */
 public class Day extends VBox{
-    static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
+    private static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
     HBox hbox;
     Label lock_label;
     Label label;
-    VBox tests;
-    Boolean isBlocked;
+    private VBox tests;
+    private Boolean isBlocked;
     Schedule schedule;
     LocalDate date;
-    boolean blockingAllowed;
     List<Test> testList = new ArrayList<>();
 
     /**
@@ -116,7 +115,7 @@ public class Day extends VBox{
 
                 Course curr_course = schedule.moed.manager.courseloader.getCourse(course_id);
                 if (!schedule.moed.manager.been_scheduled) {
-                    ConstraintList cl = null;
+                    ConstraintList cl;
                     Logic.Schedule temp_schedule = null;
                     if (schedule.moed.moedType == Moed.MoedType.A) {
                         cl = schedule.moed.manager.constraintlistA;
@@ -147,6 +146,7 @@ public class Day extends VBox{
                                     date2 = date_temp;
                                     course2 = course_temp;
                                 }
+                                assert temp_schedule != null;
                                 int between = temp_schedule.daysBetween(date1, date2);
                                 if (between == 0 || course2.getDaysBefore() > between) {
                                     new AlertBox(AlertType.INFO, "מועדי הבחינות שקבעת לא מקיימים את ימי הלמידה שהוגדרו.", null);
@@ -228,17 +228,11 @@ public class Day extends VBox{
     }
 
     public void disableBlocking(){
-        blockingAllowed = false;
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(false));
     }
 
     public void enableBlocking(){
-        blockingAllowed = true;
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
-    }
-
-    public VBox getTests() {
-        return tests;
     }
 
     public void addTest(Course course) {

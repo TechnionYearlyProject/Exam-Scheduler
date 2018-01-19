@@ -1,3 +1,5 @@
+
+
 package GUI.Components;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
@@ -18,13 +20,13 @@ import javafx.scene.input.MouseEvent;
  */
 
 public class Item {
-    CheckBox take;
+    private CheckBox take;
     String name;
-    SimpleStringProperty study;
-    ChoiceBox<String> pref;
-    Label connections;
+    private SimpleStringProperty study;
+    private ChoiceBox<String> pref;
+    private Label connections;
     Manager manager;
-    public Item(Manager parent, Logic.Course course) {
+    Item(Manager parent, Logic.Course course) {
         manager = parent;
         take = new CheckBox();
         take.setSelected(course.hasExam());
@@ -44,23 +46,27 @@ public class Item {
             manager.B.schedule.removeTest(course.getCourseID());
         });
         name = String.format("%06d",course.getCourseID()) + " - " + course.getCourseName();
-        study = new SimpleStringProperty(new Integer(course.getDaysBefore()).toString());
-        pref = new ChoiceBox<String>();
+        study = new SimpleStringProperty(Integer.toString(course.getDaysBefore()));
+        pref = new ChoiceBox<>();
         pref.getItems().addAll("אוטומטי","סוף תקופה","תחילת תקופה");
         if (course.isFirst())
             pref.setValue("תחילת תקופה");
         else if (course.isLast())
-                pref.setValue("סוף תקופה");
+            pref.setValue("סוף תקופה");
         else
             pref.setValue("אוטומטי");
         pref.setOnAction(event -> {
-            if (pref.getValue() == "תחילת תקופה")
-                course.setAsFirst(true);
-            else if (pref.getValue() == "סוף תקופה")
+            switch (pref.getValue()) {
+                case "תחילת תקופה":
+                    course.setAsFirst(true);
+                    break;
+                case "סוף תקופה":
                     course.setAsLast(true);
-            else {
-                course.setAsFirst(false);
-                course.setAsLast(false);
+                    break;
+                default:
+                    course.setAsFirst(false);
+                    course.setAsLast(false);
+                    break;
             }
         });
         pref.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
@@ -70,7 +76,7 @@ public class Item {
         connections.addEventFilter(MouseEvent.MOUSE_CLICKED, mouse_event -> {
             if (mouse_event.getButton()!= MouseButton.PRIMARY)
                 return;
-            AddConnection connections = new AddConnection(manager,course.getCourseID());
+            new AddConnection(manager,course.getCourseID());
         });
     }
     public String getName() {

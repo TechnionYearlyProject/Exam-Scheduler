@@ -13,8 +13,6 @@ public class Moed extends VBox{
     public Schedule schedule;
     Picker picker1;
     Picker picker2;
-    Boolean start_set;
-    Boolean end_set;
     Manager manager;
     enum MoedType {
         A,B
@@ -30,15 +28,13 @@ public class Moed extends VBox{
      * @param end end date of moed
      */
     public Moed(Manager parent, String title,LocalDate start, LocalDate end) {
-        if (title == "מועד א'")
+        if (title.equals("מועד א'"))
             moedType = MoedType.A;
         else
             moedType = MoedType.B;
         manager = parent;
         this.setAlignment(Pos.TOP_RIGHT);
         this.setSpacing(10);
-        start_set = false;
-        end_set = false;
         Label label = new Label(title);
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 14pt; -fx-underline: true;");
         picker1 = new Picker("תאריך התחלה:");
