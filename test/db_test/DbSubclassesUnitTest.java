@@ -4,14 +4,16 @@ import db.Constraint;
 import db.ConstraintList;
 import db.Course;
 import Logic.Exceptions.IllegalDaysBefore;
+import db.Schedule;
+import db.exception.DateOutOfSchedule;
 import db.exception.DuplicateConstraints;
+import db.exception.InvalidSchedule;
+import db.exception.UninitializedSchedule;
 import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 public class DbSubclassesUnitTest {
 
@@ -45,6 +47,59 @@ public class DbSubclassesUnitTest {
         Course course = new Course(101, "Edmond Dantes", 5.0, 4,
                 false, false, true, true);
         course.setDaysBefore(-1);
+    }
+
+    @Test
+    public void ScheduleUnitTest() throws InvalidSchedule, DateOutOfSchedule, UninitializedSchedule {
+        Schedule schedule = new Schedule();
+        assertTrue(schedule.undefinedStartOrEnd());
+        schedule.setStartDate(LocalDate.parse("2015-01-01"));
+        assertTrue(schedule.undefinedStartOrEnd());
+        schedule.setEndDate(LocalDate.parse("2015-02-01"));
+        assertFalse(schedule.undefinedStartOrEnd());
+
+        schedule.scheduleCourse(1, LocalDate.parse("2015-01-01"));
+        schedule.scheduleCourse(2, LocalDate.parse("2015-01-10"));
+        schedule.scheduleCourse(3, LocalDate.parse("2015-01-20"));
+        schedule.scheduleCourse(4, LocalDate.parse("2015-01-20"));
+        assertEquals(LocalDate.parse("2015-01-10"), schedule.getCourseSchedule(2));
+        assertEquals(LocalDate.parse("2015-01-20"), schedule.getCourseSchedule(4));
+        assertNull(schedule.getCourseSchedule(5));
+
+        // No throw
+        schedule.scheduleCourse(2, LocalDate.parse("2015-01-10"));
+        schedule.scheduleCourse(3, LocalDate.parse("2015-01-20"));
+        schedule.scheduleCourse(4, LocalDate.parse("2015-01-20"));
+
+        schedule.unscheduleCourse(4);
+        assertNull(schedule.getCourseSchedule(4));
+
+        schedule.setStartDate(LocalDate.parse("2015-01-05"));
+        schedule.setEndDate(LocalDate.parse("2015-01-15"));
+        assertNull(schedule.getCourseSchedule(1));
+        assertNull(schedule.getCourseSchedule(3));
+    }
+
+    @Test(expected = UninitializedSchedule.class)
+    public void scheduleWhileUninitialized() throws DateOutOfSchedule, UninitializedSchedule {
+        Schedule schedule = new Schedule();
+        schedule.scheduleCourse(1, LocalDate.parse("2015-01-10"));
+    }
+
+    @Test(expected = DateOutOfSchedule.class)
+    public void examBeforeSchedule() throws DateOutOfSchedule, UninitializedSchedule, InvalidSchedule {
+        Schedule schedule = new Schedule();
+        schedule.setStartDate(LocalDate.parse("2015-01-01"));
+        schedule.setEndDate(LocalDate.parse("2015-02-01"));
+        schedule.scheduleCourse(1, LocalDate.parse("2011-01-01"));
+    }
+
+    @Test(expected = DateOutOfSchedule.class)
+    public void examAfterSchedule() throws DateOutOfSchedule, UninitializedSchedule, InvalidSchedule {
+        Schedule schedule = new Schedule();
+        schedule.setStartDate(LocalDate.parse("2015-01-01"));
+        schedule.setEndDate(LocalDate.parse("2015-02-01"));
+        schedule.scheduleCourse(1, LocalDate.parse("2017-01-01"));
     }
 
     @Test

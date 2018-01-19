@@ -5,6 +5,12 @@ import Logic.Exceptions.IllegalDaysBefore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class represent a course of the faculty and contain all the parameters available to
+ * the user to configure the schedule.
+ * @author Rephael Azoulay
+ * @date 19/01/2018
+ */
 public class Course {
     public int courseID;
     public String courseName;

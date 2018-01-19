@@ -1,9 +1,9 @@
 package GUI.Components;
+import Logic.CourseLoader;
 import Logic.Exceptions.IllegalRange;
 import Logic.Schedule;
 import Output.CSVFileWriter;
 import Output.CalendarFileWriter;
-import Output.Exceptions.ErrorOpeningFile;
 import Output.IFileWriter;
 import Output.XMLFileWriter;
 import db.Semester;
@@ -203,9 +203,11 @@ public class Toolbar extends HBox{
                 new AlertBox(AlertType.ERROR, "טווח התאריכים אינו חוקי", null);
                 return;
             }
+            CourseLoader temp = new CourseLoader(wrapper.manager.courseloader);
+            temp.removeNoTests();
             try {
-                wrapper.manager.scheduleA.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistA, null);
-                wrapper.manager.scheduleB.produceSchedule(wrapper.manager.courseloader, wrapper.manager.constraintlistB, wrapper.manager.scheduleA);
+                wrapper.manager.scheduleA.produceSchedule(temp, wrapper.manager.constraintlistA, null);
+                wrapper.manager.scheduleB.produceSchedule(temp, wrapper.manager.constraintlistB, wrapper.manager.scheduleA);
             } catch (Logic.Schedule.CanNotBeScheduledException e) {
                 new AlertBox(AlertType.ERROR, "השיבוץ נכשל. נסו להסיר העדפות " +
                         "או להגדיל את טווח התאריכים.", null);

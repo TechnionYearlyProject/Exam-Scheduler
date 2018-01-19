@@ -7,6 +7,12 @@ import db.exception.UninitializedSchedule;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * This class represent the output of the scheduling algorithm. It ensure no course has
+ * duplicate exam date, and that exams aren't schedule outside of exam period.
+ * @author Rephael Azoulay
+ * @date 19/01/2018
+ */
 public class Schedule {
     public LocalDate start;
     public LocalDate end;

@@ -6,7 +6,12 @@ import db.exception.*;
 import java.time.LocalDate;
 import java.util.*;
 
-
+/**
+ * This class contains all the data needed for the algorithm, and provide the API to edit
+ * this data. It ensure the semester's data stays valid and logical.
+ * @author Rephael Azoulay
+ * @date 19/01/2018
+ */
 public class Semester {
 
     public enum Moed {
