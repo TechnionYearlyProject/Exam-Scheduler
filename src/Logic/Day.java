@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+/*The class represents an exam day. Contains info about distance between the day and day, when an exam for a course is scheduled*/
 public class Day {
     LocalDate date;
     HashMap<Integer,Integer> courses;
