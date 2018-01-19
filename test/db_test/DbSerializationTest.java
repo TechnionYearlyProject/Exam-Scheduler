@@ -3,13 +3,12 @@ package db_test;
 import db.Course;
 import db.Database;
 import db.Semester;
+import db.exception.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -17,146 +16,167 @@ import static junit.framework.TestCase.*;
 
 public class DbSerializationTest {
     public static Database db;
-    private static String baseDir;
-    private static SimpleDateFormat dateParser;
-
-    private LocalDate parse(String str) {
-        String[] dates = str.split("-");
-        return LocalDate.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[0]),  Integer.parseInt(dates[0]));
-    }
 
     @Before
     public void initDb() {
         db = new Database();
         db.baseDirectory = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test" +
-                db.sep + "empty_db_for_serialization";
-        dateParser = new SimpleDateFormat("yyyy-MM-dd");
+                db.sep + "empty_db_serialization";
     }
 
     @After
     public void deleteDb() {
-        File dir = new File(db.baseDirectory);
-        if (dir.listFiles() == null) {
+        File baseDir = new File(db.baseDirectory);
+        File[] dirs = baseDir.listFiles();
+        if (dirs == null) {
             return;
         }
-        for (File sem: dir.listFiles()) {
-            if (sem.getName().endsWith("dummy.txt")) {
+        for (File dir: dirs) {
+            if (dir.getName().endsWith("dummy.txt")) {
                 continue;
             }
-            if (sem.listFiles() == null) {
+            File[] files = dir.listFiles();
+            if (files == null) {
                 continue;
             }
-            for (File xml_file: sem.listFiles()) {
-                xml_file.delete();
+            for (File f: files) {
+                f.delete();
             }
-            sem.delete();
+            dir.delete();
         }
     }
 
     @Test
-    public void saveEmptySemesterTest() {
-        Semester semester = null;
-        try {
-            semester = db.createSemester(2017, "winter");
-            assertNotNull(semester);
-            db.saveSemester(2017, "winter");
-            initDb(); // Create new db without loaded semesters
-            semester = db.loadSemester(2017, "winter");
-            assertNotNull(semester);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+    public void saveEmptySemesterTest() throws SemesterAlreadyExist, SemesterNotFound, InvalidDatabase,
+            SemesterFileMissing {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        db.saveSemester(2017, "winter");
+
+        initDb(); // Create new db without loaded semesters
+        semester = db.loadSemester(2017, "winter");
+        assertNotNull(semester);
+
+        // Check that all fields are empty
         assertEquals(0, semester.getStudyProgramCollection().size());
         assertEquals(0, semester.getCourseCollection().size());
+        assertNull(semester.getStartDate(Semester.Moed.MOED_A));
+        assertNull(semester.getEndDate(Semester.Moed.MOED_A));
+        assertNull(semester.getStartDate(Semester.Moed.MOED_B));
+        assertNull(semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_A).size());
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_B).size());
-        assertEquals(null, semester.getEndDate(Semester.Moed.MOED_A));
-        assertEquals(null, semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_A).size());
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_B).size());
+        assertEquals(0, semester.conflicts.size());
     }
 
     @Test
-    public void saveCompleteSemesterTest() {
-        Semester semester = null;
-
+    public void saveCompleteSemesterTest() throws SemesterAlreadyExist, InvalidDatabase, SemesterNotFound,
+            SemesterFileMissing {
         List<String> programs = new ArrayList<>();
         programs.add("Led Zeppelin");
         programs.add("Dire Strait");
         programs.add("Pink Floyd");
 
         Map<Integer, String> courses = new HashMap<>();
-        courses.put(234123, "Dark side of the moon");
-        courses.put(236315, "Physical Graffiti");
-        courses.put(236777, "Abbey Road");
-        courses.put(234126, "A Night at the Opera");
-
-        LocalDate startDateA = parse("2018-01-01");
-        LocalDate endDateA = parse("2018-01-31");
+        courses.put(101, "Physical Graffiti");
+        courses.put(102, "A Night At The Opera");
+        courses.put(103, "Dark Side Of The Moon");
+        courses.put(104, "Brother In Arm");
 
         Map<Integer, LocalDate> exams = new HashMap<>();
-        exams.put(234123, parse("2018-01-04"));
-        exams.put(236315, parse("2018-01-13"));
-        exams.put(236777, parse("2018-01-19"));
+        exams.put(101, LocalDate.parse("2018-01-04"));
+        exams.put(102, LocalDate.parse("2018-01-13"));
+        exams.put(104, LocalDate.parse("2018-01-19"));
 
         Map<Integer, LocalDate> constraints = new HashMap<>();
-        constraints.put(234123, parse("2018-01-04"));
-        constraints.put(236315, parse("2018-01-13"));
-        constraints.put(234126, parse("2018-01-21"));
+        constraints.put(101, LocalDate.parse("2018-01-04"));
+        constraints.put(102, LocalDate.parse("2018-01-13"));
+        constraints.put(103, LocalDate.parse("2018-01-21"));
 
-        try {
-            semester = db.createSemester(2018, "winter");
-            assertNotNull(semester);
-            for (String program: programs) {
-                semester.addStudyProgram(program);
-            }
-            for (Map.Entry<Integer, String> e: courses.entrySet()) {
-                semester.addCourse(e.getKey(), e.getValue(), 3.0);
-            }
-            int i = 0;
-            for (Integer courseId: courses.keySet()) {
-                for (String prog: programs) {
-                    semester.registerCourse(courseId, prog, (i % 8) + 1);
-                    i += 1;
-                }
-            }
-            semester.setStartDate(Semester.Moed.MOED_A, startDateA);
-            semester.setEndDate(Semester.Moed.MOED_A, endDateA);
-            for (Integer courseId: exams.keySet()) {
-                semester.scheduleCourse(courseId, Semester.Moed.MOED_A, exams.get(courseId));
-            }
-            for (Integer courseId: constraints.keySet()) {
-                semester.addConstraint(courseId, Semester.Moed.MOED_A, constraints.get(courseId), false);
-            }
-            db.saveSemester(2018, "winter");
-            initDb(); // Create new db without loaded semesters
-            semester = db.loadSemester(2018, "winter");
-            assertNotNull(semester);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
+        Map<Integer, Set<Integer>> conflicts = new HashMap<>();
+        conflicts.put(101, new HashSet<>());
+        conflicts.get(101).add(103);
+        conflicts.put(103, new HashSet<>());
+        conflicts.get(103).add(101);
+
+        // Semester generation
+        Semester semester = db.createSemester(2018, "winter");
+        assertNotNull(semester);
+        for (String program: programs) {
+            semester.addStudyProgram(program);
         }
+        for (Map.Entry<Integer, String> e: courses.entrySet()) {
+            semester.addCourse(e.getKey(), e.getValue(), 3.0,
+                    2, false, false, true, true);
+        }
+        int i = 0;
+        for (Integer courseId: courses.keySet()) {
+            for (String prog: programs) {
+                semester.registerCourse(courseId, prog, (i % 8) + 1);
+                i += 1;
+            }
+        }
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        for (Integer courseId: exams.keySet()) {
+            semester.scheduleCourse(courseId, Semester.Moed.MOED_A, exams.get(courseId));
+        }
+        for (Integer courseId: constraints.keySet()) {
+            semester.addConstraint(courseId, Semester.Moed.MOED_A, constraints.get(courseId), false);
+        }
+        semester.conflicts = conflicts;
+
+        // Write and reload semester
+        db.saveSemester(2018, "winter");
+        initDb(); // Create new db without loaded semesters
+        semester = db.loadSemester(2018, "winter");
+        assertNotNull(semester);
+
+        // Check study programs
         assertEquals(3, semester.getStudyProgramCollection().size());
-        for (String prog: semester.getStudyProgramCollection()) {
-            assertTrue(programs.contains(prog));
+        for (String program: semester.getStudyProgramCollection()) {
+            assertTrue(programs.contains(program));
         }
+
+        // Check courses
         assertEquals(4, semester.getCourseCollection().size());
         for (Course course: semester.getCourseCollection()) {
             assertTrue(courses.get(course.courseID).equals(course.courseName));
+            assertEquals(3.0, course.creditPoints);
+            assertEquals(2, course.getDaysBefore());
+            assertFalse(course.isFirst());
+            assertFalse(course.isLast());
+            assertTrue(course.isRequired);
+            assertTrue(course.hasExam);
         }
+
+        // Check schedules
         assertEquals(3, semester.getSchedule(Semester.Moed.MOED_A).size());
+        assertEquals(LocalDate.parse("2018-01-01"), semester.getStartDate(Semester.Moed.MOED_A));
+        assertEquals(LocalDate.parse("2018-01-31"), semester.getEndDate(Semester.Moed.MOED_A));
         for (int courseId: semester.getSchedule(Semester.Moed.MOED_A).keySet()) {
             assertEquals(exams.get(courseId), semester.getSchedule(Semester.Moed.MOED_A).get(courseId));
         }
+
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_B).size());
-        assertNotNull(semester.getStartDate(Semester.Moed.MOED_A));
-        assertNotNull(semester.getEndDate(Semester.Moed.MOED_A));
         assertNull(semester.getStartDate(Semester.Moed.MOED_B));
         assertNull(semester.getEndDate(Semester.Moed.MOED_B));
+
+        // Check constraints
         assertEquals(3, semester.getConstraintLists(Semester.Moed.MOED_A).size());
         for (int courseId: semester.getConstraintLists(Semester.Moed.MOED_A).keySet()) {
             assertEquals(constraints.get(courseId), semester.getConstraintList(Semester.Moed.MOED_A, courseId).get(0).date);
-            assertEquals(constraints.get(courseId), semester.getConstraintList(Semester.Moed.MOED_A, courseId).get(0).date);
         }
+
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_B).size());
+
+        // Check conflicts
+        for (Integer courseId: conflicts.keySet()) {
+            for (Integer conflictId: conflicts.get(courseId)) {
+                assertTrue(semester.conflicts.get(courseId).contains(conflictId));
+            }
+        }
     }
 }

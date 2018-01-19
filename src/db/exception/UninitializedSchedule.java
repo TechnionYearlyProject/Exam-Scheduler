@@ -1,3 +1,3 @@
 package db.exception;
 
-public class UninitializedSchedule extends Exception {}
+public class UninitializedSchedule extends InvalidDatabase {}

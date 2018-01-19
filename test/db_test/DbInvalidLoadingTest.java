@@ -1,9 +1,7 @@
 package db_test;
 
 import db.Database;
-import db.exception.InvalidDatabase;
-import db.exception.SemesterFileMissing;
-import db.exception.SemesterNotFound;
+import db.exception.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,230 +22,153 @@ public class DbInvalidLoadingTest {
         baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test";
     }
 
-    @Test
-    public void loadInexistantSemesterTest() {
+    @Test(expected = SemesterNotFound.class)
+    public void EmptyDatabase() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
         db.baseDirectory = baseDir + db.sep + "empty_db";
-        // No semesters at all
-        try {
-            db.loadSemester(2017, "winter");
-            fail("Should have thrown SemesterNotFound exception");
-        } catch (SemesterNotFound ignored) {
-            // Nothing to do, expected case
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+        db.loadSemester(2017, "winter");
+    }
+
+    @Test(expected = SemesterNotFound.class)
+    public void NoYearSemester() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
         db.baseDirectory = baseDir + db.sep + "missing_files_db";
-        // No semester with same year or sem string
-        try {
-            db.loadSemester(2017, "spring");
-            fail("Should have thrown SemesterNotFound exception");
-        } catch (SemesterNotFound ignored) {
-            // Nothing to do, expected case
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        // Same year but not same sem string
-        try {
-            db.loadSemester(2010, "spring");
-            fail("Should have thrown SemesterNotFound exception");
-        } catch (SemesterNotFound ignored) {
-            // Nothing to do, expected case
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        // Same sem string but not same year
-        try {
-            db.loadSemester(2017, "winter");
-            fail("Should have thrown SemesterNotFound exception");
-        } catch (SemesterNotFound ignored) {
-            // Nothing to do, expected case
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+        db.loadSemester(2010, "winter");
     }
 
-    @Test
-    public void loadMissingFilesTest() {
+    @Test(expected = SemesterNotFound.class)
+    public void NoSemester() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
         db.baseDirectory = baseDir + db.sep + "missing_files_db";
-        Map<Integer, String> map = new HashMap<>();
-        map.put(2010, "study_programs");
-        map.put(2011, "courses");
-        map.put(2012, "scheduleA");
-        map.put(2013, "scheduleB");
-        map.put(2014, "constraintsA");
-        map.put(2015, "constraintsB");
-        for (int year: map.keySet()) {
-            try {
-                db.loadSemester(year, "winter");
-                fail("Should have thrown SemesterFileMissing exception");
-            } catch (SemesterFileMissing e) {
-                String message = "Missing file in semester: " + db.baseDirectory + db.sep + Integer.toString(year) +
-                        "_winter" + db.sep + map.get(year) + ".xml";
-                assertEquals(e.getMessage(), message);
-            } catch (Exception e) {
-                fail("Unexpected exception: " + e.toString());
-            }
-        }
+        db.loadSemester(2010, "missing_conflicts");
     }
 
-    @Test
-    public void loadInvalidSemesterTest() {
-        db.baseDirectory = baseDir + db.sep + "invalid_db";
-        try {
-            // course with missing courseName
-            db.loadSemester(2010, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Invalid XML file courses.xml :";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // schedule with missing end date
-            db.loadSemester(2010, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Invalid XML file scheduleB.xml :";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // constraint with unknown element
-            db.loadSemester(2011, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Invalid XML file constraintsA.xml :";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // course with duplicate element
-            db.loadSemester(2011, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Invalid XML file courses.xml :";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+    @Test(expected = SemesterNotFound.class)
+    public void NoYear() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "winter");
     }
 
-    @Test
-    public void loadBadSemesterTest() {
+    @Test(expected = SemesterFileMissing.class)
+    public void missingPrograms() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_programs");
+    }
+
+    @Test(expected = SemesterFileMissing.class)
+    public void missingCourses() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_courses");
+    }
+
+    @Test(expected = SemesterFileMissing.class)
+    public void missingConflicts() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_conflicts");
+    }
+
+    @Test(expected = SemesterFileMissing.class)
+    public void missingScheduleA() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_schedule_a");
+    }
+
+    @Test(expected = SemesterFileMissing.class)
+    public void missingScheduleB() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_schedule_b");
+    }
+
+    @Test(expected = SemesterFileMissing.class)
+    public void missingConstraintsA() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_constraints_a");
+    }
+
+    @Test(expected = SemesterFileMissing.class)
+    public void missingConstraintsB() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "missing_files_db";
+        db.loadSemester(2017, "missing_constraints_b");
+    }
+
+    @Test(expected = StudyProgramAlreadyExist.class)
+    public void duplicatePrograms() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
         db.baseDirectory = baseDir + db.sep + "invalid_db";
-        try {
-            // Dupplicate study programs
-            db.loadSemester(2012, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Duplicate study program in database: ";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Dupplicate course IDs
-            db.loadSemester(2012, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Duplicate course in database: ";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Course with unknown study program
-            db.loadSemester(2013, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            String message = "Course 'test' contains unknown program study: ";
-            assertEquals(true, e.getMessage().startsWith(message));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Bad date
-            db.loadSemester(2013, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Schedule 'A' contains invalid date : '2017'", e.getMessage());
-        } catch (Exception e) {
-            //fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // End date before start date
-            db.loadSemester(2014, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Schedule 'A' end date is before start date", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Schedule without end date
-            db.loadSemester(2014, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Start/End date missing in schedule A", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Unknown course in schedule
-            db.loadSemester(2015, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Schedule 'A' contain unknown course : '123456'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Invalid constraint dates
-            db.loadSemester(2016, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Course '104031' has invalid constraint date : '2017-02-01/2017-01-03' in schedule 'A'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Overlapping constraint dates
-            db.loadSemester(2001, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Course '104031' has overlapping constraint : '2017-01-02 - 2017-01-07' in schedule 'A'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Constraints on schedule without start/end dates
-            db.loadSemester(2001, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Start/End date missing in schedule B", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Unknown course in constraints
-            db.loadSemester(2002, "winter");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Constraint List 'A' contain unknown course : '123456'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
-        try {
-            // Constraint dates out of schedule dates
-            db.loadSemester(2002, "spring");
-            fail("Should have thrown InvalidDatabase exception");
-        } catch (InvalidDatabase e) {
-            assertEquals("Course '123456' constraint is out of the schedule dates : '2017-01-04/2017-03-07' in schedule 'A'", e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+        db.loadSemester(2014, "duplicate_programs");
+    }
+
+    @Test(expected = CourseAlreadyExist.class)
+    public void duplicateCourseId() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "duplicate_course_id");
+    }
+
+    @Test(expected = StudyProgramUnknown.class)
+    public void unknownProgram() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "unknown_program");
+    }
+
+    @Test(expected = CourseFirstAndLast.class)
+    public void courseFirstAndLast() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "course_first_and_last");
+    }
+
+    @Test(expected = InvalidSchedule.class)
+    public void badScheduleDate() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "bad_schedule_date");
+    }
+
+    @Test(expected = InvalidSchedule.class)
+    public void scheduleEndBeforeStart() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "schedule_end_before_start");
+    }
+
+    @Test(expected = UninitializedSchedule.class)
+    public void missingScheduleDate() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "missing_schedule_date");
+    }
+
+    @Test(expected = CourseUnknown.class)
+    public void courseUnknownInSchedule() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "course_unknown_in_schedule");
+    }
+
+    @Test(expected = DateOutOfSchedule.class)
+    public void examOutOfSchedule() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "exam_out_of_schedule");
+    }
+
+    @Test(expected = DuplicateConstraints.class)
+    public void duplicateConstraints() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "duplicate_constraints");
+    }
+
+    @Test(expected = UninitializedSchedule.class)
+    public void constraintsWithoutSchedule() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "constraints_without_schedule");
+    }
+
+    @Test(expected = CourseUnknown.class)
+    public void courseUnknownInConstraint() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "course_unknown_in_constraint");
+    }
+
+    @Test(expected = DateOutOfSchedule.class)
+    public void constraintOutOfSchedule() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "constraint_out_of_schedule");
+    }
+
+    @Test(expected = CourseUnknown.class)
+    public void courseUnknownInConflicts() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "course_unknown_in_conflicts");
     }
 }

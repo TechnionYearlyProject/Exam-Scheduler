@@ -29,7 +29,7 @@
         <credit_points>5.0</credit_points>
         <days_before>4</days_before>
         <hasExam/>
-        <semester program="Led Zeppelin">3</semester>
+        <semester program="Queen">3</semester>
         <semester program="Pink Floyd">3</semester>
     </course>
     <course>

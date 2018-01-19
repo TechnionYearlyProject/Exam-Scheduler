@@ -13,7 +13,7 @@
         <semester program="Dire Strait">1</semester>
     </course>
     <course>
-        <course_id>102</course_id>
+        <course_id>101</course_id>
         <course_name>A Night At The Opera</course_name>
         <credit_points>3.0</credit_points>
         <days_before>2</days_before>

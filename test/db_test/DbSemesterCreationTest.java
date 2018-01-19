@@ -11,148 +11,138 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.fail;
+import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertNull;
 
 public class DbSemesterCreationTest {
     public static Database db;
     private static String baseDir;
-    private static SimpleDateFormat dateParser, hourParser;
 
     @Before
     public void initDb() {
         db = new Database();
         baseDir = db.baseDirectory.substring(0, db.baseDirectory.length() - 2) + "test" + db.sep + "db_test";
-        dateParser = new SimpleDateFormat("yyyy-MM-dd");
-        hourParser = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    }
-
-    private Calendar parse(String str, SimpleDateFormat parser) {
-        Calendar cal = Calendar.getInstance();
-        try {
-            cal.setTime(parser.parse(str));
-        } catch (ParseException e) {
-            return null;
-        }
-        return cal;
     }
 
     @Test
-    public void createFromEmptyDatabaseTest() {
+    public void createFromEmptyDatabase() throws SemesterAlreadyExist {
         db.baseDirectory = baseDir + db.sep + "empty_db";
-        Semester semester = null;
-        try {
-            semester = db.createSemester(2017, "winter");
-            assertNotNull(semester);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+
+        // Check that all fields are empty
         assertEquals(0, semester.getStudyProgramCollection().size());
         assertEquals(0, semester.getCourseCollection().size());
+        assertNull(semester.getStartDate(Semester.Moed.MOED_A));
+        assertNull(semester.getEndDate(Semester.Moed.MOED_A));
+        assertNull(semester.getStartDate(Semester.Moed.MOED_B));
+        assertNull(semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_A).size());
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_B).size());
-        assertEquals(null, semester.getEndDate(Semester.Moed.MOED_A));
-        assertEquals(null, semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_A).size());
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_B).size());
+        assertEquals(0, semester.conflicts.size());
+    }
 
-        try {
-            db.createSemester(2017, "winter");
-            fail("Should have thrown SemesterNotFound exception");
-        } catch (SemesterAlreadyExist e) {
-            // Nothing to do, expected case
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+    @Test(expected = SemesterAlreadyExist.class)
+    public void createDuplicateSemester() throws SemesterAlreadyExist {
+        db.baseDirectory = baseDir + db.sep + "empty_db";
+        db.createSemester(2017, "winter");
+        db.createSemester(2017, "winter");
     }
 
     @Test
-    public void createFromInvalidDatabasesTest() {
+    public void createFromInvalidDatabases() throws SemesterAlreadyExist {
         db.baseDirectory = baseDir + db.sep + "invalid_db";
-        Semester semester = null;
-        try {
-            semester = db.createSemester(2017, "winter");
-            assertNotNull(semester);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+        Semester semester = db.createSemester(2015, "winter");
+        assertNotNull(semester);
+
+        // Check that all fields are empty
         assertEquals(0, semester.getStudyProgramCollection().size());
         assertEquals(0, semester.getCourseCollection().size());
+        assertNull(semester.getStartDate(Semester.Moed.MOED_A));
+        assertNull(semester.getEndDate(Semester.Moed.MOED_A));
+        assertNull(semester.getStartDate(Semester.Moed.MOED_B));
+        assertNull(semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_A).size());
         assertEquals(0, semester.getSchedule(Semester.Moed.MOED_B).size());
-        assertEquals(null, semester.getEndDate(Semester.Moed.MOED_A));
-        assertEquals(null, semester.getEndDate(Semester.Moed.MOED_B));
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_A).size());
         assertEquals(0, semester.getConstraintLists(Semester.Moed.MOED_B).size());
+        assertEquals(0, semester.conflicts.size());
     }
 
     @Test
-    public void createFromValidDatabaseTest() {
+    public void createFromValidDatabaseTest() throws SemesterAlreadyExist {
         db.baseDirectory = baseDir + db.sep + "valid_db";
-        Semester semester = null;
-        try {
-            semester = db.createSemester(2018, "winter");
-            assertNotNull(semester);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e.toString());
-        }
+        Semester semester = db.createSemester(2018, "winter");
 
         // Check study programs
-        List<String> studyProgramsRef = new ArrayList<>();
-        studyProgramsRef.add("מסלול כללי ארבע-שנתי");
-        studyProgramsRef.add("מסלול כללי תלת-שנתי");
-        studyProgramsRef.add("הנדסת תוכנה");
-        assertEquals(studyProgramsRef.size(), semester.getStudyProgramCollection().size());
-        for (String studyProgram: semester.getStudyProgramCollection()) {
-            assertEquals(true, studyProgramsRef.contains(studyProgram));
-        }
+        List<String> programs = semester.getStudyProgramCollection();
+        assertEquals(3, programs.size());
+        assertTrue(programs.contains("Led Zeppelin"));
+        assertTrue(programs.contains("Pink Floyd"));
+        assertTrue(programs.contains("Dire Strait"));
 
         // Check courses
-        List<Integer> coursesRef = new ArrayList<>();
-        coursesRef.add(234114);
-        coursesRef.add(234145);
-        coursesRef.add(104166);
-        coursesRef.add(104031);
-        Map<Integer, String> coursesNames = new HashMap<>();
-        coursesNames.put(234114, "מבוא למדעי המחשב מ");
-        coursesNames.put(234145, "מערכות ספרתיות");
-        coursesNames.put(104166, "אלגברה א");
-        coursesNames.put(104031, "חשבון אינפיניטסימלי 1מ");
-        Map<Integer, Double> coursesWeights = new HashMap<>();
-        coursesWeights.put(234114, 3.5);
-        coursesWeights.put(234145, 3.0);
-        coursesWeights.put(104166, 5.0);
-        coursesWeights.put(104031, 5.5);
-        Map<Integer, Map<String, Integer>> coursesPrograms = new HashMap<>();
-        Map<String, Integer> tmp = new HashMap<>();
-        tmp.put("מסלול כללי ארבע-שנתי", 1);
-        tmp.put("מסלול כללי תלת-שנתי", 3);
-        tmp.put("הנדסת תוכנה", 2);
-        coursesPrograms.put(234114, tmp);
-        tmp = new HashMap<>();
-        tmp.put("מסלול כללי תלת-שנתי", 2);
-        tmp.put("הנדסת תוכנה", 1);
-        coursesPrograms.put(234145, tmp);
-        tmp = new HashMap<>();
-        tmp.put("מסלול כללי ארבע-שנתי", 2);
-        tmp.put("מסלול כללי תלת-שנתי", 3);
-        coursesPrograms.put(104166, tmp);
-        tmp = new HashMap<>();
-        tmp.put("מסלול כללי ארבע-שנתי", 2);
-        tmp.put("מסלול כללי תלת-שנתי", 2);
-        coursesPrograms.put(104031, tmp);
-        assertEquals(coursesRef.size(), semester.getCourseCollection().size());
-        for (Course course: semester.getCourseCollection()) {
-            assertEquals(true, coursesRef.contains(course.courseID));
-            assertEquals(course.courseName, coursesNames.get(course.courseID));
-            assertEquals(course.creditPoints, coursesWeights.get(course.courseID));
-            assertEquals(course.studyProgramSize(), coursesPrograms.get(course.courseID).size());
-            tmp = coursesPrograms.get(course.courseID);
-            for (String program: tmp.keySet()) {
-                if (course.getStudyProgramSemester(program) != 0) {
-                    assertEquals((int) tmp.get(program), course.getStudyProgramSemester(program));
-                }
+        Map<Integer, Course> courses = new HashMap<>();
+        for (Course c: semester.getCourseCollection()) {
+            courses.put(c.courseID, c);
+        }
+        assertEquals(4, courses.size());
+
+        assertTrue(courses.keySet().contains(101));
+        assertEquals("Physical Graffiti", courses.get(101).courseName);
+        assertEquals(3.5, courses.get(101).creditPoints);
+        assertEquals(2, courses.get(101).getDaysBefore());
+        assertTrue(courses.get(101).isFirst());
+        assertFalse(courses.get(101).isLast());
+        assertTrue(courses.get(101).isRequired);
+        assertTrue(courses.get(101).hasExam);
+        for(String program: programs) {
+            assertEquals(1, courses.get(101).getStudyProgramSemester(program));
+        }
+
+        assertTrue(courses.keySet().contains(102));
+        assertEquals("A Night At The Opera", courses.get(102).courseName);
+        assertEquals(3.0, courses.get(102).creditPoints);
+        assertEquals(2, courses.get(102).getDaysBefore());
+        assertFalse(courses.get(102).isFirst());
+        assertFalse(courses.get(102).isLast());
+        assertTrue(courses.get(102).isRequired);
+        assertTrue(courses.get(102).hasExam);
+        for(String program: programs) {
+            assertEquals(2, courses.get(102).getStudyProgramSemester(program));
+        }
+
+        assertTrue(courses.keySet().contains(103));
+        assertEquals("Dark Side Of The Moon", courses.get(103).courseName);
+        assertEquals(5.0, courses.get(103).creditPoints);
+        assertEquals(4, courses.get(103).getDaysBefore());
+        assertFalse(courses.get(103).isFirst());
+        assertFalse(courses.get(103).isLast());
+        assertFalse(courses.get(103).isRequired);
+        assertTrue(courses.get(103).hasExam);
+        for(String program: programs) {
+            if (program.equals("Dire Strait")) {
+                assertEquals(0, courses.get(103).getStudyProgramSemester(program));
+            } else {
+                assertEquals(3, courses.get(103).getStudyProgramSemester(program));
+            }
+        }
+
+        assertTrue(courses.keySet().contains(104));
+        assertEquals("Brothers In Arm", courses.get(104).courseName);
+        assertEquals(5.5, courses.get(104).creditPoints);
+        assertEquals(2, courses.get(104).getDaysBefore());
+        assertFalse(courses.get(104).isFirst());
+        assertTrue(courses.get(104).isLast());
+        assertTrue(courses.get(104).isRequired);
+        assertFalse(courses.get(104).hasExam);
+        for(String program: programs) {
+            if (program.equals("Dire Strait")) {
+                assertEquals(0, courses.get(104).getStudyProgramSemester(program));
+            } else {
+                assertEquals(4, courses.get(104).getStudyProgramSemester(program));
             }
         }
     }

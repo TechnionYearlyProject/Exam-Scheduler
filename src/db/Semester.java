@@ -53,9 +53,7 @@ public class Semester {
     }
 
     public List<String> getStudyProgramCollection() {
-        List<String> list = new ArrayList<>();
-        list.addAll(programs);
-        return list;
+        return new ArrayList<>(programs);
     }
 
     public void addCourse(int courseId, String name, double creditPoint, int daysBefore, boolean isFirst, boolean isLast,
@@ -75,6 +73,9 @@ public class Semester {
         courses.remove(courseId);
         for (Schedule schedule: schedules.values()) {
             schedule.unscheduleCourse(courseId);
+        }
+        for (ConstraintList list: constraints.values()) {
+            list.constraints.remove(courseId);
         }
     }
 
@@ -168,6 +169,9 @@ public class Semester {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
+        if (schedules.get(moed).undefinedStartOrEnd()) {
+            throw new UninitializedSchedule();
+        }
         if (date.isBefore(schedules.get(moed).start) || date.isAfter(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }
@@ -190,7 +194,7 @@ public class Semester {
     }
 
     public void addConstraint(int courseId, Moed moed, LocalDate date, boolean forbidden)
-            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, DuplicateConstraints {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
@@ -204,7 +208,7 @@ public class Semester {
     }
 
     public void addConstraint(int courseId, Moed moed, LocalDate date)
-            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, DuplicateConstraints {
         addConstraint(courseId, moed, date, false);
     }
 

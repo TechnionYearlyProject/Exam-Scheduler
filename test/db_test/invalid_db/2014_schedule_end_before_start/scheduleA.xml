@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <schedule>
-    <start_date>2017-01-01</start_date>
+    <start_date>2017-02-01</start_date>
     <end_date>2017-01-31</end_date>
     <day date="2017-01-03">
         <exam>104</exam>
