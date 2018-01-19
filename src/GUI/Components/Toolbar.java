@@ -124,8 +124,8 @@ public class Toolbar extends HBox{
             scene.setFill(javafx.scene.paint.Color.color(0,0,0,0));
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setX(wrapper.getScene().getWindow().getX()+195);
-            stage.setY(wrapper.getScene().getWindow().getY()+95);
+            stage.setX(wrapper.getScene().getWindow().getX()+189);
+            stage.setY(wrapper.getScene().getWindow().getY()+89);
             stage.getIcons().add(new Image("/app_icon.png"));
             stage.focusedProperty().addListener(event2 -> {
                 if (!stage.isFocused()) {
