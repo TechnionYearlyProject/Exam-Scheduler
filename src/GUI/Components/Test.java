@@ -42,7 +42,11 @@ public class Test extends Label{
         day = parent;
         this.course = course;
         this.setTextFill(Paint.valueOf("white"));
-        this.setText(course.getCourseName());
+        if (setTooltip)
+            this.setText(course.getCourseName());
+        else
+            this.setText(course.getCourseID() + " - " + course.getCourseName());
+
         this.setPadding(new Insets(0,3,0,3));
         this.setAlignment(Pos.CENTER_RIGHT);
         if(setTooltip){
