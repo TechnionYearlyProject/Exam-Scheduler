@@ -1,13 +1,8 @@
 package Output;
 
-import Logic.Course;
 import Logic.CourseLoader;
 import Logic.Day;
 import Output.Exceptions.ErrorOpeningFile;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import db.Semester;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -21,16 +16,23 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+ * @author: ucfBader
+ * @date: 16/01/2018.
+ * in this class we write the schedule as xml file in the following format: <Course "id" "name"><day><month><year>
+ * the user will be able to open the final schedule as xml file containing all relevant data for chosen exam period.
+ */
 public class XMLFileWriter implements IFileWriter {
 
+    /*
+     * @param: filename: the wanted filename (output.xml) as default.
+     * @lst: the schedule days, each day contains list of courses scheduled in that day.
+     * @cL: courseLoader class instance, in order to get courseName.
+     */
     @Override
     public void write(String fileName, List<Day> lst, CourseLoader cL) throws ErrorOpeningFile {
         try {
@@ -50,13 +52,13 @@ public class XMLFileWriter implements IFileWriter {
                     LocalDate localDate = d.getDate();
                     Element course = doc.createElement("Course");
                     rootElement.appendChild(course);
-                    course.setAttribute("ID", Integer.toString(key));
+                    course.setAttribute("ID", String.format("%02d",key));
                     course.setAttribute("Name", cL.getCourse(key).getCourseName());
                     Element day = doc.createElement("Day");
-                    day.appendChild(doc.createTextNode(Integer.toString(localDate.getDayOfMonth())));
+                    day.appendChild(doc.createTextNode(String.format("%02d",localDate.getDayOfMonth())));
                     course.appendChild(day);
                     Element month = doc.createElement("Month");
-                    month.appendChild(doc.createTextNode(Integer.toString(localDate.getMonthValue())));
+                    month.appendChild(doc.createTextNode(String.format("%02d",localDate.getMonthValue())));
                     course.appendChild(month);
 
                     // year elements
@@ -72,32 +74,5 @@ public class XMLFileWriter implements IFileWriter {
         } catch (ParserConfigurationException |TransformerException e){
             throw new ErrorOpeningFile();
         }
-    }
-
-
-    public void simpleTest(){
-        Day d1 = new Day(LocalDate.of(2018, Month.JANUARY,17));
-        Day d2 = new Day(LocalDate.of(2018, Month.JANUARY,18));
-        Day d3 = new Day(LocalDate.of(2018, Month.JANUARY,19));
-        d1.insertCourse(234123,0);
-        d1.insertCourse(234124,0);
-        d1.insertCourse(234125,0);
-        d1.insertCourse(234123,0);
-        d2.insertCourse(236124,0);
-        d2.insertCourse(236125,0);
-        d3.insertCourse(236123,0);
-        d3.insertCourse(238124,0);
-        d3.insertCourse(238125,0);
-        ArrayList<Day> days = new ArrayList<>();
-        days.add(d1);
-        days.add(d2);
-        days.add(d3);
-
-        try {
-            write("output.xml",days,null);
-        } catch (ErrorOpeningFile errorOpeningFile) {
-            errorOpeningFile.printStackTrace();
-        }
-
     }
 }
