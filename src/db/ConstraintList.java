@@ -5,6 +5,12 @@ import db.exception.DuplicateConstraints;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * This class keep all the Constraint objects of a semester, and ensure no course has
+ * duplicate Constraint (same dates), and that each Constraint is linked to a course.
+ * @author Rephael Azoulay
+ * @date 19/01/2018
+ */
 public class ConstraintList {
     public Map<Integer, List<Constraint>> constraints;
 

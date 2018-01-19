@@ -23,6 +23,12 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Main class of the database system. The class provide an API to load and save semester
+ * data from XML files, and ensure the data is valid and logical.
+ * @author Rephael Azoulay
+ * @date 19/01/2018
+ */
 public class Database {
     public String baseDirectory;
     public String sep;
@@ -537,6 +543,12 @@ public class Database {
         writeXMLFile(filePath, document);
     }
 
+    /**
+     * Create a new semester. If there is an older, valid semester saved in the system,
+     * the Database loads it and copy its courses and programs into the new semester.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public Semester createSemester(int year, String sem) throws SemesterAlreadyExist {
         String semesterName = year + "_" + sem;
         if (semesters.containsKey(semesterName)) {
@@ -603,6 +615,11 @@ public class Database {
         return loadSemester(year, semester);
     }
 
+    /**
+     * Create a Semester object and load the data written in the XML file into it.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public Semester loadSemester(int year, String sem) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         String semesterDir = getSemesterDir(year, sem);
         String path = baseDirectory + sep + semesterDir;
@@ -611,6 +628,11 @@ public class Database {
         return semester;
     }
 
+    /**
+     * Retrieve a semester that has been already loaded, else return null.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public Semester getSemester(int year, String sem) {
         String semesterDir = getSemesterDir(year, sem);
         if (!semesters.keySet().contains(semesterDir)) {
@@ -619,6 +641,11 @@ public class Database {
         return semesters.get(semesterDir);
     }
 
+    /**
+     * Write all the data of a Semester object into XML files.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void saveSemester(int year, String sem) {
         String semesterDir = getSemesterDir(year, sem);
         String path = baseDirectory + sep + semesterDir;

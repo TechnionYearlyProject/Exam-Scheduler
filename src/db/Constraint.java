@@ -3,6 +3,12 @@ package db;
 import java.time.LocalDate;
 import java.util.Calendar;
 
+/**
+ * This class represent a constraint over the exam date of a course that the algorithm
+ * must take into account.
+ * @author Rephael Azoulay
+ * @date 19/01/2018
+ */
 public class Constraint implements Comparable<Constraint>{
     public LocalDate date;
     public boolean forbidden;
