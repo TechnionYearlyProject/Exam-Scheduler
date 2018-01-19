@@ -66,7 +66,7 @@ public class Course implements Comparable<Course>{
     /**
      * @author ucfBader
      * Adding new constraint to the constraints list.
-     * @param c
+     * @param c the constraint to add.
      */
     void addConstraint(Constraint c){
         if(constraints.contains(c)){
@@ -214,7 +214,7 @@ public class Course implements Comparable<Course>{
 
     /**
      * @author ucfBader.
-     * @return
+     * @return returns true if the course was defined as first (to schedule at the start of exam period), ow, returns false.
      */
     public boolean isFirst(){
         return isFirst;
