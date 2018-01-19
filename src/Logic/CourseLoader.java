@@ -10,12 +10,13 @@ public class CourseLoader {
     private Map<Integer,db.Course> dbCourses;
     private Semester semester;
     private ArrayList<Logic.Course> sortedCoursesList;
+    ArrayList<Logic.Course> removedCourses;
     public CourseLoader(Semester semester, ConstraintList cL) {
         this.semester = semester;
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
         dbCourses = semester.getCourseCollection().stream().filter(c->c.hasExam).collect(Collectors.toMap(x-> x.courseID, x -> x));
-
+        removedCourses = new ArrayList<>();
         //building Logic CourseList.
         buildLogicCourses();
         //updating conflictList for each Course.
@@ -38,6 +39,7 @@ public class CourseLoader {
         this.dbCourses = new HashMap<Integer,db.Course>(copied.dbCourses);
         this.semester = copied.semester;
         this.sortedCoursesList = new ArrayList<Logic.Course>(copied.sortedCoursesList);
+        this.removedCourses = new ArrayList<>(copied.removedCourses);
     }
 
     /**
@@ -51,6 +53,11 @@ public class CourseLoader {
         sortCourses();
     }
 
+    /**
+     * @author ucfBader
+     * setting each course Constraints.
+     * @param cL : constraint list, containing all constraints available in the system.
+     */
     private void setCoursesConstraints(ConstraintList cL) {
         for (Map.Entry<Integer, List<Constraint>> entry : cL.constraints.entrySet()) {
             List<Constraint> ls = entry.getValue();
@@ -60,6 +67,10 @@ public class CourseLoader {
         }
     }
 
+    /**
+     * @author ucfBader.
+     * In this function we define each course's conflicts. (courses taught at the same semester in some study program).
+     */
     private void setCoursesConflicts() {
         for (db.Course course: dbCourses.values()) {
             Map<String, Integer> programsForSemester = course.getPrograms();
@@ -73,6 +84,10 @@ public class CourseLoader {
         }
     }
 
+    /**
+     * in order to start our algorithm, we need to iterate over each db.course,
+     * and build new Logic.course which is more helpful and contains more usable data.
+     */
     private void buildLogicCourses() {
         for (Map.Entry<Integer, Course> entry: dbCourses.entrySet()) {
             boolean isRequired = false;
@@ -93,20 +108,33 @@ public class CourseLoader {
         sortedCoursesList.remove(tmp);
     }
 
-    /*
+    /**
+     * @author ucfBader
      * Logic.Course map. all the relevant data to the algorithm is here.
      */
     public Map<Integer,Logic.Course> getCourses(){
         return this.courses;
     }
 
+    /**
+     * @author ucfBader.
+     * @param id : the course id to search for.
+     * @return pointer to the Logic course with the given id.
+     * This method will be invoked with existing id's only.
+     */
     public Logic.Course getCourse(Integer id){
         return courses.get(id);
     }
 
+
     public List<Logic.Course> getSortedCourses(){
         return this.sortedCoursesList;
     }
+
+
+//    public List<Logic.Course> getCoursesToSchedule(){
+//        return sortedCoursesList.stream().filter(Logic.Course::hasExam).collect(Collectors.toList());
+//    }
 
     public void sortCourses(){
         sortedCoursesList = new ArrayList<>();
@@ -123,9 +151,11 @@ public class CourseLoader {
      * @param courseID
      */
     public void removeCourseCompletely(Integer courseID) {
+        Logic.Course c = courses.get(courseID);
         for (Logic.Course other_course:courses.values()) {
             other_course.removeConflictCourse(courseID);
         }
+        removedCourses.add(c);
         courses.remove(courseID);
         dbCourses.remove(courseID);
         sortCourses();
@@ -149,6 +179,7 @@ public class CourseLoader {
         courses.put(id,course);
         db.Course dbcourse = new db.Course(id,name,course.getCreditPoints(),course.getDaysBefore(),course.isFirst(),course.isLast(),course.isRequired(),course.hasExam());
         dbCourses.put(id,dbcourse);
+        removedCourses.remove(course);
         sortCourses();
     }
     
