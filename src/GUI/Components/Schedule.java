@@ -90,10 +90,16 @@ public class Schedule extends GridPane{
         for (Logic.Day day:schedule.getSchedulableDays()) {
             Day curr_day = days.get(day.getDate());
             for (Integer course_number : day.getCoursesScheduledToTheDay()) {
-                curr_day.addTest(courseloader.getCourse(course_number));
+                Boolean flag = true;
+                for (Test curr_test:curr_day.testList) {
+                    if (curr_test.course.getCourseID().equals(course_number)) {
+                        flag = false;
+                    }
+                }
+                if (flag)
+                    curr_day.addTest(courseloader.getCourse(course_number));
             }
         }
-
     }
 
     public void removeTest(Integer CourseID) {

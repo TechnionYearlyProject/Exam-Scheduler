@@ -1,5 +1,4 @@
 package GUI.Components;
-
 import Logic.Course;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,9 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import javafx.scene.paint.Paint;
-import javafx.util.Pair;
-
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +37,7 @@ public class Test extends Label{
         this.course = course;
         this.setTextFill(Paint.valueOf("white"));
         this.setText(course.getCourseName());
-        this.setPadding(new Insets(0,3,0,0));
+        this.setPadding(new Insets(0,3,0,3));
         this.setAlignment(Pos.CENTER_RIGHT);
         if(setTooltip){
             this.setPrefWidth(86);

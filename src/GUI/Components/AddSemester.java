@@ -2,7 +2,6 @@ package GUI.Components;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.HBox;
-
 import java.util.ArrayList;
 
 public class AddSemester extends HBox{

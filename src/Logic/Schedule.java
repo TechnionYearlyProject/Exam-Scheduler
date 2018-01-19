@@ -210,7 +210,7 @@ public class Schedule {
 
     //this function assigns all courses listed in constraint list to associated days
     //If constraints of conflicted courses overlap: throws exception
-    private void assignConstraints(ConstraintList constraintList, List<Course> courses) throws CanNotBeScheduledException{
+    private void assignConstraints(ConstraintList constraintList, List<Course> courses) {
         if (constraintList == null){
             return;
         }
@@ -220,25 +220,7 @@ public class Schedule {
             for (int i = 0; i < schedulable_days.size(); i++){
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
-                    boolean assigned = false;
-                    for (int param = course.getDaysBefore()/2; param >= 0; param--){
-                        try {
-                            if(day.canBeAssigned(course)){
-                                this.assignCourse(course, i);
-                                assigned = true;
-                            } else {
-                                course.setDaysBefore(course.getDaysBefore() - 1);
-                            }
-                        } catch (IllegalDaysBefore e){
-                            throw new CanNotBeScheduledException(courseId);
-                        }
-                        if (assigned){
-                            break;
-                        }
-                    }
-                    if (!assigned) {
-                        throw new CanNotBeScheduledException(courseId);
-                    }
+                    this.assignCourse(course, i);
                 }
             }
         }
@@ -312,7 +294,7 @@ public class Schedule {
         }
     }
 
-    public Boolean isMovePossible(Course course, LocalDate new_date) {
+    public Boolean isMovePossible(Course course, LocalDate new_date, CourseLoader courseLoader) {
         Integer days_before = course.getDaysBefore();
         Integer index = 0;
         Set<Integer> other_courses = null;
@@ -329,10 +311,11 @@ public class Schedule {
             Integer other_days_before = day.courses.get(other_course);
             if (other_days_before <= 0) {
                 if (course.getConflictCourses().get(other_course) != null)
-                    return false;
+                    if (courseLoader.getCourse(other_course).getDaysBefore() != (-1*other_days_before))
+                        return false;
             }
             else {
-                if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<=days_before))
+                if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<days_before))
                     return false;
             }
         }
@@ -348,5 +331,21 @@ public class Schedule {
             }
         }
         return null;
+    }
+
+    public int daysBetween(LocalDate date1, LocalDate date2) {
+        int index1 = -1;
+        int index2 = -1;
+        int index = 0;
+        for (Day day:schedulable_days) {
+            if (day.date.isEqual(date1))
+                index1=index;
+            if (day.date.isEqual(date2))
+                index2=index;
+            index++;
+        }
+        if (index1<index2)
+            return index2-index1;
+        return index1-index2;
     }
 }

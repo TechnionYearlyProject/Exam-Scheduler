@@ -1,5 +1,7 @@
 package Logic;
 
+import db.Constraint;
+import db.ConstraintList;
 import db.Database;
 import db.Semester;
 import org.junit.Before;
@@ -9,29 +11,35 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class ScheduleTest {
     Database db;
-    CourseLoader loader;
+    CourseLoader loaderA;
+    CourseLoader loaderB;
     Semester semester;
     Schedule moedA;
     Schedule moedB;
 
-    final static int EXAM_DAYS_MOED_A = 23;
+    final static int EXAM_DAYS_MOED_A = 22;
     final static int EXAM_DAYS_MOED_B = 16;
     @Before
     public void setUp() throws Exception {
         db = new Database();
         db.loadSemester(2017, "winter_test");
         semester = db.getSemester(2017, "winter_test");
-        loader = new CourseLoader(semester, null);
+        ConstraintList constraintList = new ConstraintList();
+        constraintList.constraints = semester.getConstraintLists(Semester.Moed.MOED_A);
+        loaderA = new CourseLoader(semester, constraintList);
         moedA = new Schedule(LocalDate.of(2018, 1, 29), LocalDate.of(2018, 2, 22), null);
         HashSet<LocalDate> occupied = new HashSet<>();
         occupied.add(LocalDate.of(2018, 3, 1));
         occupied.add(LocalDate.of(2018, 3, 2));
-        moedB = new Schedule(LocalDate.of(2018, 2, 23), LocalDate.of(2018, 3, 19), occupied,  20);
+        constraintList.constraints = semester.getConstraintLists(Semester.Moed.MOED_B);
+        loaderB = new CourseLoader(semester, constraintList);
+        moedB = new Schedule(LocalDate.of(2018, 2, 27), LocalDate.of(2018, 3, 19), occupied,  20);
     }
 
     @Test
@@ -66,10 +74,10 @@ public class ScheduleTest {
 
     @Test
     public void assignCourse() throws Exception {
-        for (Course course: loader.getSortedCourses()){
+        for (Course course: loaderA.getSortedCourses()){
             moedA.assignCourse(course, course.getCourseID() % EXAM_DAYS_MOED_A);
         }
-        for (Course course: loader.getSortedCourses()){
+        for (Course course: loaderA.getSortedCourses()){
             int counter = -course.getDaysBefore();
             int index = counter + (course.getCourseID() % EXAM_DAYS_MOED_A);
             if (index < 0){
@@ -86,15 +94,24 @@ public class ScheduleTest {
 
     @Test
     public void produceSchedule() throws Exception { //this is test for legal schedule
-        moedA.produceSchedule(loader, semester.constraints.get(Semester.Moed.MOED_A), null);
-        for (Course course: loader.getSortedCourses()){
+        moedA.produceSchedule(loaderA, semester.constraints.get(Semester.Moed.MOED_A), null);
+        for (Course course: loaderA.getSortedCourses()){
             assert(isCourseInSchedule(moedA, course.getCourseID()));
-            assert(isCourseConflictsRequirementsMet(moedA, course, true));
+            if (findDateToScheduleConstraint(course.getConstraints()) == null){
+                assert(isCourseConflictsRequirementsMet(moedA, course, true));
+            } else {
+                assert(courseAssignedToConstraintDate(moedA, course));
+            }
         }
-        moedB.produceSchedule(loader, semester.constraints.get(Semester.Moed.MOED_B), moedA);
-        for (Course course: loader.getSortedCourses()){
+        moedB.produceSchedule(loaderB, semester.constraints.get(Semester.Moed.MOED_B), moedA);
+        for (Course course: loaderB.getSortedCourses()){
             assert(isCourseInSchedule(moedB, course.getCourseID()));
-            assert(isCourseConflictsRequirementsMet(moedB, course, false));
+            if (findDateToScheduleConstraint(course.getConstraints()) == null){
+                assert(isCourseConflictsRequirementsMet(moedB, course, false));
+            } else {
+                assert(courseAssignedToConstraintDate(moedB, course));
+            }
+
         }
         //Print schedule (just for interest)
         System.out.println("============ MOED A ============");
@@ -150,5 +167,22 @@ public class ScheduleTest {
                 }
             }
         }
+    }
+
+    private LocalDate findDateToScheduleConstraint(List<Constraint> constraints){
+        for (Constraint constraint: constraints){
+            if (!constraint.forbidden){
+                return constraint.date;
+            }
+        }
+        return null;
+    }
+
+    private boolean courseAssignedToConstraintDate(Schedule schedule, Course course){
+        LocalDate date = findDateToScheduleConstraint(course.getConstraints());
+        if (date == null){
+            return true;
+        }
+        return date.equals(schedule.getDayWhenScheduled(course.getCourseID()).getDate());
     }
 }

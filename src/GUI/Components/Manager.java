@@ -43,7 +43,8 @@ public class Manager extends HBox {
             occupiedB = new HashSet<LocalDate>();
         }
         catch (Exception e) {
-            //handle exceptions
+            new AlertBox(AlertType.ERROR,"שגיאה בקריאה ממסד הנתונים. התוכנית תיסגר.",null,true);
+            System.exit(1);
         }
         wrapper = parent;
         been_scheduled = false;
@@ -138,16 +139,11 @@ public class Manager extends HBox {
         Bend = LocalDate.now().plusDays(72);
         A.cleanData(Astart, Aend);
         B.cleanData(Bstart, Bend);
-        try {
-            constraintlistA = new ConstraintList();
-            constraintlistB = new ConstraintList();
-            occupiedA = new HashSet<LocalDate>();
-            occupiedB = new HashSet<LocalDate>();
-            wrapper.manager.coursetable.setScheduled(false);
-        }
-        catch (Exception e) {
-            //handle exceptions
-        }
+        constraintlistA = new ConstraintList();
+        constraintlistB = new ConstraintList();
+        occupiedA = new HashSet<LocalDate>();
+        occupiedB = new HashSet<LocalDate>();
+        wrapper.manager.coursetable.setScheduled(false);
         A.picker1.enable();
         A.picker2.enable();
         B.picker1.enable();
