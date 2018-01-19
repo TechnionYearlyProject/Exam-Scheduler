@@ -1,245 +1,106 @@
-//package Output;
-//
-//import Logic.CourseLoader;
-//import Logic.Day;
-//import Output.Exceptions.ErrorOpeningFile;
-//
-//import java.io.*;
-//import java.time.DayOfWeek;
-//import java.time.LocalDate;
-//import java.time.Month;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static java.time.temporal.ChronoUnit.DAYS;
-//
-//public class CalendarFileWriter implements IFileWriter{
-//    private static final String COMMA_DELIMITER = ",";
-//    private static final String WEEK = "SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY";
-//    //private static final String WEEK_ = "ראשון,שני,שלישי,רביעי,חמישי,שישי,שבת";
-//    @Override
-//    public void write(String fileName, List<Day> lst, CourseLoader cL) throws ErrorOpeningFile {
-//        ArrayList<Day> tmpLst = new ArrayList<>(lst);
-//        fixDaysArray(tmpLst);
-//        PrintWriter writer = null;
-//        try {
-//            writer = new PrintWriter(fileName, "UTF-8");
-//        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//        StringBuilder sb = new StringBuilder();
-//        writer.println(WEEK);
-//        int numOfDay = 0;
-//        int offset = 0;
-//        ArrayList<Day> weekDays = new ArrayList<>();
-//        for (Day d : lst) {
-//            LocalDate lD = d.getDate();
-//            int currentDayOffset = offsetFromStartOfWeek(lD);
-//            if (numOfDay == 0) {
-//                offset = currentDayOffset;
-//                appendNCommas(sb, offset);
-//            }
-//            weekDays.add(d);
-//            numOfDay++;
-//            if (lD.getDayOfWeek() == DayOfWeek.SATURDAY) {
-//                printDates(weekDays, offset, sb);
-//                printExamsOfWeek(sb, weekDays, offset, cL);
-//                weekDays.clear();
-//                offset = 0;
-//                sb.append(String.format("%n"));
-//            } else {
-//                if (numOfDay == lst.size()) {
-//                    printDates(weekDays, offset, sb);
-//                    printExamsOfWeek(sb, weekDays, offset, cL);
-//                }
-//            }
-//        }
-//        writer.print(sb.toString());
-//        writer.close();
-//    }
-//
-//
-//    private void fixDaysArray(List<Day> lst){
-//        long days = DAYS.between(lst.get(0).getDate(), lst.get(lst.size()-1).getDate());
-//        for(int i =0;i<days - 1;i++){
-//            LocalDate current = lst.get(i).getDate();
-//            LocalDate next = lst.get(i+1).getDate();
-//            long daysBetween = DAYS.between(current, next);
-//            for (int j = 1;j<daysBetween;j++){
-//                LocalDate toAdd = LocalDate.of(current.getYear(),current.getMonthValue(),current.getDayOfMonth());
-//                lst.add(i+j,new Day(toAdd.plusDays(1)));
-//            }
-//        }
-//    }
-//
-//
-//    private int offsetFromStartOfWeek(LocalDate localDate) {
-//        int weekStart = 0;
-//        switch (localDate.getDayOfWeek()) {
-//            case SUNDAY:
-//                break;
-//            case MONDAY:
-//                weekStart = 1;
-//                break;
-//            case TUESDAY:
-//                weekStart = 2;
-//                break;
-//            case WEDNESDAY:
-//                weekStart = 3;
-//                break;
-//            case THURSDAY:
-//                weekStart = 4;
-//                break;
-//            case FRIDAY:
-//                weekStart = 5;
-//                break;
-//            case SATURDAY:
-//                weekStart = 6;
-//            default:
-//                break;
-//        }
-//        return weekStart;
-//    }
-//
-//    private void printExamsOfWeek(StringBuilder s, ArrayList<Day> weekDays,int weekStart,CourseLoader cL){
-//
-//        int maxExams = 0;
-//
-//        for (Day d:weekDays) {
-//            if(d.getCoursesScheduledToTheDay().size() > maxExams){
-//                maxExams = d.getCoursesScheduledToTheDay().size();
-//            }
-//        }
-//        for(int i=0;i<maxExams;i++){
-//            appendNCommas(s,weekStart);
-//            for (Day d:weekDays) {
-//                if(d.getNumOfCourses() > i){
-//                    int courseID =d.getCoursesScheduledToTheDay().get(i);
-//                    s.append(Integer.toString(courseID));
-//                    s.append("~");
-//                    s.append(cL.getCourse(courseID).getCourseName());
-//                }
-//                s.append(COMMA_DELIMITER);
-//            }
-//            s.append(String.format("%n"));
-//        }
-//    }
-//
-//    private void printDates(ArrayList<Day> days, int n,StringBuilder sb){
-//        //appendNCommas(sb,n);
-//        for (Day d: days){
-//            sb.append(d.getDate().getDayOfMonth());
-//            sb.append("/");
-//            sb.append(d.getDate().getMonthValue());
-//            sb.append("/");
-//            sb.append(d.getDate().getYear());
-//            sb.append(COMMA_DELIMITER);
-//        }
-//        sb.append(String.format("%n"));
-//    }
-//
-//    private void appendNCommas(StringBuilder s,int n){
-//        for(int i=0;i<n;i++){
-//            s.append(COMMA_DELIMITER);
-//        }
-//    }
-//
-//    public void simpleTest(){
-//        Day d1 = new Day(LocalDate.of(2018, Month.JANUARY,17));
-//        Day d2 = new Day(LocalDate.of(2018, Month.JANUARY,18));
-//        Day d3 = new Day(LocalDate.of(2018, Month.JANUARY,19));
-//        Day d4 = new Day(LocalDate.of(2018, Month.JANUARY,21));
-//        //Day d5 = new Day(LocalDate.of(2018, Month.JANUARY,22));
-//        Day d6 = new Day(LocalDate.of(2018, Month.JANUARY,23));
-//
-//        d1.insertCourse(234123,0);
-//        d1.insertCourse(234124,0);
-//        d1.insertCourse(234125,0);
-//        d1.insertCourse(234123,0);
-//        d2.insertCourse(236124,0);
-//        d2.insertCourse(236125,0);
-//        d3.insertCourse(236123,0);
-//        d3.insertCourse(238124,0);
-//        d3.insertCourse(238125,0);
-//        d4.insertCourse(238126,0);
-//        d6.insertCourse(238127,0);
-//        d6.insertCourse(238128,0);
-//
-//        ArrayList<Day> days = new ArrayList<>();
-//        days.add(d1);
-//        days.add(d2);
-//        days.add(d3);
-//        days.add(d4);
-//        //days.add(d5);
-//        days.add(d6);
-//        try {
-//            write("outpu.csv",days,null);
-//        } catch (ErrorOpeningFile errorOpeningFile) {
-//            errorOpeningFile.printStackTrace();
-//        }
-//
-//    }
-//}
-
 package Output;
 
 import Logic.CourseLoader;
 import Logic.Day;
 import Output.Exceptions.ErrorOpeningFile;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+/*
+ * @author: ucfBader
+ * @date: 16/01/2018.
+ * in this class we write the schedule as Calendar like file(csv format) in the following format: dayOfWeek
+ *                                                                                                dateOfDay
+ *                                                                                                COURSES scheduled to this day
+ * the user will be able to open the final schedule as Calendar file containing all relevant data for chosen exam period.
+ */
 public class CalendarFileWriter implements IFileWriter{
     private static final String COMMA_DELIMITER = ",";
-    private static final String WEEK = "SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY";
-
+    private static final String[] WEEK = {"שבת","שישי","חמישי","רביעי","שלישי","שני","ראשון"};
+    private String[][] examsCalendar;
+    /*
+     * @param: filename: the wanted filename (output.xml) as default.
+     * @lst: the schedule days, each day contains list of courses scheduled in that day.
+     * @cL: courseLoader class instance, in order to get courseName.
+     */
     @Override
     public void write(String fileName, List<Day> lst, CourseLoader cL) throws ErrorOpeningFile {
+
         ArrayList<Day> fixedArray = new ArrayList<>(lst);
         fixDaysArray(fixedArray);
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(fileName, "UTF-8");
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("מועדי א");
+        LocalDate firstExam = lst.get(0).getDate();
+        LocalDate lastExam = lst.get(lst.size()-1).getDate();
+        long daysBetween = DAYS.between(firstExam,lastExam);
+        int weeks = (int)daysBetween/6 + 1;
+        examsCalendar = new String[weeks*5][7];
+        examsCalendar[0] = WEEK;
 
-        StringBuilder sb = new StringBuilder();
-        writer.println(WEEK);
+
+
         int numOfDay = 0, offset = 0;
+        int row = 1;
         ArrayList<Day> weekDays = new ArrayList<>();
+
         for (Day d : fixedArray) {
             LocalDate lD = d.getDate();
-            int currentDayOffset = offsetFromStartOfWeek(lD);
-            if (numOfDay == 0) {
-                offset = currentDayOffset;
-                appendNCommas(sb, offset);
-            }
             weekDays.add(d);
             numOfDay++;
             if (lD.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                printDates(weekDays, offset, sb);
-                printExamsOfWeek(sb, weekDays, offset, cL);
+                printDates(weekDays, 6 - offset,row);
+                row++;
+                row=printExamsOfWeek(weekDays, 6 - offset, cL,row);
+                row++;
                 weekDays.clear();
                 offset = 0;
-                sb.append(String.format("%n"));
-            } else {
-                if (numOfDay == lst.size()) {
-                    printDates(weekDays, offset, sb);
-                    printExamsOfWeek(sb, weekDays, offset, cL);
-                }
             }
         }
-        writer.print(sb.toString());
-        writer.close();
+
+        int rowNum=0;
+
+        for (String[] week: examsCalendar){
+            Row r = sheet.createRow(rowNum);
+            int colNum = 0;
+            for (String field: week){
+                Cell cell = r.createCell(colNum);
+                CellStyle style = workbook.createCellStyle();
+                style.setAlignment(HorizontalAlignment.RIGHT);
+                if (field != null) {
+                    if(rowNum == 0){
+                        Font font = workbook.createFont();
+                        font.setColor(IndexedColors.CORAL.getIndex());
+                        style.setFont(font);
+                    } else {
+                        if(rowNum % 5 == 1){
+                            Font font = workbook.createFont();
+                            font.setColor(IndexedColors.BLUE.getIndex());
+                            style.setFont(font);
+                        }
+                    }
+
+                    cell.setCellValue(field);
+                    style.setAlignment(HorizontalAlignment.RIGHT);//setting each cell alignment.
+                    cell.setCellStyle(style);
+                }
+                colNum++;
+            }
+            rowNum++;
+        }
+        writeFile(fileName, workbook);
     }
+
+
 
     private void fixDaysArray(List<Day> lst){
         long days = DAYS.between(lst.get(0).getDate(), lst.get(lst.size()-1).getDate());
@@ -252,113 +113,56 @@ public class CalendarFileWriter implements IFileWriter{
                 lst.add(i+j,new Day(toAdd.plusDays(1)));
             }
         }
-    }
 
-
-    private int offsetFromStartOfWeek(LocalDate localDate) {
-        int weekStart = 0;
-        switch (localDate.getDayOfWeek()) {
-            case SUNDAY:
-                break;
-            case MONDAY:
-                weekStart = 1;
-                break;
-            case TUESDAY:
-                weekStart = 2;
-                break;
-            case WEDNESDAY:
-                weekStart = 3;
-                break;
-            case THURSDAY:
-                weekStart = 4;
-                break;
-            case FRIDAY:
-                weekStart = 5;
-                break;
-            case SATURDAY:
-                weekStart = 6;
-            default:
-                break;
+        while(lst.get(0).getDate().getDayOfWeek() != DayOfWeek.SUNDAY){
+            LocalDate current = lst.get(0).getDate();
+            LocalDate prevDay = LocalDate.of(current.getYear(),current.getMonthValue(),current.getDayOfMonth());
+            lst.add(0,new Day(prevDay.minusDays(1)));
         }
-        return weekStart;
+        while(lst.get(lst.size()-1).getDate().getDayOfWeek() != DayOfWeek.SATURDAY){
+            LocalDate current = lst.get(lst.size()-1).getDate();
+            LocalDate nextDay = LocalDate.of(current.getYear(),current.getMonthValue(),current.getDayOfMonth());
+            lst.add(new Day(nextDay.plusDays(1)));
+        }
     }
-
-    private void printExamsOfWeek(StringBuilder s, ArrayList<Day> weekDays,int weekStart,CourseLoader cL){
+    private int printExamsOfWeek(ArrayList<Day> weekDays,int weekStart,CourseLoader cL, int row) {
 
         int maxExams = 0;
-
-        for (Day d:weekDays) {
-            if(d.getCoursesScheduledToTheDay().size() > maxExams){
+        int newRow = row;
+        for (Day d : weekDays) {
+            if (d.getCoursesScheduledToTheDay().size() > maxExams) {
                 maxExams = d.getCoursesScheduledToTheDay().size();
             }
         }
-        for(int i=0;i<maxExams;i++){
-            appendNCommas(s,weekStart);
-            for (Day d:weekDays) {
-                if(d.getNumOfCourses() > i){
-                    int courseID =d.getCoursesScheduledToTheDay().get(i);
-                    s.append(Integer.toString(courseID));
+        for (int i = 0; i < maxExams; i++) {
+            int col = weekStart;
+            for (Day d : weekDays) {
+                StringBuilder s = new StringBuilder();
+                if (d.getNumOfCourses() > i) {
+                    int courseID = d.getCoursesScheduledToTheDay().get(i);
+
+                    s.append(String.format("%06d", courseID));
                     s.append(" ");
                     s.append(cL.getCourse(courseID).getCourseName());
+
+                    examsCalendar[newRow][col] = s.toString();
                 }
-                s.append(COMMA_DELIMITER);
+                col--;
             }
-            s.append(String.format("%n"));
+            newRow++;
         }
+        return newRow;
     }
 
-    private void printDates(ArrayList<Day> days, int n,StringBuilder sb){
-        //appendNCommas(sb,n);
+    private void printDates(ArrayList<Day> days,int col,int row){
+
         for (Day d: days){
-            sb.append(d.getDate().getDayOfMonth());
-            sb.append("/");
-            sb.append(d.getDate().getMonthValue());
-            sb.append("/");
-            sb.append(d.getDate().getYear());
-            sb.append(COMMA_DELIMITER);
+            String sb = String.format("%02d", d.getDate().getDayOfMonth()) +
+                    "/" +
+                    String.format("%02d", d.getDate().getMonthValue()) +
+                    "/" +
+                    d.getDate().getYear();
+            examsCalendar[row][col--] = sb;
         }
-        sb.append(String.format("%n"));
-    }
-
-    private void appendNCommas(StringBuilder s,int n){
-        for(int i=0;i<n;i++){
-            s.append(COMMA_DELIMITER);
-        }
-    }
-
-    public void simpleTest(){
-        Day d1 = new Day(LocalDate.of(2018, Month.JANUARY,17));
-        Day d2 = new Day(LocalDate.of(2018, Month.JANUARY,18));
-        Day d3 = new Day(LocalDate.of(2018, Month.JANUARY,19));
-        Day d4 = new Day(LocalDate.of(2018, Month.JANUARY,21));
-        //Day d5 = new Day(LocalDate.of(2018, Month.JANUARY,22));
-        Day d6 = new Day(LocalDate.of(2018, Month.JANUARY,23));
-
-        d1.insertCourse(234123,0);
-        d1.insertCourse(234124,0);
-        d1.insertCourse(234125,0);
-        d1.insertCourse(234123,0);
-        d2.insertCourse(236124,0);
-        d2.insertCourse(236125,0);
-        d3.insertCourse(236123,0);
-        d3.insertCourse(238124,0);
-        d3.insertCourse(238125,0);
-        d4.insertCourse(238126,0);
-        d6.insertCourse(238127,0);
-        d6.insertCourse(238128,0);
-
-        ArrayList<Day> days = new ArrayList<>();
-        days.add(d1);
-        days.add(d2);
-        days.add(d3);
-        days.add(d4);
-        //days.add(d5);
-        days.add(d6);
-        try {
-            write("outpu.csv",days,null);
-        } catch (ErrorOpeningFile errorOpeningFile) {
-            errorOpeningFile.printStackTrace();
-        }
-
     }
 }
