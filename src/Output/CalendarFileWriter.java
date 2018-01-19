@@ -44,21 +44,21 @@ public class CalendarFileWriter implements IFileWriter{
         LocalDate lastExam = lst.get(lst.size()-1).getDate();
         long daysBetween = DAYS.between(firstExam,lastExam);
         int weeks = (int)daysBetween/6 + 1;
-        examsCalendar = new String[weeks*5][7];
+        examsCalendar = new String[weeks*10][7];
         examsCalendar[0] = WEEK;
+        List<Integer> datesLines = new ArrayList<>();
 
 
-
-        int numOfDay = 0, offset = 0;
+        int offset = 0;
         int row = 1;
         ArrayList<Day> weekDays = new ArrayList<>();
 
         for (Day d : fixedArray) {
             LocalDate lD = d.getDate();
             weekDays.add(d);
-            numOfDay++;
             if (lD.getDayOfWeek() == DayOfWeek.SATURDAY) {
                 printDates(weekDays, 6 - offset,row);
+                datesLines.add(row);
                 row++;
                 row=printExamsOfWeek(weekDays, 6 - offset, cL,row);
                 row++;
@@ -82,7 +82,7 @@ public class CalendarFileWriter implements IFileWriter{
                         font.setColor(IndexedColors.CORAL.getIndex());
                         style.setFont(font);
                     } else {
-                        if(rowNum % 5 == 1){
+                        if(datesLines.contains(rowNum)){
                             Font font = workbook.createFont();
                             font.setColor(IndexedColors.BLUE.getIndex());
                             style.setFont(font);
