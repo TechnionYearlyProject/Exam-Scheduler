@@ -1,5 +1,6 @@
 package GUI.Components;
 import Logic.Course;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -70,6 +71,25 @@ public class Test extends Label{
             Scene scene = new Scene(new Test(null, course,false));
             db.setDragView(scene.snapshot(null));
             event.consume();
+        });
+        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 2){
+                        if (day.schedule.moed.manager.been_scheduled)
+                        {
+                            if (day.schedule.moed.moedType == Moed.MoedType.A)
+                                day.schedule.moed.manager.scheduleA.unassignCourse(course);
+                            else
+                                day.schedule.moed.manager.scheduleB.unassignCourse(course);
+                            day.removeTest(course.getCourseID());
+                        }
+                        else
+                            day.removeCourse(course);
+                    }
+                }
+            }
         });
     }
     public void setColor(boolean isBright){
