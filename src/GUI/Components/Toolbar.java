@@ -2,8 +2,8 @@ package GUI.Components;
 import Logic.CourseLoader;
 import Logic.Exceptions.IllegalRange;
 import Logic.Schedule;
-import Output.CSVFileWriter;
 import Output.CalendarFileWriter;
+import Output.ExcelFileWriter;
 import Output.IFileWriter;
 import Output.XMLFileWriter;
 import db.Semester;
@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -112,12 +113,12 @@ public class Toolbar extends HBox{
             }
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            CustomButton CSVButton = buildExportOption("יצא בתור CSV","csv",
-                    "csv",new CSVFileWriter(), stage);
+            CustomButton CSVButton = buildExportOption("יצא בתור Excel","excel",
+                    "xlsx",new ExcelFileWriter(), stage);
             CustomButton XMLButton = buildExportOption("יצא בתור XML","xml",
                     "xml",new XMLFileWriter(), stage);
             CustomButton CalendarButton = buildExportOption("יצא בתור Calendar","calendar",
-                    "csv",new CalendarFileWriter(), stage);
+                    "xlsx",new CalendarFileWriter(), stage);
             CustomButton ImageButton = buildExportImage("יצא בתור PNG",stage);
             VBox vbox = new VBox(CSVButton,XMLButton,CalendarButton, ImageButton);
             vbox.setSpacing(1);
