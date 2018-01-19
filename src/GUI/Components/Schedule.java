@@ -39,6 +39,8 @@ public class Schedule extends GridPane{
         LocalDate current;
         if (input_start.getDayOfWeek().name() == "SUNDAY")
             current = start;
+        else if (input_start.getDayOfWeek().name() == "SATURDAY")
+            current = input_start.plusDays(1);
         else
             current = input_start.minusDays(input_start.getDayOfWeek().ordinal()+1);
 
