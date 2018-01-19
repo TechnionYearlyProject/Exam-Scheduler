@@ -79,7 +79,7 @@ public class Schedule {
                     }
                 }
                 //Check if heuristic value in the day is better than all previous
-                if (newHeuristicValue < heuristicValue) {
+                if((course.isLast() && newHeuristicValue <= heuristicValue) || (newHeuristicValue < heuristicValue)){
                     bestIndex = i;
                     heuristicValue = newHeuristicValue;
                 }
@@ -226,6 +226,7 @@ public class Schedule {
      */
     public void produceSchedule(CourseLoader courseloader, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
         //sort courses by number of conflicts
+        courseloader.sortCourses();
         List<Course> courses = courseloader.getSortedCourses();
         //First need to schedule courses with constraints
         this.assignConstraints(cl, courses);
@@ -417,7 +418,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
-     * The method find date to which a course must be scheduled. Returns the date or null, if there is no such constraintr
+     * The method finds date to which a course must be scheduled. Returns the date or null, if there is no such constraintr
      */
     private LocalDate findDateToScheduleConstraint(List<Constraint> constraints){
         for (Constraint constraint: constraints){
@@ -455,7 +456,9 @@ public class Schedule {
     private boolean tryToScheduleCourseInto(int index, Integer uniformity, Course course) {
         Day day = schedulable_days.get(index);
         if (uniformity != null && day.getNumOfCourses() > uniformity){
-            return false;
+            if (!(course.isLast() || course.isFirst())){ //we give up on uniformity in favor of last/first
+                return false;
+            }
         }
         if (day.canBeAssigned(course)){
             unassignCourse(course);
@@ -465,4 +468,5 @@ public class Schedule {
             return false;
         }
     }
+
 }
