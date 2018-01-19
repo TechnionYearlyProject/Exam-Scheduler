@@ -1,12 +1,15 @@
 package Logic;
 import db.Constraint;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
-/*The class represents an exam day. Contains info about distance between the day and day, when an exam for a course is scheduled*/
+/**
+ * @author dorbartov
+ * @date 05/12/2018
+ * The class represents an exam day. each course assigned here will have a matching integer. 0 if that is the day the
+ * test will be held. negative int if the day is within the range of days assigned to study for the course. positive
+ * int if the course has been scheduled earlier.
+ */
 public class Day {
     LocalDate date;
     HashMap<Integer,Integer> courses;
