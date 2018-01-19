@@ -9,6 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+/**
+ * @author Tal
+ * @date 12/12/2017
+ * Implementing the Button across the GUI. Design and functionality.
+ */
+
 public class CustomButton extends HBox {
     private Runnable function;
     private boolean isCircle;

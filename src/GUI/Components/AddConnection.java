@@ -28,6 +28,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.util.Map;
 
+/**
+ * @author Tal
+ * @date 15/1/2018
+ * Implementing the Connection between courses window (last column button in the CourseTable), all the design and functionality
+ */
+
 public class AddConnection {
 	ImageView X_icon;
 	ImageView X_hover_icon;

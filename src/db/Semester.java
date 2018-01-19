@@ -53,9 +53,7 @@ public class Semester {
     }
 
     public List<String> getStudyProgramCollection() {
-        List<String> list = new ArrayList<>();
-        list.addAll(programs);
-        return list;
+        return new ArrayList<>(programs);
     }
 
     public void addCourse(int courseId, String name, double creditPoint, int daysBefore, boolean isFirst, boolean isLast,
@@ -75,6 +73,9 @@ public class Semester {
         courses.remove(courseId);
         for (Schedule schedule: schedules.values()) {
             schedule.unscheduleCourse(courseId);
+        }
+        for (ConstraintList list: constraints.values()) {
+            list.constraints.remove(courseId);
         }
     }
 

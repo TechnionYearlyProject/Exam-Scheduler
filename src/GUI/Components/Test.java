@@ -13,6 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Tal
+ * @date 5/12/2017
+ * Implements the design and functionality of a single test in the calendar.
+ */
+
 public class Test extends Label{
     Course course;
     Day day;
