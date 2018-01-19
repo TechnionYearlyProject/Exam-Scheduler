@@ -71,7 +71,7 @@ public class Course {
         return programs;
     }
 
-    public Integer getCourseID() {
+    public int getCourseID() {
         return courseID;
     }
 
@@ -90,14 +90,14 @@ public class Course {
         return daysBefore;
     }
 
-    void setAsFirst(boolean isFirst) {
+    public void setAsFirst(boolean isFirst) {
         if (isFirst) {
             this.isLast = false;
         }
         this.isFirst = isFirst;
     }
 
-    void setAsLast(boolean isLast) {
+    public void setAsLast(boolean isLast) {
         if (isLast) {
             this.isFirst = false;
         }
