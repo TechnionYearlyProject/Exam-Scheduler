@@ -134,6 +134,12 @@ public class Toolbar extends HBox{
                 File fileB = new File(System.getProperty("user.home") + "\\Desktop\\MoedB_output.png");
                 ImageIO.write(SwingFXUtils.fromFXImage(imageA, null),"png",fileA);
                 ImageIO.write(SwingFXUtils.fromFXImage(imageB, null),"png",fileB);
+                try {
+                    Desktop.getDesktop().open(fileB);
+                    Desktop.getDesktop().open(fileA);
+                } catch (Exception e){
+                    new AlertBox(AlertType.ERROR,"שגיאה בפתיחת הקובץ.",null);
+                }
                 stage.close();
             } catch (Exception e) {
                 new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
