@@ -3,25 +3,20 @@ import Logic.Exceptions.IllegalDaysBefore;
 import Logic.Exceptions.IllegalRange;
 import db.Constraint;
 import db.ConstraintList;
-import db.Database;
-import db.Semester;
 import javafx.util.Pair;
-
 import java.time.LocalDate;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.List;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
-import java.time.temporal.ChronoUnit;
-
 import static java.time.temporal.ChronoUnit.DAYS;
-/*
-* The class is intent for producing optimized schedule.
-*/
 
+/**
+ * @author moiseivainbaum dorbartov
+ * @date 05/12/2017
+ * The class is intent for producing optimized schedule.
+ * this class contains the datatype in which we manage schedulable days and the tests scheduled to them, as well as all
+ * the functions implementing our algorithm.
+ */
 public class Schedule {
     ArrayList<Day> schedulable_days;
     private int gap; //This parameter is relevant only for moed B schedule, and shows how many days should be between exams on same course
@@ -31,8 +26,12 @@ public class Schedule {
         }
     };
     private ScheduleHeuristic heuristic;
-    /*This inner class intented for finding day for course to be assigned when legal schedule is going to be produced.
-    * The search for the day is based on heuristic, which tries to maximize remaining space for all specializations*/
+
+    /**
+     * @author moiseivainbaum
+     * This inner class intented for finding day for course to be assigned when legal schedule is going to be produced.
+     * The search for the day is based on heuristic, which tries to maximize remaining space for all specializations
+     */
     private class ScheduleHeuristic {
         //In this field contained mapping between pair (specialization, semester) and list of days
         //List of days show what days are free for scheduling for the pair
@@ -125,11 +124,16 @@ public class Schedule {
         }
     }
 
-    /*Params:
-    *   begin - first day of exams period
-    *   end - last day of exams period
-    *   occupied - days when impossible to schedule.
-    *       All Saturdays excluded from scheduling automatically, no need to worry about them*/
+
+    /**
+     * @author dorbartov
+     * @date 05/12/2017
+     * All Saturdays excluded from scheduling automatically, no need to worry about them.
+     * @param begin begin date of schedule.
+     * @param end end date of schedule.
+     * @param occupied days in which tests cannot be scheduled.
+     * @throws IllegalRange if the dates create a schedule which is not legal. All Saturdays excluded from scheduling automatically, no need to worry about them
+     */
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied) throws IllegalRange {
         if (occupied == null){
             occupied = new HashSet<>();
