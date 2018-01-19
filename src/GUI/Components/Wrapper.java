@@ -4,6 +4,14 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 
+/**
+ * @author Tal
+ * @date 5/12/2017
+ * Class that wraps all the GUI components to a single pane
+ */
+
+
+
 public class Wrapper extends ScrollPane {
     Toolbar toolbar;
     Manager manager;

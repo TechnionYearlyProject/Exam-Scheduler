@@ -24,9 +24,21 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * @author dorbartov
+ * @date 09/01/2018
+ * This class creates the title bar appearing at the top of our window, including the different buttons
+ * appearing in it, used to interact with the application.
+ */
 public class Toolbar extends HBox{
     Wrapper wrapper;
     CustomButton export_button;
+
+    /**
+     * @author dorbartov
+     * @date 09/01/2018
+     * @param parent used to access the containing wrapper and the entire system.
+     */
     public Toolbar(Wrapper parent) {
         wrapper = parent;
         Text main_title = new Text("מערכת שיבוץ לוח מבחנים");
@@ -51,6 +63,10 @@ public class Toolbar extends HBox{
         this.setSpacing(10);
         this.getChildren().addAll(guide_button, export_button, clean_button, schedule_button, title_box);
     }
+
+    /**
+     * @author talgelber
+     */
     public void cleanFunction() {
         new AlertBox(AlertType.CONFIRM, "האם ברצונך לנקות את התוכנית?", () -> wrapper.manager.cleanData());
         for (Day day : wrapper.manager.A.schedule.days.values()){
@@ -67,6 +83,11 @@ public class Toolbar extends HBox{
         wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);
     }
 
+    /**
+     * @author dorbartov
+     * @date 15/01/2018
+     * the function called when pressing the guide button. opens the pdf guide written by us.
+     */
     public void guideFunction() {
         Path curr = Paths.get("");
         String s = curr.toAbsolutePath().toString() + "\\documentation\\Manual.pdf";
@@ -78,6 +99,9 @@ public class Toolbar extends HBox{
         }
     }
 
+    /**
+     * @author roeyashkenazy
+     */
     public void exportFunction() {
         export_button.setOnMouseClicked(event->{
             if(!wrapper.manager.been_scheduled){
@@ -116,15 +140,27 @@ public class Toolbar extends HBox{
         CustomButton button = new CustomButton(msg,null, ()->{
             try {
                 writer.write(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                String s = System.getProperty("user.home") + "\\Desktop\\" + fileType + "_output."+fileFormat;
+                File file = new File(s);
+                Desktop.getDesktop().open(file);
                 stage.close();
-            } catch (ErrorOpeningFile errorOpeningFile) {
-                new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+            } catch (Exception e) {
+                new AlertBox(AlertType.ERROR,"שגיאה בפתיחת הקובץ.",null);
             }
+                
         }, 40,160);
         button.setCircular();
         return button;
     }
 
+    /**
+     * @author dorbartov
+     * @date 17/01/2018
+     * takes a snapshot of the both moed A and B, and saves it to the desktop.
+     * @param msg the message to be displayed on the button
+     * @param stage the current stage
+     * @return
+     */
     private CustomButton buildExportImage(String msg, Stage stage){
         CustomButton button = new CustomButton(msg,null, ()->{
             try {
@@ -134,6 +170,12 @@ public class Toolbar extends HBox{
                 File fileB = new File(System.getProperty("user.home") + "\\Desktop\\MoedB_output.png");
                 ImageIO.write(SwingFXUtils.fromFXImage(imageA, null),"png",fileA);
                 ImageIO.write(SwingFXUtils.fromFXImage(imageB, null),"png",fileB);
+                try {
+                    Desktop.getDesktop().open(fileB);
+                    Desktop.getDesktop().open(fileA);
+                } catch (Exception e){
+                    new AlertBox(AlertType.ERROR,"שגיאה בפתיחת הקובץ.",null);
+                }
                 stage.close();
             } catch (Exception e) {
                 new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
@@ -143,6 +185,11 @@ public class Toolbar extends HBox{
         return button;
     }
 
+    /**
+     * @author dorbartov roeyashkenazy
+     * @date 14/01/2018
+     * this function calls the algorithm to schedule the tests and creates the data types necessary for it.
+     */
     public void scheduleFunction(){
         if (wrapper.manager.been_scheduled) {
             new AlertBox(AlertType.INFO,"לא ניתן לשבץ על לוח קיים. לחצו ניקוי ונסו שוב.",null);
@@ -183,4 +230,5 @@ public class Toolbar extends HBox{
                 current.lock_label.setVisible(false);
         });
     }
+    
 }

@@ -81,7 +81,6 @@ public class CourseLoader {
     }
 
     public List<Logic.Course> getSortedCourses(){
-        sortCourses();
         return this.sortedCoursesList;
     }
 
@@ -93,6 +92,12 @@ public class CourseLoader {
         Collections.sort(sortedCoursesList);
     }
 
+    /**
+     * @author dorbartov
+     * @date 18/01/2018
+     * this functions removes the course with courseID from all data types in courseloader.
+     * @param courseID
+     */
     public void removeCourseCompletely(Integer courseID) {
         for (Logic.Course other_course:courses.values()) {
             other_course.removeConflictCourse(courseID);
@@ -102,6 +107,12 @@ public class CourseLoader {
         sortCourses();
     }
 
+    /**
+     * @author dorbartov
+     * @date 18/01/2018
+     * add a new course to all the data structures in the courseloader
+     * @param course
+     */
     public void addNewCourse(Logic.Course course) {
         Integer id = course.getCourseID();
         String name = course.getCourseName();

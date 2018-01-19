@@ -4,6 +4,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import java.time.LocalDate;
 
+/**
+ * @author dorbartov
+ * @date 03/01/2018
+ * This class creates an instance of a single moed schedule, including the table of days and the date pickers.
+ */
 public class Moed extends VBox{
     public Schedule schedule;
     Picker picker1;
@@ -15,6 +20,15 @@ public class Moed extends VBox{
         A,B
     }
     MoedType moedType;
+
+    /**
+     * @author dorbartov
+     * @date 03/01/2018
+     * @param parent used to access the manager and so the entire system.
+     * @param title name of current moed
+     * @param start start date of moed
+     * @param end end date of moed
+     */
     public Moed(Manager parent, String title,LocalDate start, LocalDate end) {
         if (title == "מועד א'")
             moedType = MoedType.A;

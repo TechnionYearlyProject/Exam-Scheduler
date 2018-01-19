@@ -16,6 +16,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+/**
+ * @author dorbartov
+ * @date 15/01/2018
+ * this class displays the loading box and animation appearing before the schedule is updated.
+ */
 public class LoadingBox {
     ImageView X_icon;
     ImageView X_hover_icon;
@@ -55,11 +60,6 @@ public class LoadingBox {
         Scene scene = new Scene(border, 504, 250);
         stage.setScene(scene);
         stage.show();
-
-
-
-
-
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> {stage.show();}),
                 new KeyFrame(Duration.seconds(5), e -> {stage.close(); func.run();})
@@ -67,8 +67,10 @@ public class LoadingBox {
         timeline.play();
 
     }
+
     public void close() {
         stage.close();
     }
+
 }
 		

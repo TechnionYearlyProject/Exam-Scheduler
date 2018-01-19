@@ -10,6 +10,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+
+/**
+ * @author Tal
+ * @date 28/12/2017
+ * Represent a single row type for the CourseTable.
+ */
+
 public class Item {
     CheckBox take;
     String name;

@@ -8,6 +8,12 @@ import javafx.scene.layout.HBox;
 import java.time.LocalDate;
 import java.util.HashSet;
 
+/**
+ * @author Tal
+ * @date 01/01/2018
+ * Connects between all GUI and Logic classes. saves all relevant data for the project.
+ */
+
 public class Manager extends HBox {
     Moed A;
     Moed B;
