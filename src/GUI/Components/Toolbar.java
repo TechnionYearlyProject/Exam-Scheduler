@@ -140,10 +140,14 @@ public class Toolbar extends HBox{
         CustomButton button = new CustomButton(msg,null, ()->{
             try {
                 writer.write(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                String s = System.getProperty("user.home") + "\\Desktop\\" + fileType + "_output."+fileFormat;
+                File file = new File(s);
+                Desktop.getDesktop().open(file);
                 stage.close();
-            } catch (ErrorOpeningFile errorOpeningFile) {
-                new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+            } catch (Exception e) {
+                new AlertBox(AlertType.ERROR,"שגיאה בפתיחת הקובץ.",null);
             }
+                
         }, 40,160);
         button.setCircular();
         return button;
