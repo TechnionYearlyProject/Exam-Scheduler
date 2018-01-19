@@ -46,7 +46,7 @@ public class Test extends Label{
         if (setTooltip)
             this.setText(course.getCourseName());
         else
-            this.setText(course.getCourseID() + " - " + course.getCourseName());
+            this.setText(String.format("%06d",course.getCourseID()) + " - " + course.getCourseName());
 
         this.setPadding(new Insets(0,3,0,3));
         this.setAlignment(Pos.CENTER_RIGHT);
