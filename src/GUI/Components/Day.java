@@ -21,6 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author dorbartov
+ * @date 03/01/2018
+ * This class creates a single instance of a day appearing in the GUI's schedule, including the particular
+ * date and the tests taking place.
+ */
 public class Day extends VBox{
     static DateTimeFormatter disp_date = DateTimeFormatter.ofPattern("dd/MM");
     HBox hbox;
@@ -32,6 +38,13 @@ public class Day extends VBox{
     LocalDate date;
     boolean blockingAllowed;
     List<Test> testList = new ArrayList<>();
+
+    /**
+     * @author dorbartov
+     * @date 03/01/2018
+     * @param parent used to access the schedule in which the day appears and so the entire system
+     * @param input_date the date to which the day corresponds.
+     */
     public Day(Schedule parent, LocalDate input_date) {
         date = input_date;
         schedule = parent;
@@ -173,6 +186,12 @@ public class Day extends VBox{
                 lock_label.setVisible(false);
         });
     }
+
+    /**
+     * @author dorbartov
+     * @date 03/01/2018
+     * blocks the day from being scheduled into, and undos manual changes made prior
+     */
     private void Block() {
         if(!schedule.moed.manager.been_scheduled) {
             schedule.moed.manager.blockDay(date);
@@ -191,22 +210,26 @@ public class Day extends VBox{
             this.getChildren().add(tests);
         }
     }
+
     private void Enable() {
         schedule.moed.manager.unblockDay(date);
         this.setStyle("-fx-background-color: white");
         tests.setStyle("-fx-background-color: white");
         isBlocked = false;
     }
+
     public void Disable() {
         this.setStyle("-fx-background-color: #ECEFF1");
         tests.setStyle("-fx-background-color: #ECEFF1");
         isBlocked = true;
         this.setDisable(true);
     }
+
     public void disableBlocking(){
         blockingAllowed = false;
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(false));
     }
+
     public void enableBlocking(){
         blockingAllowed = true;
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event -> lock_label.setVisible(true));
@@ -240,6 +263,11 @@ public class Day extends VBox{
         }
     }
 
+    /**
+     * @author dorbartov
+     * @date 17/01/2018
+     * @param courseID id of scheduled course to be removed from this day.
+     */
     public void removeTest(Integer courseID) {
         List<Test> temp = new ArrayList<>(testList);
         int i=0;
