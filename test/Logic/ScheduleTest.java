@@ -122,8 +122,28 @@ public class ScheduleTest {
     }
 
     @Test
-    public void produceScheduleWithIllegalData() throws Exception {
-        //TODO: assert that producing schedule with illegal data throws exception
+    public void moveCourseTest(){
+        Course algo = loaderA.getCourse(234247);
+        Course os = loaderA.getCourse(234123);
+        moedA.assignCourse(algo, 0);
+        moedA.assignCourse(os, 10);
+        LocalDate dateWhenOsScheduled = moedA.getDayWhenScheduled(234123).date;
+        LocalDate dateWhenAlgoScheduled = moedA.getDayWhenScheduled(234247).date;
+        assertFalse(moedA.isMovePossible(algo, dateWhenOsScheduled, loaderA));
+        assertFalse(moedA.isMovePossible(os, dateWhenAlgoScheduled, loaderA));
+        assert(moedA.isMovePossible(algo, dateWhenOsScheduled.plusDays(3), loaderA));
+        assert(moedA.isMovePossible(os, dateWhenAlgoScheduled, loaderA));
+        assertEquals(dateWhenOsScheduled.plusDays(3), moedA.getDayWhenScheduled(algo.getCourseID()).date);
+        assertEquals(dateWhenAlgoScheduled, moedA.getDayWhenScheduled(os.getCourseID()).date);
+    }
+
+    @Test
+    public void daysBetweenTest() {
+        Course algo = loaderA.getCourse(234247);
+        Course os = loaderA.getCourse(234123);
+        moedA.assignCourse(algo, 0);
+        moedA.assignCourse(os, 10);
+        assertEquals(10, moedA.daysBetween(moedA.getDayWhenScheduled(algo.getCourseID()).date, moedA.getDayWhenScheduled(os.getCourseID()).date));
     }
 
     private boolean isCourseInSchedule (Schedule schedule, int courseId) {
@@ -139,6 +159,7 @@ public class ScheduleTest {
         }
         return false; //If got here- exam is not in schedule
     }
+
     private boolean isCourseConflictsRequirementsMet(Schedule schedule, Course course, boolean isMoedA){
         for (Day day: schedule.getSchedulableDays()){
             Integer distance = day.getDistance(course.getCourseID());

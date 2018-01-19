@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * @author dorbartov
+ * @date 03/01/2018
+ * Creates an instance of the time table of days representing a single moed.
+ */
 public class Schedule extends GridPane{
     static ArrayList<String > weekdays = new ArrayList<String>(Arrays.asList("ו'","ה'","ד'","ג'","ב'","א'"));
     LocalDate start;
@@ -18,6 +23,13 @@ public class Schedule extends GridPane{
     HashMap<LocalDate,Day> days;
     Moed moed;
 
+    /**
+     * @author dorbartov
+     * @date 03/01/2018
+     * @param parent used to access the containing moed and so the entire system.
+     * @param input_start start date of schedule
+     * @param input_finish end date of schedule
+     */
     public Schedule(Moed parent, LocalDate input_start, LocalDate input_finish) {
         moed = parent;
         start = input_start;
@@ -88,6 +100,13 @@ public class Schedule extends GridPane{
         this.setMaxWidth(548);
     }
 
+    /**
+     * @author dorbartov
+     * @date 03/01/2018
+     * Updated the GUI schedule to display the results given in the LOGIC schedule.
+     * @param schedule a logic.schedule type containing a schedule created by our algorithm.
+     * @param courseloader used to get actual Course typed with a given course id.
+     */
     public void updateSchedule(Logic.Schedule schedule, CourseLoader courseloader) {
         for (Logic.Day day:schedule.getSchedulableDays()) {
             Day curr_day = days.get(day.getDate());
@@ -104,6 +123,12 @@ public class Schedule extends GridPane{
         }
     }
 
+    /**
+     * @author dorbartov
+     * @date 07/01/2018
+     * removes a course with the given id from the current GUI schedule.
+     * @param CourseID the course id of the course to be removed.
+     */
     public void removeTest(Integer CourseID) {
         Day day_to_remove = null;
         for (Day day: days.values())
@@ -113,4 +138,5 @@ public class Schedule extends GridPane{
         if (day_to_remove != null)
             day_to_remove.removeTest(CourseID);
     }
+
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -60,5 +61,25 @@ public class CourseLoaderTest {
                 assert (constraintsInCourse.contains(constraint));
             }
         }
+    }
+
+    @Test
+    public void removeCourseCompletelyTest() {
+        loader = new CourseLoader(semester, null);
+        assertEquals(1, loader.getSortedCourses().stream().filter(c->c.getCourseID() == 234247).collect(Collectors.toList()).size());
+        assertNotEquals(null, loader.getCourse(234247));
+        loader.removeCourseCompletely(234247);
+        assertEquals(null, loader.getCourse(234247));
+    }
+
+    @Test
+    public void removeCourseTest(){
+        loader = new CourseLoader(semester, null);
+        assertEquals(1, loader.getSortedCourses().stream().filter(c->c.getCourseID() == 234247).collect(Collectors.toList()).size());
+        assertNotEquals(null, loader.getCourse(234247));
+        assert (loader.getSortedCourses().contains(loader.getCourse(234247)));
+        loader.removeCourse(234247);
+        assertNotEquals(null, loader.getCourse(234247));
+        assertFalse(loader.getSortedCourses().contains(loader.getCourse(234247)));
     }
 }

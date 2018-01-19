@@ -1,7 +1,6 @@
 package GUI.Components;
 import Logic.Course;
 import Logic.Exceptions.IllegalDaysBefore;
-import Logic.Exceptions.IllegalRange;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -17,6 +16,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * @author dorbartov
+ * @date 10/01/2018
+ * This class creates the courses management interface, including the buttons.
+ */
 public class CoursesTable extends VBox{
     private TableColumn<Item,CheckBox> take;
     private TableColumn<Item,String> name;
@@ -29,6 +33,12 @@ public class CoursesTable extends VBox{
     private boolean scheduled;
     HBox hbox;
     ObservableList<Item> items;
+
+    /**
+     * @author dorbartov
+     * @date 10/01/2018
+     * @param parent used to connect the table to the manager and so the entire system.
+     */
     public CoursesTable(Manager parent) {
         this.getStylesheets().add("/coursetable_style.css");
         manager = parent;
@@ -102,6 +112,9 @@ public class CoursesTable extends VBox{
             });
             return row;
         });
+        /**
+         * @autor roeyashkenazy
+         */
         filteredList = new FilteredList<>(getData());
 
         TextField filterInput = new TextField();
@@ -129,10 +142,13 @@ public class CoursesTable extends VBox{
         hbox.setAlignment(Pos.TOP_RIGHT);
         hbox.setSpacing(10);
         hbox.getChildren().addAll(save_button, remove_button, add_button);
-        //hbox.setPadding(new Insets(10,0,0,0));
         this.setSpacing(10);
         this.getChildren().addAll(filterInput,table,hbox);
     }
+
+    /**
+     * @author roeyashkenazy
+     */
     private void hover(Moed moed, boolean brighten, TableRow<Item> row){
         if (row.getItem() == null)
             return;
@@ -148,6 +164,12 @@ public class CoursesTable extends VBox{
             }
         }
     }
+
+    /**
+     * @author dorbartov
+     * @date 10/01/2018
+     * @return the initial data to be inserted into the courses table
+     */
     private ObservableList<Item> getData() {
         items = FXCollections.observableArrayList();
         for (Logic.Course course:manager.courseloader.getCourses().values()) {
@@ -155,10 +177,16 @@ public class CoursesTable extends VBox{
         }
         return items;
     }
+
+
     public void setScheduled(boolean value){
         scheduled = value;
     }
 
+    /**
+     * @author dorbartov
+     * @date 11/01/2018
+     */
     private void removeFunction() {
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
         new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " + courseID.toString() + "?", () -> {
@@ -177,7 +205,6 @@ public class CoursesTable extends VBox{
             items.remove(to_remove);
         });
     }
-
 
     private void AddFunction() {
         new AddCourse(this);
