@@ -30,6 +30,18 @@ public class Item {
         take.setSelected(course.hasExam());
         take.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             manager.courseloader.getCourse(course.getCourseID()).setHasExam(take.isSelected());
+            if (!take.isSelected()) {
+                if (manager.been_scheduled) {
+                    manager.scheduleA.unassignCourse(course);
+                    manager.scheduleB.unassignCourse(course);
+                }
+                else {
+                    manager.constraintlistA.removeConstraint(course.getCourseID());
+                    manager.constraintlistB.removeConstraint(course.getCourseID());
+                }
+            }
+            manager.A.schedule.removeTest(course.getCourseID());
+            manager.B.schedule.removeTest(course.getCourseID());
         });
         name = String.format("%06d",course.getCourseID()) + " - " + course.getCourseName();
         study = new SimpleStringProperty(new Integer(course.getDaysBefore()).toString());
