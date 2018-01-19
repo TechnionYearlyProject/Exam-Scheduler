@@ -168,6 +168,9 @@ public class Semester {
         if (!courses.containsKey(courseId)) {
             throw new CourseUnknown();
         }
+        if (schedules.get(moed).undefinedStartOrEnd()) {
+            throw new UninitializedSchedule();
+        }
         if (date.isBefore(schedules.get(moed).start) || date.isAfter(schedules.get(moed).end)) {
             throw new DateOutOfSchedule();
         }
@@ -190,7 +193,7 @@ public class Semester {
     }
 
     public void addConstraint(int courseId, Moed moed, LocalDate date, boolean forbidden)
-            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, DuplicateConstraints {
         if (schedules.get(moed).undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
         }
@@ -204,7 +207,7 @@ public class Semester {
     }
 
     public void addConstraint(int courseId, Moed moed, LocalDate date)
-            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, OverlappingConstraints {
+            throws UninitializedSchedule, DateOutOfSchedule, CourseUnknown, DuplicateConstraints {
         addConstraint(courseId, moed, date, false);
     }
 

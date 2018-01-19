@@ -3,7 +3,7 @@ import Logic.Course;
 import Logic.Exceptions.IllegalRange;
 import db.Constraint;
 import db.ConstraintList;
-import db.exception.OverlappingConstraints;
+import db.exception.DuplicateConstraints;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -151,7 +151,7 @@ public class Day extends VBox{
                     }
                 try {
                         schedule.moed.manager.constraintlistA.addConstraint(course_id, date);
-                    } catch (OverlappingConstraints e) {}
+                    } catch (DuplicateConstraints e) {}
 
                 } else {
                     if (schedule.moed.manager.constraintlistB.getConstraints(course_id) != null) {
@@ -161,7 +161,7 @@ public class Day extends VBox{
                     }
                     try {
                         schedule.moed.manager.constraintlistB.addConstraint(course_id, date);
-                    } catch (OverlappingConstraints e) {}
+                    } catch (DuplicateConstraints e) {}
                 }
                 this.addTest(schedule.moed.manager.courseloader.getCourse(course_id));
             }

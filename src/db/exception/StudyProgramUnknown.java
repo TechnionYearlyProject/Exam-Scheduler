@@ -1,3 +1,3 @@
 package db.exception;
 
-public class StudyProgramUnknown extends Exception {}
+public class StudyProgramUnknown extends InvalidDatabase {}

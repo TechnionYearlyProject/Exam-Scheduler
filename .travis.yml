@@ -9,4 +9,5 @@ after_success:
   - scripts/print_test_results.sh
 
 after_failure:
+  - bash <(curl -s https://codecov.io/bash) -t 25e754f3-4a2b-48b4-9772-9c6dacbad92a
   - scripts/print_test_results.sh
