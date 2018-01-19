@@ -21,6 +21,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.util.HashMap;
 
+/**
+ * @author dorbartov
+ * @date 16/01/2018
+ * The class displays a custom window in which the user can create and insert a new course to the system.
+ */
 public class AddCourse {
 	ImageView X_icon;
 	ImageView X_hover_icon;
@@ -33,6 +38,12 @@ public class AddCourse {
     AddSemester add_semester3;
     AddSemester add_semester4;
     Label label;
+
+    /**
+     * @author dorbartov
+     * @date 16/01/2018
+     * @param parent used to connect the window to the CoursesTable and so the entire system.
+     */
 	public AddCourse(CoursesTable parent) {
 	    coursestable = parent;
 		Stage stage = new Stage();

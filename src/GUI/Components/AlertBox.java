@@ -17,12 +17,33 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * @author dorbartov
+ * @date 04/01/2018
+ * The class diaplays an alert for the user. there are 3 types that appear in that AlertType ENUM, each with its'
+ * matching design and functionality.
+ */
 public class AlertBox {
 	ImageView X_icon;
 	ImageView X_hover_icon;
+
+    /**
+     * @author dorbartov
+     * @date 18/01/2017
+     * Another constructor, that defaults the AlertBox to Show instead of ShowAndWait.
+     */
     public AlertBox(AlertType type, String msg, Runnable func) {
         this(type,msg,func, false);
     }
+
+    /**
+     * @author dorbartov
+     * @date 04/01/2018
+     * @param type type of AlertBox.
+     * @param msg to be displayed to the user.
+     * @param func function to be ran if the user chooses Okay. doesn't work for errorType.
+     * @param wait whether to Show or ShowAndWait.
+     */
 	public AlertBox(AlertType type, String msg, Runnable func, Boolean wait) {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
