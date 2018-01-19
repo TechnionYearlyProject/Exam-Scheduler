@@ -51,7 +51,7 @@ public class AddConnection {
 		HBox hbox_title = new HBox();
 		hbox_title.setPadding(new Insets(15, 15, 0, 15)); //0 on bottom
 		stage.getIcons().add(new Image("/app_icon.png"));
-		Label title_label = new Label("הוספת קישורים לקורס " + courseid);
+		Label title_label = new Label("הוספת קישורים לקורס " + String.format("%06d",courseid));
 		title_label.setFont(Font.font(18));
 		title_label.setAlignment(Pos.CENTER_RIGHT);
 		title_label.setMinWidth(440);

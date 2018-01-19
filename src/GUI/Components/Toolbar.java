@@ -181,7 +181,7 @@ public class Toolbar extends HBox{
                 }
                 stage.close();
             } catch (Exception e) {
-                new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ - אנא בדקו שהקובץ אינו פתוח", null);
+                new AlertBox(AlertType.ERROR, "בעיה ביצירת הקובץ. אנא בדקו שהקובץ אינו פתוח.", null);
             }
         }, 40,160);
         button.setCircular();
@@ -203,7 +203,7 @@ public class Toolbar extends HBox{
                 wrapper.manager.scheduleA = new Schedule(wrapper.manager.Astart, wrapper.manager.Aend, wrapper.manager.occupiedA);
                 wrapper.manager.scheduleB = new Schedule(wrapper.manager.Bstart, wrapper.manager.Bend, wrapper.manager.occupiedB);
             } catch (IllegalRange illegalRange) {
-                new AlertBox(AlertType.ERROR, "טווח התאריכים אינו חוקי", null);
+                new AlertBox(AlertType.ERROR, "טווח התאריכים אינו חוקי.", null);
                 return;
             }
             CourseLoader temp = new CourseLoader(wrapper.manager.courseloader);
@@ -212,8 +212,7 @@ public class Toolbar extends HBox{
                 wrapper.manager.scheduleA.produceSchedule(temp, wrapper.manager.constraintlistA, null);
                 wrapper.manager.scheduleB.produceSchedule(temp, wrapper.manager.constraintlistB, wrapper.manager.scheduleA);
             } catch (Logic.Schedule.CanNotBeScheduledException e) {
-                new AlertBox(AlertType.ERROR, "השיבוץ נכשל. נסו להסיר העדפות " +
-                        "או להגדיל את טווח התאריכים.", null);
+                new AlertBox(AlertType.ERROR, "השיבוץ נכשל. נסו להסיר העדפות או להגדיל את טווח התאריכים.", null);
                 return;
             }
             wrapper.manager.been_scheduled = true;

@@ -93,18 +93,18 @@ public class Day extends VBox{
                     Course course = schedule.moed.manager.courseloader.getCourse(Integer.parseInt(db.getString().split("~")[1]));
                     LocalDate old_date = LocalDate.of(Integer.parseInt(db.getString().split("~")[4]), Integer.parseInt(db.getString().split("~")[3]), Integer.parseInt(db.getString().split("~")[2]));
                     if (old_date.isBefore(schedule.start) || old_date.isAfter(schedule.finish)) {
-                        new AlertBox(AlertType.ERROR, "לא ניתן להעביר מבחנים בין מועדים", null);
+                        new AlertBox(AlertType.ERROR, "לא ניתן להעביר מבחנים בין מועדים.", null);
                         return;
                     }
                     if (schedule.moed.manager.been_scheduled) {
                         if (schedule.moed.moedType == Moed.MoedType.A)
                             if (!schedule.moed.manager.scheduleA.isMovePossible(course, date,schedule.moed.manager.courseloader)) {
-                                new AlertBox(AlertType.ERROR, "השיבוץ שניסית לבצע לא מקיים את ההגבלות שהגדרת", null);
+                                new AlertBox(AlertType.ERROR, "השיבוץ שניסית לבצע לא מקיים את ההגבלות שהגדרת.", null);
                                 return;
                             }
                         if (schedule.moed.moedType == Moed.MoedType.B)
                             if (!schedule.moed.manager.scheduleB.isMovePossible(course, date,schedule.moed.manager.courseloader)) {
-                                new AlertBox(AlertType.ERROR, "השיבוץ שניסית לבצע לא מקיים את ההגבלות שהגדרת", null);
+                                new AlertBox(AlertType.ERROR, "השיבוץ שניסית לבצע לא מקיים את ההגבלות שהגדרת.", null);
                                 return;
                             }
                     }
@@ -159,7 +159,7 @@ public class Day extends VBox{
                 if (schedule.moed.moedType == Moed.MoedType.A) {
                     if (schedule.moed.manager.constraintlistA.getConstraints(course_id) != null) {
                         if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
-                            new AlertBox(AlertType.ERROR,"בקורס כבר שובץ במועד זה", null);
+                            new AlertBox(AlertType.ERROR,"הקורס כבר שובץ במועד זה.", null);
                             return;
                         }
                     }
@@ -170,7 +170,7 @@ public class Day extends VBox{
                 } else {
                     if (schedule.moed.manager.constraintlistB.getConstraints(course_id) != null) {
                         if (schedule.moed.manager.constraintlistB.getConstraints(course_id).size() != 0) {
-                            new AlertBox(AlertType.ERROR,"בקורס כבר שובץ במועד זה", null);
+                            new AlertBox(AlertType.ERROR,"הקורס כבר שובץ במועד זה.", null);
                             return;
                         }
                     }
