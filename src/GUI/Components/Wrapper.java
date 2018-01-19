@@ -5,26 +5,24 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 
 /**
- * @author Tal
+ * @author talgelber
  * @date 5/12/2017
  * Class that wraps all the GUI components to a single pane
  */
 
-
-
 public class Wrapper extends ScrollPane {
-    Toolbar toolbar;
     Manager manager;
     public Wrapper() {
         manager = new Manager(this);
-        toolbar = new Toolbar(this);
+        Toolbar toolbar = new Toolbar(this);
         VBox vbox = new VBox();
-        vbox.setStyle("-fx-background-image: url(\"/background.png\");");
+        vbox.setStyle("-fx-background-image: " +
+                "url(\"/background.png\");");
         vbox.getChildren().addAll(toolbar, manager);
         vbox.setAlignment(Pos.TOP_CENTER);
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(15, 15, 15, 15));
-        this.setStyle("-fx-focus-color: lightgrey;");//"-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");
+        this.setStyle("-fx-focus-color: lightgrey;");
         this.setContent(vbox);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
