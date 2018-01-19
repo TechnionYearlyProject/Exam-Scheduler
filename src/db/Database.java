@@ -203,9 +203,6 @@ public class Database {
                     int daysBefore = Integer.parseInt(l.item(0).getTextContent());
                     boolean isFirst = courseElement.getElementsByTagName("isFirst").getLength() == 1;
                     boolean isLast = courseElement.getElementsByTagName("isLast").getLength() == 1;
-                    if (isFirst && isLast) {
-                        throw new CourseFirstAndLast();
-                    }
                     boolean isRequired = courseElement.getElementsByTagName("isRequired").getLength() == 1;
                     boolean hasExam = courseElement.getElementsByTagName("hasExam").getLength() == 1;
                     semester.addCourse(courseID, name, weight, daysBefore, isFirst, isLast, isRequired, hasExam);
@@ -608,7 +605,7 @@ public class Database {
                             }
                         } catch (StudyProgramUnknown | CourseUnknown ignored) {}
                     }
-                } catch (CourseAlreadyExist ignored) {}
+                } catch (CourseAlreadyExist | CourseFirstAndLast ignored) {}
             }
         }
         semesters.put(semesterName, semester);

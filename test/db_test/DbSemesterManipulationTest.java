@@ -92,6 +92,14 @@ public class DbSemesterManipulationTest {
         semester.getCourse(1234);
     }
 
+    @Test(expected = CourseFirstAndLast.class)
+    public void addCourseFirstAndLast() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.addCourse(123, "North By Northwest", 5.0, 4,
+                true, true, true, true);
+    }
+
     @Test
     public void registerCourses() throws SemesterAlreadyExist, InvalidDatabase {
         Semester semester = db.createSemester(2017, "winter");
