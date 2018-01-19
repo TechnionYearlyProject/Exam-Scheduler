@@ -109,7 +109,7 @@ public class Day extends VBox{
                             }
                     }
                     Day old_day = schedule.days.get(old_date);
-                    old_day.removeCourse(course);
+                    old_day.removeTestFully(course);
                     course_id = course.getCourseID();
                 } else
                     course_id = Integer.parseInt(db.getString());
@@ -247,21 +247,17 @@ public class Day extends VBox{
         testList.add(test);
     }
 
-    public void removeCourse(Course course){
+    public void removeTestFully(Course course){
         List<Test> temp = new ArrayList<>(testList);
-        int i=0;
-        for (Test test:temp)
-        {
+        removeTestGraphically(course.getCourseID());
+        for (Test test:temp) {
             if (test.course.getCourseID().equals(course.getCourseID())) {
-                testList.remove(i);
-                tests.getChildren().remove(i);
                 if (schedule.moed.moedType == Moed.MoedType.A)
                     schedule.moed.manager.constraintlistA.removeConstraint(course.getCourseID(), date);
                 else
                     schedule.moed.manager.constraintlistB.removeConstraint(course.getCourseID(), date);
                 break;
             }
-            i+=1;
         }
     }
 
@@ -270,7 +266,7 @@ public class Day extends VBox{
      * @date 17/01/2018
      * @param courseID id of scheduled course to be removed from this day.
      */
-    public void removeTest(Integer courseID) {
+    public void removeTestGraphically(Integer courseID) {
         List<Test> temp = new ArrayList<>(testList);
         int i=0;
         for (Test test:temp) {

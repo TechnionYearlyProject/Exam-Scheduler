@@ -136,7 +136,7 @@ public class Schedule extends GridPane{
                 if (test.course.getCourseID().equals(CourseID))
                     day_to_remove = day;
         if (day_to_remove != null)
-            day_to_remove.removeTest(CourseID);
+            day_to_remove.removeTestGraphically(CourseID);
     }
 
 }
