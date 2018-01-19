@@ -74,6 +74,9 @@ public class Semester {
         for (Schedule schedule: schedules.values()) {
             schedule.unscheduleCourse(courseId);
         }
+        for (ConstraintList list: constraints.values()) {
+            list.constraints.remove(courseId);
+        }
     }
 
     public void registerCourse(int courseId, String program, int semesterNum) throws CourseUnknown,

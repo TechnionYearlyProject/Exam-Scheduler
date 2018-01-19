@@ -270,5 +270,97 @@ public class DbSemesterManipulationTest {
         semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
         semester.scheduleCourse(1, Semester.Moed.MOED_A, LocalDate.parse("2017-01-15"));
     }
+
+    @Test
+    public void addRemoveConstraints() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.addCourse(1, "John", 4.5);
+        semester.addCourse(2, "Paul", 4.5);
+        semester.addCourse(3, "Ringo", 4.5);
+        semester.addCourse(4, "Georges", 4.5);
+
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        semester.setStartDate(Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"));
+        semester.setEndDate(Semester.Moed.MOED_B, LocalDate.parse("2018-02-28"));
+
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.addConstraint(2, Semester.Moed.MOED_A, LocalDate.parse("2018-01-02"));
+        semester.addConstraint(3, Semester.Moed.MOED_A, LocalDate.parse("2018-01-03"));
+        semester.addConstraint(4, Semester.Moed.MOED_A, LocalDate.parse("2018-01-04"));
+        semester.addConstraint(1, Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"), true);
+        semester.addConstraint(2, Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"), true);
+        semester.addConstraint(3, Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"), true);
+        semester.addConstraint(4, Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"), true);
+
+        assertEquals(4, semester.getConstraintLists(Semester.Moed.MOED_A).size());
+        assertEquals(4, semester.getConstraintLists(Semester.Moed.MOED_B).size());
+        for (int i = 1; i < 4; i++) {
+            assertEquals(1, semester.getConstraintList(Semester.Moed.MOED_A, i).size());
+            assertEquals(1, semester.getConstraintList(Semester.Moed.MOED_B, i).size());
+        }
+
+        semester.removeConstraint(4, Semester.Moed.MOED_A, LocalDate.parse("2018-01-04"));
+        semester.removeConstraint(3, Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"));
+        assertEquals(0, semester.getConstraintList(Semester.Moed.MOED_A, 4).size());
+        assertEquals(0, semester.getConstraintList(Semester.Moed.MOED_B, 3).size());
+
+        semester.removeCourse(1);
+        assertEquals(3, semester.getConstraintLists(Semester.Moed.MOED_A).size());
+        assertEquals(3, semester.getConstraintLists(Semester.Moed.MOED_B).size());
+
+        // No effects
+        semester.removeConstraint(5, Semester.Moed.MOED_B, LocalDate.parse("2018-01-01"));
+        semester.removeConstraint(4, Semester.Moed.MOED_A, LocalDate.parse("2018-01-04"));
+    }
+
+    @Test(expected = UninitializedSchedule.class)
+    public void constraintUninitializedSchedule() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.addCourse(1, "John", 4.5);
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+    }
+
+    @Test(expected = DateOutOfSchedule.class)
+    public void constraintBeforeSchedule() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.addCourse(1, "John", 4.5);
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2017-01-01"));
+    }
+
+    @Test(expected = DateOutOfSchedule.class)
+    public void constraintAfterSchedule() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.addCourse(1, "John", 4.5);
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2019-01-01"));
+    }
+
+    @Test(expected = CourseUnknown.class)
+    public void constraintUnknownCourse() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2018-01-15"));
+    }
+
+    @Test(expected = DuplicateConstraints.class)
+    public void addDuplicateConstraint() throws SemesterAlreadyExist, InvalidDatabase {
+        Semester semester = db.createSemester(2017, "winter");
+        assertNotNull(semester);
+        semester.addCourse(1, "John", 4.5);
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+    }
 }
 
