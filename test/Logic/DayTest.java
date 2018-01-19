@@ -11,6 +11,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**@author mvainbau
+ * @date 07/01/2018*/
 public class DayTest {
     Database db;
     Semester semester;

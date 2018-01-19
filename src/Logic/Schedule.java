@@ -29,6 +29,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 13/01/2018
      * This inner class intented for finding day for course to be assigned when legal schedule is going to be produced.
      * The search for the day is based on heuristic, which tries to maximize remaining space for all specializations
      */
@@ -152,6 +153,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 31/12/2017
      * Constructor for moed B schedule.
      * begin - first day of exams period
      * end - last day of exams period
@@ -200,6 +202,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 15/12/2017
      * The method returns day when exam for the course with courseId is scheduled or null if the exam isn't scheduled
      */
     public Day getDayWhenScheduled(int courseId){
@@ -218,6 +221,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 05/12/2017
      * The method schedules exams for courses in course loader.
      * Params:
      *   courseLoader - course loader for the exam period
@@ -236,7 +240,9 @@ public class Schedule {
         optimizeSchedule(courses, moedA);
     }
 
-    /*The function finds day where exam should be scheduled and assign the exam to the day
+    /** @author mvainbaum
+        @date 15/12/2018
+    The function finds day where exam should be scheduled and assign the exam to the day
       Params:
         course - course to be scheduled
         uniformity - max number of exams in one day
@@ -267,6 +273,10 @@ public class Schedule {
     //This function finds first index of day, when course can be scheduled
     //It is useful when we want to be sure that gap between exams in two moeds is sufficient
     //if moedA schedule isn't provided, returns 0
+    /**
+     * @author mvainbau
+     * @date 13/01/2018
+     * */
     private int getFirstIndexOfDayWhenCanBeScheduled(Schedule moedA, int courseId){
         if (moedA == null){
             return 0;
@@ -277,6 +287,9 @@ public class Schedule {
         return index < 0 ? 0: index;
     }
 
+    /**
+    * @author mvainbau
+     *@date 13/01/2018*/
     //this function assigns all courses listed in constraint list to associated days
     //If constraints of conflicted courses overlap: ignore it (user can do whatever he wants)
     private void assignConstraints(ConstraintList constraintList, List<Course> courses) {
@@ -295,7 +308,10 @@ public class Schedule {
         }
     }
 
-    /*Produce schedule which has not overlapped conflicts
+    /**
+     * @author mvainbau
+     * @date 13/01/2018
+     * Produce schedule which has not overlapped conflicts
     * Params:
     *   courses: courses which are being scheduled
     *   moedA: complete schedule for moed A in case moed B schedule is being produced; null otherwise*/
@@ -333,6 +349,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 13/01/2018
      * The method optimizes current schedule by uniforming num of exams in a day
      * Params:
      *   courses: courses which are being scheduled
@@ -369,6 +386,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 13/01/2018
      */
     public void unassignCourse(Course course){
         for (int i = 0; i < schedulable_days.size(); i++){
@@ -418,6 +436,7 @@ public class Schedule {
 
     /**
      * @author moiseivainbaum
+     * @date 15/01/2018
      * The method finds date to which a course must be scheduled. Returns the date or null, if there is no such constraintr
      */
     private LocalDate findDateToScheduleConstraint(List<Constraint> constraints){
@@ -453,6 +472,11 @@ public class Schedule {
         return index1-index2;
     }
 
+    /**
+     * @author mvainbau
+     * @date 19/01/2018
+     * The method tries to schedule the exam for the course into day with given index
+     * Returns true if succeed, false otherwise*/
     private boolean tryToScheduleCourseInto(int index, Integer uniformity, Course course) {
         Day day = schedulable_days.get(index);
         if (uniformity != null && day.getNumOfCourses() > uniformity){

@@ -46,6 +46,11 @@ public class Day {
         return coursesScheduledToTheDay;
     }
 
+    /**
+     * @author Moisei Vainbaum
+     * @date 15/12/2017
+     Returns true if the course can be assigned to the day without conflict collisions
+    * */
     public boolean canBeAssigned (Course course){
         for (int course_id: course.getConflictCourses().keySet()){
             Integer distance = this.getDistance(course_id);

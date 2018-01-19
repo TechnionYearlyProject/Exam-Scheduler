@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
+/**@author mvainbau
+ * @date 07/01/2018*/
 public class CourseLoaderTest {
     Database db;
     CourseLoader loader;
