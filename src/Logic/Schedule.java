@@ -3,25 +3,20 @@ import Logic.Exceptions.IllegalDaysBefore;
 import Logic.Exceptions.IllegalRange;
 import db.Constraint;
 import db.ConstraintList;
-import db.Database;
-import db.Semester;
 import javafx.util.Pair;
-
 import java.time.LocalDate;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.List;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
-import java.time.temporal.ChronoUnit;
-
 import static java.time.temporal.ChronoUnit.DAYS;
-/*
-* The class is intent for producing optimized schedule.
-*/
 
+/**
+ * @author moiseivainbaum dorbartov
+ * @date 05/12/2017
+ * The class is intent for producing optimized schedule.
+ * this class contains the datatype in which we manage schedulable days and the tests scheduled to them, as well as all
+ * the functions implementing our algorithm.
+ */
 public class Schedule {
     ArrayList<Day> schedulable_days;
     private int gap; //This parameter is relevant only for moed B schedule, and shows how many days should be between exams on same course
@@ -31,8 +26,12 @@ public class Schedule {
         }
     };
     private ScheduleHeuristic heuristic;
-    /*This inner class intented for finding day for course to be assigned when legal schedule is going to be produced.
-    * The search for the day is based on heuristic, which tries to maximize remaining space for all specializations*/
+
+    /**
+     * @author moiseivainbaum
+     * This inner class intented for finding day for course to be assigned when legal schedule is going to be produced.
+     * The search for the day is based on heuristic, which tries to maximize remaining space for all specializations
+     */
     private class ScheduleHeuristic {
         //In this field contained mapping between pair (specialization, semester) and list of days
         //List of days show what days are free for scheduling for the pair
@@ -125,11 +124,16 @@ public class Schedule {
         }
     }
 
-    /*Params:
-    *   begin - first day of exams period
-    *   end - last day of exams period
-    *   occupied - days when impossible to schedule.
-    *       All Saturdays excluded from scheduling automatically, no need to worry about them*/
+
+    /**
+     * @author dorbartov
+     * @date 05/12/2017
+     * All Saturdays excluded from scheduling automatically, no need to worry about them.
+     * @param begin begin date of schedule.
+     * @param end end date of schedule.
+     * @param occupied days in which tests cannot be scheduled.
+     * @throws IllegalRange if the dates create a schedule which is not legal. All Saturdays excluded from scheduling automatically, no need to worry about them
+     */
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied) throws IllegalRange {
         if (occupied == null){
             occupied = new HashSet<>();
@@ -146,12 +150,15 @@ public class Schedule {
         this.heuristic = new ScheduleHeuristic();
     }
 
-    /*Constructor for moed B schedule.
-    * begin - first day of exams period
-    * end - last day of exams period
-    * occupied - days when impossible to schedule.
-    *     All Saturdays excluded from scheduling automatically, no need to worry about them*
-    * gap - number of days that should be between two exams for same course (moed A and moed B). By default: 20*/
+    /**
+     * @author moiseivainbaum
+     * Constructor for moed B schedule.
+     * begin - first day of exams period
+     * end - last day of exams period
+     * occupied - days when impossible to schedule.
+     *     All Saturdays excluded from scheduling automatically, no need to worry about them*
+     * gap - number of days that should be between two exams for same course (moed A and moed B). By default: 20
+     */
     public Schedule(LocalDate begin, LocalDate end, HashSet<LocalDate> occupied, int gap) throws IllegalRange {
         this(begin, end, occupied);
         this.gap = gap;
@@ -165,8 +172,16 @@ public class Schedule {
         return schedulable_days;
     }
 
-    /*The function assigns course to day (in index of schedulable_days) and updates other days to know how much distance is between a day
-    * and the day, when the course exam is scheduled*/
+    /**
+     * @author dorbartov
+     * @date 05/12/2017
+     * this function assigns a test to a specific day and updates the entire schedule accordingly. this means each
+     * relevant day in the schedule will have the matching offset of this particular course.
+     * The function assigns course to day (in index of schedulable_days) and updates other days to know how much distance is between a day
+     * and the day, when the course exam is scheduled. further information in Day class.
+     * @param course to be assigned to schedule
+     * @param index the index of the day in the schedule to which the test would be assigned.
+     */
     public void assignCourse(Course course, int index) {
         int course_id = course.getCourseID();
         (schedulable_days.get(index)).insertCourse(course_id,0);
@@ -183,7 +198,10 @@ public class Schedule {
         }
     }
 
-    /*The method returns day when exam for the course with courseId is scheduled or null if the exam isn't scheduled*/
+    /**
+     * @author moiseivainbaum
+     * The method returns day when exam for the course with courseId is scheduled or null if the exam isn't scheduled
+     */
     public Day getDayWhenScheduled(int courseId){
         for (int i = 0; i < schedulable_days.size();){
             Integer distance = schedulable_days.get(i).getDistance(courseId);
@@ -198,11 +216,14 @@ public class Schedule {
         return null;
     }
 
-    /*The method schedules exams for courses in course loader.
-    * Params:
-    *   courseLoader - course loader for the exam period
-    *   cl - constraint list for the exam period
-    *   moedA - complete schedule for moed A (in case we want produce schedule for moed B). null otherwise*/
+    /**
+     * @author moiseivainbaum
+     * The method schedules exams for courses in course loader.
+     * Params:
+     *   courseLoader - course loader for the exam period
+     *   cl - constraint list for the exam period
+     *   moedA - complete schedule for moed A (in case we want produce schedule for moed B). null otherwise
+     */
     public void produceSchedule(CourseLoader courseloader, ConstraintList cl, Schedule moedA) throws CanNotBeScheduledException{
         //sort courses by number of conflicts
         List<Course> courses = courseloader.getSortedCourses();
@@ -309,10 +330,13 @@ public class Schedule {
         }
     }
 
-    /*The method optimizes current schedule by uniforming num of exams in a day
-    * Params:
-    *   courses: courses which are being scheduled
-    *   moedA: complete schedule for moed A in case moed B schedule is being produced; null otherwise*/
+    /**
+     * @author moiseivainbaum
+     * The method optimizes current schedule by uniforming num of exams in a day
+     * Params:
+     *   courses: courses which are being scheduled
+     *   moedA: complete schedule for moed A in case moed B schedule is being produced; null otherwise
+     */
     private void optimizeSchedule(List<Course> courses, Schedule moedA){
         for (Course course: courses){
             if (findDateToScheduleConstraint(course.getConstraints()) != null){
@@ -342,17 +366,25 @@ public class Schedule {
         }
     }
 
+    /**
+     * @author moiseivainbaum
+     */
     public void unassignCourse(Course course){
         for (int i = 0; i < schedulable_days.size(); i++){
             schedulable_days.get(i).deleteCourse(course.getCourseID());
         }
     }
 
-    /*The method checks if it is possible to move exam for a course to another date and moves it if possible
-    * Params:
-    *   course: course to move
-    *   new_date: date to which move the exam
-    *   courseLoader: course loader for the exam period*/
+    /**
+     * @author dorbartov
+     * @date 15/01/2018
+     * this functions checks whether manually assigning a course after a schedule is made is legal (complies with
+     * constraints). if it is legal, it will update the schedule accordingly.
+     * @param course to be reassigned.
+     * @param new_date to be which the course will be reassigned.
+     * @param courseLoader used to get a Course type from  a course id.
+     * @return
+     */
     public Boolean isMovePossible(Course course, LocalDate new_date, CourseLoader courseLoader) {
         Integer days_before = course.getDaysBefore();
         Integer index = 0;
@@ -383,7 +415,10 @@ public class Schedule {
         return true;
     }
 
-    /*The method find date to which a course must be scheduled. Returns the date or null, if there is no such constraintr*/
+    /**
+     * @author moiseivainbaum
+     * The method find date to which a course must be scheduled. Returns the date or null, if there is no such constraintr
+     */
     private LocalDate findDateToScheduleConstraint(List<Constraint> constraints){
         for (Constraint constraint: constraints){
             if (!constraint.forbidden){
@@ -393,7 +428,14 @@ public class Schedule {
         return null;
     }
 
-    /*Returns number of schedulable days between 2 dates*/
+    /**
+     * @author dorbartov
+     * @date 18/01/2018
+     * this function returns tha amount of days between 2 days in this schedule.
+     * @param date1
+     * @param date2
+     * @return
+     */
     public int daysBetween(LocalDate date1, LocalDate date2) {
         int index1 = -1;
         int index2 = -1;
