@@ -17,78 +17,43 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * @author dorbartov
+ * @author dorbartov, roeyashkenazy
  * @date 10/01/2018
  * This class creates the courses management interface, including the buttons.
+ * The course table supports dragging courses to the calendars (to force an exam),
+ * highlighting the course's exams by hovering its name and more.
  */
 public class CoursesTable extends VBox{
-    private TableColumn<Item,CheckBox> take;
-    private TableColumn<Item,String> name;
-    private TableColumn<Item,String> study;
-    private TableColumn<Item,CheckBox> pref;
-    private TableColumn<Item,Label> connections;
-    TableView<Item> table;
+    private TableColumn<Item,CheckBox> takeCol;
+    private TableColumn<Item,String> nameCol;
+    private TableColumn<Item,String> studyCol;
+    private TableColumn<Item,CheckBox> prefCol;
+    private TableColumn<Item,Label> connectionsCol;
+    private TableView<Item> table = new TableView<>();
     private FilteredList<Item> filteredList;
+    private TextField filterInput;
     Manager manager;
     private boolean scheduled;
     HBox hbox;
     ObservableList<Item> items;
 
     /**
-     * @author dorbartov
-     * @date 10/01/2018
-     * @param parent used to connect the table to the manager and so the entire system.
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the row factory for the table- this factory
+     * is used by JavaFX to make our course rows with dragging and hovering.
      */
-    public CoursesTable(Manager parent) {
-        this.getStylesheets().add("/coursetable_style.css");
-        manager = parent;
-        scheduled = false;
-        table = new TableView<>();
-        take = new TableColumn<>("");
-        take.setCellValueFactory(new PropertyValueFactory<>("take"));
-        take.setStyle("-fx-alignment: CENTER-RIGHT");
-        take.setPrefWidth(40);
-        name = new TableColumn<>("שם הקורס");
-        name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        name.setStyle("-fx-alignment: CENTER-RIGHT");
-        name.setPrefWidth(212);
-        study = new TableColumn<>("ימי למידה");
-        study.setCellValueFactory(new PropertyValueFactory<>("study"));
-        study.setStyle("-fx-alignment: CENTER-RIGHT");
-        study.setPrefWidth(72);
-        study.setCellFactory(TextFieldTableCell.forTableColumn());
-        study.setOnEditCommit(event -> {
-            try {
-                manager.courseloader.getCourse(event.getRowValue().getCourseID()).setDaysBefore(Integer.parseInt(event.getNewValue()));
-                event.getRowValue().setStudy(event.getNewValue());
-            } catch (IllegalDaysBefore e) {
-                new AlertBox(AlertType.ERROR,"מספר ימי הלמידה שהוזן אינו חוקי.",null);
-                table.refresh();
-            }
-        });
-        pref = new TableColumn<>("העדפת שיבוץ");
-        pref.setCellValueFactory(new PropertyValueFactory<>("pref"));
-        pref.setStyle("-fx-alignment: CENTER-RIGHT");
-        pref.setPrefWidth(100);
-        connections = new TableColumn<>("קשרים");
-        connections.setCellValueFactory(new PropertyValueFactory<>("connections"));
-        connections.setStyle("-fx-alignment: CENTER-RIGHT");
-        connections.setPrefWidth(56);
-        table.setEditable(true);
-        table.setPrefWidth(500);
-        table.setPrefHeight(666);
-        table.setItems(getData());
-        table.getColumns().addAll(connections,pref,study,name,take);
+    private void initTableRowFactory(){
         table.setRowFactory(tv -> {
             TableRow<Item> row = new TableRow<>();
             row.setOnDragDetected(event -> {
                 if (row.getItem() == null)
                     return;
                 if(!scheduled) {
-                    if (take.getCellData(row.getIndex()).isSelected()) {
+                    if (takeCol.getCellData(row.getIndex()).isSelected()) {
                         Dragboard db = row.startDragAndDrop(TransferMode.ANY);
                         ClipboardContent content = new ClipboardContent();
-                        String course_str = (name.getCellData(row.getIndex())).split(" - ")[0];
+                        String course_str = (nameCol.getCellData(row.getIndex())).split(" - ")[0];
                         content.putString(course_str);
                         db.setContent(content);
                         Course course = manager.courseloader.getCourse(Integer.parseInt(course_str));
@@ -112,12 +77,50 @@ public class CoursesTable extends VBox{
             });
             return row;
         });
-        /**
-         * @autor roeyashkenazy
-         */
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the table parameters.
+     */
+    private void initTableParameters(){
+        table.setEditable(true);
+        table.setPrefWidth(500);
+        table.setPrefHeight(666);
+        table.setItems(getData());
+        table.getColumns().addAll(connectionsCol,prefCol,studyCol,nameCol,takeCol);
+        initTableRowFactory();
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the study days column in the table
+     */
+    private void initStudyDayColumn(){
+        studyCol = new TableColumn<>("ימי למידה");
+        studyCol.setCellValueFactory(new PropertyValueFactory<>("study"));
+        studyCol.setStyle("-fx-alignment: CENTER-RIGHT");
+        studyCol.setPrefWidth(72);
+        studyCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        studyCol.setOnEditCommit(event -> {
+            try {
+                manager.courseloader.getCourse(event.getRowValue().getCourseID()).setDaysBefore(
+                        Integer.parseInt(event.getNewValue()));
+                event.getRowValue().setStudy(event.getNewValue());
+            } catch (IllegalDaysBefore e) {
+                new AlertBox(AlertType.ERROR,"מספר ימי הלמידה שהוזן אינו חוקי.",null);
+                table.refresh();
+            }
+        });
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 15/01/2018
+     * builds a filtered list and a search button for the table.
+     */
+    private void initFilteredList(){
         filteredList = new FilteredList<>(getData());
-
-        TextField filterInput = new TextField();
+        filterInput = new TextField();
         filterInput.setPromptText("חפש קורס...");
         filterInput.textProperty().addListener(obs->{
             String filter = filterInput.getText();
@@ -129,9 +132,15 @@ public class CoursesTable extends VBox{
             }
         });
         filterInput.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        filterInput.setStyle("-fx-focus-color: transparent; -fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
-        table.setItems(filteredList);
-        table.setStyle("-fx-focus-color: lightgrey; -fx-faint-focus-color: transparent;");
+        filterInput.setStyle("-fx-focus-color: transparent; -fx-background-color:" +
+                " -fx-text-box-border, -fx-control-inner-background;");
+    }
+    /**
+     * @author dorbartov
+     * @date 16/01/2018
+     * initializes the course buttons (save,add,remove) for the table.
+     */
+    private void initCourseButtons(){
         CustomButton save_button = new CustomButton("שמור", "/save_icon.png", null,40,160);
         save_button.setCircular();
         CustomButton add_button = new CustomButton("הוסף קורס", "/add_icon.png", this::AddFunction,40,160);
@@ -142,18 +151,84 @@ public class CoursesTable extends VBox{
         hbox.setAlignment(Pos.TOP_RIGHT);
         hbox.setSpacing(10);
         hbox.getChildren().addAll(save_button, remove_button, add_button);
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the name column in the table
+     */
+    private void initNameColumn(){
+        nameCol = new TableColumn<>("שם הקורס");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameCol.setStyle("-fx-alignment: CENTER-RIGHT");
+        nameCol.setPrefWidth(212);
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the 'take exam' column in the table
+     */
+    private void initTakeExamColumn(){
+        takeCol = new TableColumn<>("");
+        takeCol.setCellValueFactory(new PropertyValueFactory<>("take"));
+        takeCol.setStyle("-fx-alignment: CENTER-RIGHT");
+        takeCol.setPrefWidth(40);
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the preference column in the table
+     */
+    private void initPreferenceColumn(){
+        prefCol = new TableColumn<>("העדפת שיבוץ");
+        prefCol.setCellValueFactory(new PropertyValueFactory<>("pref"));
+        prefCol.setStyle("-fx-alignment: CENTER-RIGHT");
+        prefCol.setPrefWidth(100);
+    }
+    /**
+     * @author roeyashkenazy
+     * @date 19/01/2018
+     * initializes the connections column in the table
+     */
+    private void initConnectionsColumn(){
+        connectionsCol = new TableColumn<>("קשרים");
+        connectionsCol.setCellValueFactory(new PropertyValueFactory<>("connections"));
+        connectionsCol.setStyle("-fx-alignment: CENTER-RIGHT");
+        connectionsCol.setPrefWidth(56);
+    }
+    /**
+     * @author dorbartov, roeyashkenazy
+     * @date 10/01/2018
+     * @param parent used to connect the table to the manager and so the entire system.
+     * initializes the course table columns.
+     */
+    public CoursesTable(Manager parent) {
+        this.getStylesheets().add("/coursetable_style.css");
         this.setSpacing(10);
+        table.setItems(filteredList);
+        table.setStyle("-fx-focus-color: lightgrey; -fx-faint-focus-color: transparent;");
+        manager = parent;
+        scheduled = false;
+        initTakeExamColumn();
+        initNameColumn();
+        initStudyDayColumn();
+        initPreferenceColumn();
+        initConnectionsColumn();
+        initTableParameters();
+        initFilteredList();
+        initCourseButtons();
         this.getChildren().addAll(filterInput,table,hbox);
     }
 
     /**
      * @author roeyashkenazy
+     * @date 14/01/2018
+     * supports hovering - moving the mouse over a course in the table should highlight
+     * that course in the calendars.
      */
     private void hover(Moed moed, boolean brighten, TableRow<Item> row){
-        if (row.getItem() == null)
-            return;
-        if (manager.been_scheduled) {
-            String courseNum = (name.getCellData(row.getIndex())).split(" - ")[0];
+        if (manager.been_scheduled && (row.getItem() != null)) {
+            String courseNum = (nameCol.getCellData(row.getIndex())).split(" - ")[0];
             for (Day day : moed.schedule.days.values()) {
                 for (Test test : day.testList) {
                     if (!test.course.getCourseID().equals(
@@ -178,7 +253,11 @@ public class CoursesTable extends VBox{
         return items;
     }
 
-
+    /**
+     * @author roeyashkenazy
+     * @date 13/01/2018
+     * signals that the scheduling algorithm was executed.
+     */
     public void setScheduled(boolean value){
         scheduled = value;
     }
@@ -191,11 +270,14 @@ public class CoursesTable extends VBox{
         if (table.getSelectionModel().getSelectedItem() == null)
             return;
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
-        new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " + String.format("%06d",courseID) + "?", () -> {
-            if (manager.scheduleA != null)
+        new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " +
+                String.format("%06d",courseID) + "?", () -> {
+            if (manager.scheduleA != null) {
                 manager.scheduleA.unassignCourse(manager.courseloader.getCourse(courseID));
-            if (manager.scheduleB != null)
+            }
+            if (manager.scheduleB != null) {
                 manager.scheduleB.unassignCourse(manager.courseloader.getCourse(courseID));
+            }
             manager.A.schedule.removeTest(courseID);
             manager.B.schedule.removeTest(courseID);
             manager.constraintlistA.removeConstraint(courseID);
