@@ -4,6 +4,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 
+/**
+ * @author Tal
+ * @date 16/1/2018
+ * Design and functionality of the 2 choice box the represent a program inside add Course window
+ */
+
 public class AddSemester extends HBox{
 	ChoiceBox<String> program;
     ChoiceBox<String> semester;

@@ -7,6 +7,12 @@ import javafx.util.StringConverter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author Tal
+ * @date 18/12/2017
+ * Custom design for the DatePicker
+ */
+
 public class Picker extends HBox{
     LocalDate date;
     DatePicker picker;
