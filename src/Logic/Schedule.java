@@ -222,16 +222,19 @@ public class Schedule {
     */
     private void scheduleExamFor(Course course, Integer uniformity, int beginFrom) throws CanNotBeScheduledException{
         boolean scheduled = false;
-        for (int i = beginFrom; i < schedulable_days.size(); i++){
-            Day day = schedulable_days.get(i);
-            if (uniformity != null && day.getNumOfCourses() > uniformity){
-                continue;
+        if (!course.isLast()){
+            for (int i = beginFrom; i < schedulable_days.size(); i++){
+                scheduled = tryToScheduleCourseInto(i, uniformity, course);
+                if(scheduled){
+                    break;
+                }
             }
-            if (day.canBeAssigned(course)){
-                unassignCourse(course);
-                assignCourse(course, i);
-                scheduled = true;
-                break;
+        } else {
+            for (int i = schedulable_days.size() - 1; i >= beginFrom; i--){
+                scheduled = tryToScheduleCourseInto(i, uniformity, course);
+                if(scheduled){
+                    break;
+                }
             }
         }
         if (!scheduled){
@@ -405,5 +408,19 @@ public class Schedule {
         if (index1<index2)
             return index2-index1;
         return index1-index2;
+    }
+
+    private boolean tryToScheduleCourseInto(int index, Integer uniformity, Course course) {
+        Day day = schedulable_days.get(index);
+        if (uniformity != null && day.getNumOfCourses() > uniformity){
+            return false;
+        }
+        if (day.canBeAssigned(course)){
+            unassignCourse(course);
+            assignCourse(course, index);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
