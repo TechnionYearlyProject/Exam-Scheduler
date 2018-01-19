@@ -211,6 +211,15 @@ public class Course implements Comparable<Course>{
 
     @Override
     public int compareTo(Course o) {
+        //Courses that defined to be last/first have the most priority
+        if ((isLast || isFirst) && (o.isLast || o.isFirst)){
+            return 0;
+        } else if (isLast || isFirst){
+            return 1;
+        } else if (o.isLast || o.isFirst){
+            return -1;
+        }
+        //Otherwise, required courses with more conflicts have prority
         if(isRequired && o.isRequired){
             return compareCoursesByNumberOfConflicts(o);
         } else if(isRequired){
