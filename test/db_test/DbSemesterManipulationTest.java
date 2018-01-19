@@ -309,6 +309,22 @@ public class DbSemesterManipulationTest {
             assertEquals(1, semester.getConstraintList(Semester.Moed.MOED_B, i).size());
         }
 
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2017-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2019-01-01"));
+        semester.addConstraint(1, Semester.Moed.MOED_A, LocalDate.parse("2017-01-01"));
+        semester.addConstraint(2, Semester.Moed.MOED_A, LocalDate.parse("2017-01-02"));
+        semester.addConstraint(3, Semester.Moed.MOED_A, LocalDate.parse("2018-09-03"));
+        semester.addConstraint(4, Semester.Moed.MOED_A, LocalDate.parse("2018-09-04"));
+        for (int i = 1; i < 4; i++) {
+            assertEquals(2, semester.getConstraintList(Semester.Moed.MOED_A, i).size());
+        }
+        semester.setStartDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-01"));
+        semester.setEndDate(Semester.Moed.MOED_A, LocalDate.parse("2018-01-31"));
+        for (int i = 1; i < 4; i++) {
+            assertEquals(1, semester.getConstraintList(Semester.Moed.MOED_A, i).size());
+        }
+
+
         semester.removeConstraint(4, Semester.Moed.MOED_A, LocalDate.parse("2018-01-04"));
         semester.removeConstraint(3, Semester.Moed.MOED_B, LocalDate.parse("2018-02-01"));
         assertEquals(0, semester.getConstraintList(Semester.Moed.MOED_A, 4).size());
