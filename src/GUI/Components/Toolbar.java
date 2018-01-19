@@ -75,6 +75,8 @@ public class Toolbar extends HBox{
         for (Day day : wrapper.manager.B.schedule.days.values()){
             day.enableBlocking();
         }
+        wrapper.manager.scheduleA = null;
+        wrapper.manager.scheduleB = null;
     }
 
     public void saveFunction() {

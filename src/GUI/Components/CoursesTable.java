@@ -190,6 +190,10 @@ public class CoursesTable extends VBox{
     private void removeFunction() {
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
         new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " + courseID.toString() + "?", () -> {
+            if (manager.scheduleA != null)
+                manager.scheduleA.unassignCourse(manager.courseloader.getCourse(courseID));
+            if (manager.scheduleB != null)
+                manager.scheduleB.unassignCourse(manager.courseloader.getCourse(courseID));
             manager.A.schedule.removeTest(courseID);
             manager.B.schedule.removeTest(courseID);
             manager.constraintlistA.removeConstraint(courseID);
