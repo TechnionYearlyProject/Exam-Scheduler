@@ -188,8 +188,10 @@ public class CoursesTable extends VBox{
      * @date 11/01/2018
      */
     private void removeFunction() {
+        if (table.getSelectionModel().getSelectedItem() == null)
+            return;
         Integer courseID = table.getSelectionModel().getSelectedItem().getCourseID();
-        new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " + courseID.toString() + "?", () -> {
+        new AlertBox(AlertType.CONFIRM, "האם אתה בטוח שברצונך למחוק את קורס מספר " + String.format("%06d",courseID) + "?", () -> {
             if (manager.scheduleA != null)
                 manager.scheduleA.unassignCourse(manager.courseloader.getCourse(courseID));
             if (manager.scheduleB != null)
