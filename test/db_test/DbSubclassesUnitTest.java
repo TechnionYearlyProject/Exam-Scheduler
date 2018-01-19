@@ -1,8 +1,10 @@
 package db_test;
 
 import db.Constraint;
+import db.ConstraintList;
 import db.Course;
 import Logic.Exceptions.IllegalDaysBefore;
+import db.exception.DuplicateConstraints;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -55,5 +57,33 @@ public class DbSubclassesUnitTest {
         assertEquals(-1, c1.compareTo(c2));
         assertEquals(1, c4.compareTo(c2));
         assertEquals(0, c1.compareTo(c3));
+    }
+
+    @Test
+    public void ConstraintListUnitTest() throws DuplicateConstraints {
+        ConstraintList list = new ConstraintList();
+        list.addConstraint(1, LocalDate.parse("2014-01-01"));
+        list.addConstraint(1, LocalDate.parse("2014-01-02"), true);
+        list.addConstraint(2, LocalDate.parse("2014-01-02"));
+        list.addConstraint(3, LocalDate.parse("2014-01-03"));
+
+        assertEquals(2, list.getConstraints(1).size());
+        assertEquals(1, list.getConstraints(2).size());
+        assertEquals(1, list.getConstraints(3).size());
+
+        list.removeConstraint(3, LocalDate.parse("2014-01-03"));
+        list.removeConstraint(1);
+        list.removeConstraint(LocalDate.parse("2014-01-02"));
+
+        assertEquals(0, list.getConstraints(1).size());
+        assertEquals(0, list.getConstraints(2).size());
+        assertEquals(0, list.getConstraints(3).size());
+    }
+
+    @Test(expected = DuplicateConstraints.class)
+    public void addDuplicateConstraint() throws DuplicateConstraints {
+        ConstraintList list = new ConstraintList();
+        list.addConstraint(1, LocalDate.parse("2014-01-01"));
+        list.addConstraint(1, LocalDate.parse("2014-01-01"), true);
     }
 }

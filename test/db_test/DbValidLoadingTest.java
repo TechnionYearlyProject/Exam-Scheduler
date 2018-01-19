@@ -33,7 +33,9 @@ public class DbValidLoadingTest {
     public void loadValidEmptySemester() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
         db.baseDirectory = baseDir + db.sep + "valid_db";
         db.loadSemester(2015, "spring");
-        Semester semester = db.getSemester(2015, "spring");
+        Semester semester = db.getSemester(2014, "spring");
+        assertNull(semester);
+        semester = db.getSemester(2015, "spring");
         assertNotNull(semester);
 
         // Check that all fields are empty

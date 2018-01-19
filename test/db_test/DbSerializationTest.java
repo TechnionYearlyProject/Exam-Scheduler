@@ -107,11 +107,13 @@ public class DbSerializationTest {
         for (String program: programs) {
             semester.addStudyProgram(program);
         }
+        int i = 0;
         for (Map.Entry<Integer, String> e: courses.entrySet()) {
             semester.addCourse(e.getKey(), e.getValue(), 3.0,
-                    2, false, false, true, true);
+                    2, i % 2 == 0, (i + 1) % 2 == 0, true, true);
+            i += 1;
         }
-        int i = 0;
+        i = 0;
         for (Integer courseId: courses.keySet()) {
             for (String prog: programs) {
                 semester.registerCourse(courseId, prog, (i % 8) + 1);
@@ -123,8 +125,10 @@ public class DbSerializationTest {
         for (Integer courseId: exams.keySet()) {
             semester.scheduleCourse(courseId, Semester.Moed.MOED_A, exams.get(courseId));
         }
+        i = 0;
         for (Integer courseId: constraints.keySet()) {
-            semester.addConstraint(courseId, Semester.Moed.MOED_A, constraints.get(courseId), false);
+            semester.addConstraint(courseId, Semester.Moed.MOED_A, constraints.get(courseId), i % 2 == 0);
+            i += 1;
         }
         semester.conflicts = conflicts;
 
@@ -146,10 +150,16 @@ public class DbSerializationTest {
             assertTrue(courses.get(course.courseID).equals(course.courseName));
             assertEquals(3.0, course.creditPoints);
             assertEquals(2, course.getDaysBefore());
-            assertFalse(course.isFirst());
-            assertFalse(course.isLast());
+            assertTrue(course.isLast() || course.isFirst());
             assertTrue(course.isRequired);
             assertTrue(course.hasExam);
+        }
+        i = 0;
+        for (Integer courseId: courses.keySet()) {
+            for (String prog: programs) {
+                assertEquals((i % 8) + 1, semester.getCourse(courseId).getStudyProgramSemester(prog));
+                i += 1;
+            }
         }
 
         // Check schedules

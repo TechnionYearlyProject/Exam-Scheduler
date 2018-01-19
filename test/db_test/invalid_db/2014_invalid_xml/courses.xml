@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<courses>
+    <course>
+        <course>101</course>
+        <course_name>Physical Graffiti</course_name>
+        <credit_points>3.5</credit_points>
+        <days_before>2</days_before>
+        <isFirst/>
+        <isRequired/>
+        <hasExam/>
+        <semester program="Led Zeppelin">1</semester>
+        <semester program="Pink Floyd">1</semester>
+        <semester program="Dire Strait">1</semester>
+    </course>
+    <course>
+        <course_id>102</course_id>
+        <course_name>A Night At The Opera</course_name>
+        <credit_points>3.0</credit_points>
+        <days_before>2</days_before>
+        <isRequired/>
+        <hasExam/>
+        <semester program="Led Zeppelin">2</semester>
+        <semester program="Pink Floyd">2</semester>
+        <semester program="Dire Strait">2</semester>
+    </course>
+    <course>
+        <course_id>103</course_id>
+        <course_name>Dark Side Of The Moon</course_name>
+        <credit_points>5.0</credit_points>
+        <days_before>4</days_before>
+        <hasExam/>
+        <semester program="Led Zeppelin">3</semester>
+        <semester program="Pink Floyd">3</semester>
+    </course>
+    <course>
+        <course_id>104</course_id>
+        <course_name>Brothers In Arm</course_name>
+        <credit_points>5.5</credit_points>
+        <days_before>2</days_before>
+        <isLast/>
+        <isRequired/>
+        <semester program="Led Zeppelin">4</semester>
+        <semester program="Pink Floyd">4</semester>
+    </course>
+</courses>

@@ -88,6 +88,12 @@ public class DbInvalidLoadingTest {
         db.loadSemester(2017, "missing_constraints_b");
     }
 
+    @Test(expected = InvalidXMLFile.class)
+    public void invalidXMLfile() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
+        db.baseDirectory = baseDir + db.sep + "invalid_db";
+        db.loadSemester(2014, "invalid_xml");
+    }
+
     @Test(expected = StudyProgramAlreadyExist.class)
     public void duplicatePrograms() throws SemesterNotFound, InvalidDatabase, SemesterFileMissing {
         db.baseDirectory = baseDir + db.sep + "invalid_db";
