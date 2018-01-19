@@ -27,6 +27,30 @@ public class CourseLoader {
         sortCourses();
     }
 
+    /**
+     * @author dorbartov talgelber
+     * @date 19/01/2018
+     * deep copy constructor for courseloader
+     * @param copied the courseloader to be copied
+     */
+    public CourseLoader(CourseLoader copied) {
+        this.courses = new HashMap<Integer,Logic.Course>(copied.courses);
+        this.dbCourses = new HashMap<Integer,db.Course>(copied.dbCourses);
+        this.semester = copied.semester;
+        this.sortedCoursesList = new ArrayList<Logic.Course>(copied.sortedCoursesList);
+    }
+
+    /**
+     * @author dorbartov talgelber
+     * @date 19/01/2018
+     * remove all tests that are false in the take test checkbox
+     */
+    public void removeNoTests() {
+        this.courses.entrySet().removeIf(e -> !(e.getValue().hasExam()));
+        this.dbCourses.entrySet().removeIf(e -> !(e.getValue().hasExam));
+        sortCourses();
+    }
+
     private void setCoursesConstraints(ConstraintList cL) {
         for (Map.Entry<Integer, List<Constraint>> entry : cL.constraints.entrySet()) {
             List<Constraint> ls = entry.getValue();
