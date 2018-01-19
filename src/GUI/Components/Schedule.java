@@ -17,7 +17,8 @@ import java.util.HashMap;
  * Creates an instance of the time table of days representing a single moed.
  */
 public class Schedule extends GridPane{
-    static ArrayList<String > weekdays = new ArrayList<String>(Arrays.asList("ו'","ה'","ד'","ג'","ב'","א'"));
+    private static ArrayList<String > weekdays =
+            new ArrayList<>(Arrays.asList("ו'","ה'","ד'","ג'","ב'","א'"));
     LocalDate start;
     LocalDate finish;
     HashMap<LocalDate,Day> days;
@@ -44,17 +45,21 @@ public class Schedule extends GridPane{
             Label label = new Label(weekdays.get(i));
             label.setPadding(new Insets(2,10,0,0));
             label.setFont(Font.font(17));
-            //label.setStyle("-fx-font-weight: bold");
             vbox.getChildren().add(label);
             this.add(vbox, i,0);
         }
         LocalDate current;
-        if (input_start.getDayOfWeek().name() == "SUNDAY")
-            current = start;
-        else if (input_start.getDayOfWeek().name() == "SATURDAY")
-            current = input_start.plusDays(1);
-        else
-            current = input_start.minusDays(input_start.getDayOfWeek().ordinal()+1);
+        switch (input_start.getDayOfWeek().name()) {
+            case "SUNDAY":
+                current = start;
+                break;
+            case "SATURDAY":
+                current = input_start.plusDays(1);
+                break;
+            default:
+                current = input_start.minusDays(input_start.getDayOfWeek().ordinal() + 1);
+                break;
+        }
 
         for (int i = 5; i >= 0; i--, current = current.plusDays(1)) {
             if (current.isBefore(input_start)) {

@@ -205,7 +205,6 @@ public class CoursesTable extends VBox{
     public CoursesTable(Manager parent) {
         this.getStylesheets().add("/coursetable_style.css");
         this.setSpacing(10);
-        table.setItems(filteredList);
         table.setStyle("-fx-focus-color: lightgrey; -fx-faint-focus-color: transparent;");
         manager = parent;
         scheduled = false;
@@ -216,6 +215,7 @@ public class CoursesTable extends VBox{
         initConnectionsColumn();
         initTableParameters();
         initFilteredList();
+        table.setItems(filteredList);
         initCourseButtons();
         this.getChildren().addAll(filterInput,table,hbox);
     }

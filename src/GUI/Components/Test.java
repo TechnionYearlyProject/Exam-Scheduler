@@ -55,6 +55,29 @@ public class Test extends Label{
         });
     }
     /**
+     * @author roeyashkenazy
+     * @date 13/1/2017
+     * enables double clicking a course to remove it.
+     */
+    private void enableDoubleClickToRemove(){
+        this.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                if(mouseEvent.getClickCount() == 2){
+                    if (day.schedule.moed.manager.been_scheduled)
+                    {
+                        if (day.schedule.moed.moedType == Moed.MoedType.A)
+                            day.schedule.moed.manager.scheduleA.unassignCourse(course);
+                        else
+                            day.schedule.moed.manager.scheduleB.unassignCourse(course);
+                        day.removeTestGraphically(course.getCourseID());
+                    }
+                    else
+                        day.removeTestFully(course);
+                }
+            }
+        });
+    }
+    /**
      * @author Tal, roeyashkenazy
      * @date 5/12/2017
      * Builds a graphical test.
@@ -83,22 +106,7 @@ public class Test extends Label{
         }
         setColor(false);
         enableDragAcceptance();
-        this.setOnMouseClicked(mouseEvent -> {
-            if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                if(mouseEvent.getClickCount() == 2){
-                    if (day.schedule.moed.manager.been_scheduled)
-                    {
-                        if (day.schedule.moed.moedType == Moed.MoedType.A)
-                            day.schedule.moed.manager.scheduleA.unassignCourse(course);
-                        else
-                            day.schedule.moed.manager.scheduleB.unassignCourse(course);
-                        day.removeTestGraphically(course.getCourseID());
-                    }
-                    else
-                        day.removeTestFully(course);
-                }
-            }
-        });
+        enableDoubleClickToRemove();
     }
     /**
      * @author Tal, roeyashkenazy
