@@ -159,6 +159,7 @@ public class Day extends VBox{
                 if (schedule.moed.moedType == Moed.MoedType.A) {
                     if (schedule.moed.manager.constraintlistA.getConstraints(course_id) != null) {
                         if (schedule.moed.manager.constraintlistA.getConstraints(course_id).size() != 0) {
+                            new AlertBox(AlertType.ERROR,"בקורס כבר שובץ במועד זה", null);
                             return;
                         }
                     }
@@ -169,6 +170,7 @@ public class Day extends VBox{
                 } else {
                     if (schedule.moed.manager.constraintlistB.getConstraints(course_id) != null) {
                         if (schedule.moed.manager.constraintlistB.getConstraints(course_id).size() != 0) {
+                            new AlertBox(AlertType.ERROR,"בקורס כבר שובץ במועד זה", null);
                             return;
                         }
                     }
