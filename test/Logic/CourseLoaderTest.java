@@ -2,10 +2,12 @@ package Logic;
 
 import db.*;
 import db.Course;
+import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,5 +85,23 @@ public class CourseLoaderTest {
         loader.removeCourse(234247);
         assertNotEquals(null, loader.getCourse(234247));
         assertFalse(loader.getSortedCourses().contains(loader.getCourse(234247)));
+    }
+
+    @Test
+    public void addNewCourseTest(){
+        loader = new CourseLoader(semester, null);
+        HashMap<String, Integer> programs = new HashMap<>();
+        programs.put("הנדסת תוכנה", 4);
+        Logic.Course introToSpace = new Logic.Course("מבוא לחלל", 111000, true, 3, programs);
+        loader.addNewCourse(introToSpace);
+        assertNotEquals(null, loader.getCourses().get(111000));
+        assert(loader.getSortedCourses().contains(introToSpace));
+        Logic.Course iToSp = loader.getSortedCourses().stream().filter(c->c.getCourseID() == 111000).findFirst().get();
+        assert(iToSp.getPrograms().contains(new Pair<>("הנדסת תוכנה", 4)));
+        assertEquals(1, iToSp.getPrograms().size());
+        assertNotEquals(null, iToSp.getConflictCourses().get(234247));
+        assertNotEquals(null,iToSp.getConflictCourses().get(234123));
+        assertEquals(null, iToSp.getConflictCourses().get(104032));
+        assertEquals(null, iToSp.getConflictCourses().get(234118));
     }
 }
