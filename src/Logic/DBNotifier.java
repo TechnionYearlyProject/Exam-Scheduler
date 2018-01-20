@@ -11,23 +11,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class DBNotifier {
-    public void save(CourseLoader cL,Semester s,Schedule schedule){
-        Semester.Moed sm;
-        if(schedule == null){
-            sm = Semester.Moed.MOED_A;
-        } else {
-            sm = Semester.Moed.MOED_B;
-        }
-        List<Course> courses = cL.getSortedCourses();
-        for(Course c:courses){
-            updateDBCourse(c,s);
-            for (Constraint con: c.getConstraints()) {
-                try {
-                    s.addConstraint(c.getCourseID(),sm,con.date,con.forbidden);
-                } catch (UninitializedSchedule | DateOutOfSchedule | DuplicateConstraints | CourseUnknown uninitializedSchedule) {
-                    uninitializedSchedule.printStackTrace();
-                }
-            }
+    public void save(CourseLoader cL,Semester s){
+
+        for (Course c:cL.getCourses().values()) {
+            updateDBCourse(c,s);//update db.Course with changes.(add if not found).
         }
 
         for (Course c: cL.removedCourses) {
@@ -37,24 +24,38 @@ public class DBNotifier {
 
     private void updateDBCourse(Course course, Semester s){
         db.Course c;
+        Map<String,Integer> m = new HashMap<>();
         try {
             c = s.getCourse(course.getCourseID());
         } catch (CourseUnknown courseUnknown) {
-            try {
+            try {//if the course does not exist
                 s.addCourse(course.getCourseID(),course.getCourseName(),course.getCreditPoints(),
                         course.getDaysBefore(),course.isFirst(),course.isLast(),course.isRequired(),course.hasExam());
-
+                try {
+                    c = s.getCourse(course.getCourseID());
+                } catch (CourseUnknown courseUnknown1) {
+                    //will not reach here
+                    c=null;
+                    courseUnknown1.printStackTrace();
+                }
+                Set<Pair<String,Integer>> tmp = course.getPrograms();
+                for (Pair<String, Integer> p: tmp) {
+                    m.put(p.getKey(),p.getValue());
+                }
+                if (c != null) {//always
+                    c.programs = m;
+                }
             } catch (CourseAlreadyExist | CourseFirstAndLast courseAlreadyExist) {
                 courseAlreadyExist.printStackTrace();
             }
             return;
         }
+        //update db.Course.
         c.hasExam = course.hasExam();
         c.daysBefore = course.getDaysBefore();
         c.isRequired = course.isRequired();
         c.isFirst = course.isFirst();
         c.isLast = course.isLast();
-        Map<String,Integer> m = new HashMap<>();
         Set<Pair<String,Integer>> tmp = course.getPrograms();
         for (Pair<String, Integer> p: tmp) {
             m.put(p.getKey(),p.getValue());

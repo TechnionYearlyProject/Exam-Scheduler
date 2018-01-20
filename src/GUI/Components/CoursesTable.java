@@ -1,5 +1,6 @@
 package GUI.Components;
 import Logic.Course;
+import Logic.EMoed;
 import Logic.Exceptions.IllegalDaysBefore;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -309,9 +310,9 @@ public class CoursesTable extends VBox{
     public void saveFunction() {
         new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את מצב הקורסים הנוכחי למסד הנתונים?", ()->{
             if (manager.scheduleA != null)
-                manager.dbnotifier.save(manager.courseloader,manager.semester,manager.scheduleA);
+                manager.dbnotifier.save(manager.courseloader,manager.semester);
             else
-                manager.dbnotifier.save(manager.courseloader,manager.semester,null);
+                manager.dbnotifier.save(manager.courseloader,manager.semester);
         });
         /*Semester to_write = wrapper.manager.semester;
         wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);*/
