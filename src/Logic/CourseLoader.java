@@ -138,7 +138,7 @@ public class CourseLoader {
     }
 
     public List<Logic.Course> getSortedCourses(){
-        return this.sortedCoursesList;
+        return this.sortedCoursesList.stream().filter(Logic.Course::hasExam).collect(Collectors.toList());
     }
 
 
