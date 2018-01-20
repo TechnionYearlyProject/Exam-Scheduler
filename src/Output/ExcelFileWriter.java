@@ -34,7 +34,7 @@ public class ExcelFileWriter implements IFileWriter {
     @Override
     public void write(String fileName, List<Day> lst, CourseLoader cL) throws ErrorOpeningFile {
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("מועדי א");
+        XSSFSheet sheet = workbook.createSheet();
         int numOfExams = getNumOfDaysScheduled(lst);
         String[][] exams = new String[numOfExams+1][3];
         exams[0][0] = "תאריך";
