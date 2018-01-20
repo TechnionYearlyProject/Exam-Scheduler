@@ -86,22 +86,29 @@ public class CourseLoader {
                 //to Logic.Course
             }
         }
+        for(Map.Entry<Integer, Set<Integer>> entry : semester.conflicts.entrySet()){
+            Logic.Course c = courses.get(entry.getKey());
+            for (Integer conflict: entry.getValue()) {
+                String name = courses.get(conflict).getCourseName();
+                c.addConflictCourse(conflict,name);
+            }
+        }
     }
 
     /**
+     * @author ucfBader.
      * in order to start our algorithm, we need to iterate over each db.course,
      * and build new Logic.course which is more helpful and contains more usable data.
      */
     private void buildLogicCourses() {
         for (Map.Entry<Integer, Course> entry: dbCourses.entrySet()) {
-            boolean isRequired = false;
-            Course c = entry.getValue();
-            if(c.studyProgramSize() > 0){
-                isRequired = true;
-            }
+//            boolean isRequired = false;
+//            Course c = entry.getValue();
+//            if(c.studyProgramSize() > 0){
+//                isRequired = true;
+           // }
 
-            Logic.Course current =  new Logic.Course(c.courseName,c.courseID,isRequired
-                    ,c.creditPoints, c.getPrograms());
+            Logic.Course current =  new Logic.Course(entry.getValue());
 
             courses.put(current.getCourseID(),current);
         }
@@ -129,7 +136,6 @@ public class CourseLoader {
     public Logic.Course getCourse(Integer id){
         return courses.get(id);
     }
-
 
     public List<Logic.Course> getSortedCourses(){
         return this.sortedCoursesList;
