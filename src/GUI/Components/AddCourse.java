@@ -27,8 +27,8 @@ import java.util.HashMap;
  * The class displays a custom window in which the user can create and insert a new course to the system.
  */
 public class AddCourse {
-	ImageView X_icon;
-	ImageView X_hover_icon;
+	private ImageView X_icon;
+	private ImageView X_hover_icon;
 	CoursesTable coursestable;
     TextField course_id;
     TextField course_name;

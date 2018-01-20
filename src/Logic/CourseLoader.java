@@ -15,7 +15,8 @@ public class CourseLoader {
         this.semester = semester;
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
-        dbCourses = semester.getCourseCollection().stream().filter(c->c.hasExam).collect(Collectors.toMap(x-> x.courseID, x -> x));
+        dbCourses = semester.getCourseCollection().stream().filter(c->c.hasExam)
+                .collect(Collectors.toMap(x-> x.courseID, x -> x));
         removedCourses = new ArrayList<>();
         //building Logic CourseList.
         buildLogicCourses();
@@ -35,10 +36,10 @@ public class CourseLoader {
      * @param copied the courseloader to be copied
      */
     public CourseLoader(CourseLoader copied) {
-        this.courses = new HashMap<Integer,Logic.Course>(copied.courses);
-        this.dbCourses = new HashMap<Integer,db.Course>(copied.dbCourses);
+        this.courses = new HashMap<>(copied.courses);
+        this.dbCourses = new HashMap<>(copied.dbCourses);
         this.semester = copied.semester;
-        this.sortedCoursesList = new ArrayList<Logic.Course>(copied.sortedCoursesList);
+        this.sortedCoursesList = new ArrayList<>(copied.sortedCoursesList);
         this.removedCourses = new ArrayList<>(copied.removedCourses);
     }
 
@@ -69,7 +70,8 @@ public class CourseLoader {
 
     /**
      * @author ucfBader.
-     * In this function we define each course's conflicts. (courses taught at the same semester in some study program).
+     * In this function we define each course's conflicts.
+     * (courses taught at the same semester in some study program).
      */
     private void setCoursesConflicts() {
         for (db.Course course: dbCourses.values()) {
@@ -77,9 +79,11 @@ public class CourseLoader {
             for (String program: programsForSemester.keySet()){
                 List<Pair<Integer,String>> l =
                         semester.getCoursesByProgramAndSemester(program, programsForSemester.get(program)).
-                                stream().map(a->new Pair<>(a.courseID,a.courseName)).collect(Collectors.toList());
-                courses.get(course.courseID).addConflictCourses(l); //we iterate over db.Courses but need to add conflict
-                                                              //to Logic.Course
+                                stream().map(a->new Pair<>(a.courseID,a.courseName))
+                                .collect(Collectors.toList());
+                courses.get(course.courseID).addConflictCourses(l);
+                //we iterate over db.Courses but need to add conflict
+                //to Logic.Course
             }
         }
     }
@@ -132,10 +136,6 @@ public class CourseLoader {
     }
 
 
-//    public List<Logic.Course> getCoursesToSchedule(){
-//        return sortedCoursesList.stream().filter(Logic.Course::hasExam).collect(Collectors.toList());
-//    }
-
     public void sortCourses(){
         sortedCoursesList = new ArrayList<>();
         for (Map.Entry<Integer, Logic.Course> entry: courses.entrySet()) {
@@ -177,7 +177,9 @@ public class CourseLoader {
                     course.addConflictCourse(other_course.getCourseID(),other_course.getCourseName());
                 }
         courses.put(id,course);
-        db.Course dbcourse = new db.Course(id,name,course.getCreditPoints(),course.getDaysBefore(),course.isFirst(),course.isLast(),course.isRequired(),course.hasExam());
+        db.Course dbcourse = new db.Course(id,name,course.getCreditPoints(),
+                course.getDaysBefore(),course.isFirst(),course.isLast(),
+                course.isRequired(),course.hasExam());
         dbCourses.put(id,dbcourse);
         removedCourses.remove(course);
         sortCourses();
