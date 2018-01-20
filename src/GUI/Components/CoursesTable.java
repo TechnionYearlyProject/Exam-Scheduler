@@ -141,7 +141,7 @@ public class CoursesTable extends VBox{
      * initializes the course buttons (save,add,remove) for the table.
      */
     private void initCourseButtons(){
-        CustomButton save_button = new CustomButton("שמור", "/save_icon.png", null,40,160);
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png", this::saveFunction,40,160);
         save_button.setCircular();
         CustomButton add_button = new CustomButton("הוסף קורס", "/add_icon.png", this::AddFunction,40,160);
         add_button.setCircular();
@@ -296,6 +296,22 @@ public class CoursesTable extends VBox{
 
     private void AddFunction() {
         new AddCourse(this);
+    }
+
+    /**
+     * @author dorbartov
+     * @date 20/01/2018
+     * saves changes made to coursestable to the DB
+     */
+    public void saveFunction() {
+        new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את מצב הקורסים הנוכחי למסד הנתונים?", ()->{
+            if (manager.scheduleA != null)
+                manager.dbnotifier.save(manager.courseloader,manager.semester,manager.scheduleA);
+            else
+                manager.dbnotifier.save(manager.courseloader,manager.semester,null);
+        });
+        /*Semester to_write = wrapper.manager.semester;
+        wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);*/
     }
 
 }

@@ -1,5 +1,6 @@
 package GUI.Components;
 import Logic.CourseLoader;
+import Logic.DBNotifier;
 import Logic.Exceptions.IllegalRange;
 import Logic.Schedule;
 import Logic.WriteScheduleToDB;
@@ -79,20 +80,6 @@ public class Toolbar extends HBox{
         }
         wrapper.manager.scheduleA = null;
         wrapper.manager.scheduleB = null;
-    }
-
-    /**
-     * @author roeyashkenazy
-     * @date 15/1/2018
-     * save button functionality.
-     */
-    public void saveFunction() {
-/*        AlertBox alert = new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את המצב הנוכחי?", ()->{
-            WriteScheduleToDB db = new WriteScheduleToDB();
-            db.write(wrapper.manager.semester,);
-        });*/
-        Semester to_write = wrapper.manager.semester;
-        wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);
     }
 
     /**

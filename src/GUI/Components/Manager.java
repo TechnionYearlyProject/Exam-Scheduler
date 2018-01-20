@@ -1,5 +1,6 @@
 package GUI.Components;
 import Logic.CourseLoader;
+import Logic.DBNotifier;
 import db.ConstraintList;
 import db.Database;
 import db.Semester;
@@ -36,6 +37,7 @@ public class Manager extends HBox {
     String semesterName;
     Logic.Schedule scheduleA;
     Logic.Schedule scheduleB;
+    DBNotifier dbnotifier;
     Manager(Wrapper parent) {
         try {
             db = new Database();
@@ -47,6 +49,7 @@ public class Manager extends HBox {
             constraintlistB = new ConstraintList();
             occupiedA = new HashSet<>();
             occupiedB = new HashSet<>();
+            dbnotifier = new DBNotifier();
         }
         catch (Exception e) {
             new AlertBox(AlertType.ERROR,"שגיאה בקריאה ממסד הנתונים. התוכנית תיסגר.",null,true);
