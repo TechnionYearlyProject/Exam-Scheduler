@@ -38,6 +38,31 @@ public class Course implements Comparable<Course>{
     }
 
     /**
+     * build course according to db data.
+     * @param o the db course.
+     */
+    public Course(db.Course o){
+        courseID = o.courseID;
+        courseName = o.courseName;
+        isRequired = o.isRequired;
+        isLast = o.isLast;
+        isFirst = o.isFirst;
+        daysBefore = o.daysBefore;
+        creditPoints = o.creditPoints;
+        hasExam = o.hasExam;
+        constraints = new ArrayList<>();
+        conflictCourses = new HashMap<>();
+        mapToSet(o.programs);
+    }
+
+    private void mapToSet(Map<String,Integer> m){
+        programs = new HashSet<>();
+        for (Map.Entry<String, Integer> entry: m.entrySet()){
+            programs.add(new Pair<>(entry.getKey(),entry.getValue()));
+        }
+    }
+
+    /**
      * @author ucfBader.
      * Course constructor.
      */
