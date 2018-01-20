@@ -37,7 +37,7 @@ public class CalendarFileWriter implements IFileWriter{
         ArrayList<Day> fixedArray = new ArrayList<>(lst);
         fixDaysArray(fixedArray);
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("מועדי א");
+        XSSFSheet sheet = workbook.createSheet();
         LocalDate firstExam = lst.get(0).getDate();
         LocalDate lastExam = lst.get(lst.size()-1).getDate();
         long daysBetween = DAYS.between(firstExam,lastExam);
