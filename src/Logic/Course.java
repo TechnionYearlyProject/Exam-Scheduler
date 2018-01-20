@@ -56,7 +56,8 @@ public class Course implements Comparable<Course>{
     }
 
 
-    public Course(String courseName, Integer courseID, boolean isRequired, double cPoints, Map<String, Integer> programs) {
+    public Course(String courseName, Integer courseID, boolean isRequired,
+                  double cPoints, Map<String, Integer> programs) {
         this(courseName, courseID, isRequired, cPoints);
         for(Map.Entry<String, Integer> program: programs.entrySet()){
             this.programs.add(new Pair<>(program.getKey(), program.getValue()));
@@ -78,7 +79,7 @@ public class Course implements Comparable<Course>{
     /**
      * @author ucfBader
      * Adding a list of Constraints. if one of the Constraints already exists, it won't be added again.
-     * @Param ls: the list of constraints to add.
+     * @param ls: the list of constraints to add.
      */
     void addConstraint(List<Constraint> ls){
         for (Constraint c: ls) {
@@ -89,7 +90,7 @@ public class Course implements Comparable<Course>{
     /**
      * @author ucfBader
      * Remove constraint from the constraints list. if there is such constraint it won't affect the list.
-     * @Param c: the Constraint to remove.
+     * @param c: the Constraint to remove.
      */
     void removeConstraint(Constraint c){
         constraints.remove(c);
@@ -98,8 +99,8 @@ public class Course implements Comparable<Course>{
     /**
      * @author ucfBader
      * defining new Conflict of the course. if the course already defined as conflicted, it won't be defined again.
-     * @Param courseID: the ID of the course to be defined as conflict.
-     * @Param courseName: the name of the course to be defined as conflict.
+     * @param courseID: the ID of the course to be defined as conflict.
+     * @param courseName: the name of the course to be defined as conflict.
      */
     public void addConflictCourse(Integer courseID, String courseName){
         if(this.courseID == courseID){

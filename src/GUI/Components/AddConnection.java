@@ -34,14 +34,14 @@ import java.util.Map;
  * Implementing the Connection between courses window (last column button in the CourseTable), all the design and functionality
  */
 
-public class AddConnection {
-	ImageView X_icon;
-	ImageView X_hover_icon;
-	ListView<String> courses;
-	TextField newcourse;
-	Integer courseid;
+class AddConnection {
+	private ImageView X_icon;
+	private ImageView X_hover_icon;
+	private ListView<String> courses;
+	private TextField newcourse;
+	private Integer courseid;
 	Manager manager;
-	public AddConnection(Manager parent, Integer new_courseid) {
+	AddConnection(Manager parent, Integer new_courseid) {
 		manager = parent;
 		courseid = new_courseid;
 
@@ -62,27 +62,15 @@ public class AddConnection {
 		X_icon = new ImageView(new Image("/X_icon.png"));
 		X_hover_icon = new ImageView(new Image("/X_hover_icon.png"));
 		close_label.setGraphic(X_icon);
-		close_label.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				if (mouse_event.getButton()!= MouseButton.PRIMARY)
-					return;
-				stage.close();
-			}
-		});
-		close_label.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				close_label.setGraphic(X_hover_icon);
-			}
-		});
-		close_label.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				close_label.setGraphic(X_icon);
-
-			}
-		});
+		close_label.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton()!= MouseButton.PRIMARY)
+                return;
+            stage.close();
+        });
+		close_label.addEventFilter(MouseEvent.MOUSE_ENTERED,
+				mouse_event -> close_label.setGraphic(X_hover_icon));
+		close_label.addEventFilter(MouseEvent.MOUSE_EXITED,
+				mouse_event -> close_label.setGraphic(X_icon));
 		hbox_title.getChildren().addAll(close_label, title_label);
 
 		VBox body = new VBox();
@@ -101,52 +89,49 @@ public class AddConnection {
 		courses.setPrefHeight(234);
 		courses.setFocusTraversable(false);
 		newcourse = new TextField();
-		newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
+		newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color:" +
+				" -fx-text-box-border, -fx-control-inner-background;");
 		newcourse.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		newcourse.setPromptText("להוספה הקלידו מס' קורס...");
 		newcourse.setFocusTraversable(false);
 
-		newcourse.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode().equals(KeyCode.ENTER)) {
-					if (!(newcourse.getText().matches("\\d*"))) {
-						newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");//"; -fx-text-box-border: transparent");
-					}
-					else {
-						if (newcourse.getText() == null || newcourse.getText().trim().isEmpty()){
-							newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");//"; -fx-text-box-border: transparent");
-							return;
-						}
-						Course course = manager.courseloader.getCourse(Integer.parseInt(newcourse.getText()));
-						if (course == null) {
-							newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");//"; -fx-text-box-border: transparent");
-						}
-						else
-						{
-							Course curr_course = manager.courseloader.getCourse(courseid);
-							if (curr_course.getConflictCourses().containsKey(course.getCourseID()) || Integer.parseInt(newcourse.getText()) == courseid) {
-								newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");//"; -fx-text-box-border: transparent");
-								return;
-							}
-							curr_course.addConflictCourse(course.getCourseID(), course.getCourseName());
-							course.addConflictCourse(curr_course.getCourseID(), curr_course.getCourseName());
-							items.add(String.format("%06d",course.getCourseID()) + " - " + course.getCourseName());
-							courses.setItems(items);
-							newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #9CCC65;");//"; -fx-text-box-border: transparent");
+		newcourse.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                if (!(newcourse.getText().matches("\\d*"))) {
+                    newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");
+                }
+                else {
+                    if (newcourse.getText() == null || newcourse.getText().trim().isEmpty()){
+                        newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");
+                        return;
+                    }
+                    Course course = manager.courseloader.getCourse(Integer.parseInt(newcourse.getText()));
+                    if (course == null) {
+                        newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");
+                    }
+                    else
+                    {
+                        Course curr_course = manager.courseloader.getCourse(courseid);
+                        if (curr_course.getConflictCourses().containsKey(course.getCourseID()) ||
+								Integer.parseInt(newcourse.getText()) == courseid) {
+                            newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #F44336;");
+                            return;
+                        }
+                        curr_course.addConflictCourse(course.getCourseID(), course.getCourseName());
+                        course.addConflictCourse(curr_course.getCourseID(), curr_course.getCourseName());
+                        items.add(String.format("%06d",course.getCourseID()) + " - " + course.getCourseName());
+                        courses.setItems(items);
+                        newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: #9CCC65;");
 
-						}
-					}
-				}
-			}});
-		newcourse.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-								String oldValue, String newValue) {
+                    }
+                }
+            }
+        });
+		newcourse.textProperty().addListener((observable, oldValue, newValue) -> {
 
-				newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
-			}
-		});
+            newcourse.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border," +
+					" -fx-control-inner-background;");
+        });
 		body.getChildren().addAll(courses,newcourse);
 
 
@@ -168,64 +153,45 @@ public class AddConnection {
 		second_button.setPrefWidth(90);
 		second_button.setPrefHeight(40);
 		hbox_button.getChildren().addAll(first_button, second_button);
-		first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
-		second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
-		first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				if (mouse_event.getButton() != MouseButton.PRIMARY)
-					return;
-				//func.run();
-				stage.close();
-			}
-		});
-		first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #455A64;");
-			}
-		});
-		first_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
-			}
-		});
-		second_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				if (mouse_event.getButton() != MouseButton.PRIMARY)
-					return;
-				if (courses.getSelectionModel().getSelectedItem() == null)
-					return;
+		first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+				"-fx-background-color: #607D8B;");
+		second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+				"-fx-background-color: #607D8B;");
+		first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton() != MouseButton.PRIMARY)
+                return;
+            //func.run();
+            stage.close();
+        });
+		first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+				first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6;" +
+						" -fx-background-color: #455A64;"));
+		first_button.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+				first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6;" +
+						" -fx-background-color: #607D8B;"));
+		second_button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton() != MouseButton.PRIMARY)
+                return;
+            if (courses.getSelectionModel().getSelectedItem() == null)
+                return;
 
-				Integer course_num = Integer.parseInt(courses.getSelectionModel().getSelectedItem().split(" - ")[0]);
-				Course remove_course = manager.courseloader.getCourse(course_num);
-				Course curr_course = manager.courseloader.getCourse(courseid);
-				if (curr_course.getConflictCourses() == null || curr_course.getConflictCourses().size() == 0)
-					return;
-				curr_course.removeConflictCourse(course_num);
-				remove_course.removeConflictCourse(courseid);
-				items.remove(courses.getSelectionModel().getSelectedItem());
-				courses.setItems(items);
-			}
-		});
-		second_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #455A64;");
-			}
-		});
-		second_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #607D8B;");
-			}
-		});
-
-
-
-
+            Integer course_num = Integer.parseInt(courses.getSelectionModel().getSelectedItem()
+					.split(" - ")[0]);
+            Course remove_course = manager.courseloader.getCourse(course_num);
+            Course curr_course = manager.courseloader.getCourse(courseid);
+            if (curr_course.getConflictCourses() == null || curr_course.getConflictCourses().size() == 0)
+                return;
+            curr_course.removeConflictCourse(course_num);
+            remove_course.removeConflictCourse(courseid);
+            items.remove(courses.getSelectionModel().getSelectedItem());
+            courses.setItems(items);
+        });
+		second_button.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+				second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+						"-fx-background-color: #455A64;"));
+		second_button.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+				second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+						"-fx-background-color: #607D8B;"));
 
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(1, 1, 1, 1));
@@ -237,7 +203,6 @@ public class AddConnection {
 		Scene scene = new Scene(border, 511, 419);
 		stage.setScene(scene);
 		stage.show();
-
 	}
 }
 		

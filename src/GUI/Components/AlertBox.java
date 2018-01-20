@@ -73,27 +73,15 @@ public class AlertBox {
 		X_icon = new ImageView(new Image("/X_icon.png"));
 		X_hover_icon = new ImageView(new Image("/X_hover_icon.png"));
 		close_label.setGraphic(X_icon);
-		close_label.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				if (mouse_event.getButton()!= MouseButton.PRIMARY)
-					return;
-				stage.close();
-			}
-		});
-		close_label.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				close_label.setGraphic(X_hover_icon);
-			}
-		});
-		close_label.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouse_event) {
-				close_label.setGraphic(X_icon);
-
-			}
-		});
+		close_label.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+            if (mouse_event.getButton()!= MouseButton.PRIMARY)
+                return;
+            stage.close();
+        });
+		close_label.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+				close_label.setGraphic(X_hover_icon));
+		close_label.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+				close_label.setGraphic(X_icon));
 		hbox_title.getChildren().addAll(close_label, title_label);
 
 
@@ -136,98 +124,66 @@ public class AlertBox {
 		second_button.setVisible(false);
 		hbox_button.getChildren().addAll(first_button, second_button);
 		if (type == AlertType.ERROR) {
-			first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #F44336;");
-			first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					if (mouse_event.getButton() != MouseButton.PRIMARY)
-						return;
-					stage.close();
-				}
-			});
-			first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #E53935;");
-				}
-			});
-			first_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #F44336;");
-				}
-			});
+			first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+					"-fx-background-color: #F44336;");
+			first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+                if (mouse_event.getButton() != MouseButton.PRIMARY)
+                    return;
+                stage.close();
+            });
+			first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #E53935;"));
+			first_button.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #F44336;"));
 		}
 		else if (type == AlertType.INFO)
 		{
-			first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #FFC107;");
-			first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					if (mouse_event.getButton() != MouseButton.PRIMARY)
-						return;
-					stage.close();
-				}
-			});
-			first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #FFB300;");
-				}
-			});
-			first_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #FFC107;");
-				}
-			});
+			first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+					"-fx-background-color: #FFC107;");
+			first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+                if (mouse_event.getButton() != MouseButton.PRIMARY)
+                    return;
+                stage.close();
+            });
+			first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #FFB300;"));
+			first_button.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #FFC107;"));
 		}
 		else {
 			second_button.setVisible(true);
 			second_button.setText("ביטול");
-			first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #2196F3;");
-			second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #2196F3;");
-			first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					if (mouse_event.getButton() != MouseButton.PRIMARY)
-						return;
-					func.run();
-					stage.close();
-				}
-			});
-			first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #1E88E5;");
-				}
-			});
-			first_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #2196F3;");
-				}
-			});
-			second_button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					if (mouse_event.getButton() != MouseButton.PRIMARY)
-						return;
-					stage.close();
-				}
-			});
-			second_button.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #1E88E5;");
-				}
-			});
-			second_button.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouse_event) {
-					second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; -fx-background-color: #2196F3;");
-				}
-			});
+			first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+					"-fx-background-color: #2196F3;");
+			second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+					"-fx-background-color: #2196F3;");
+			first_button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+                if (mouse_event.getButton() != MouseButton.PRIMARY)
+                    return;
+                func.run();
+                stage.close();
+            });
+			first_button.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #1E88E5;"));
+			first_button.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+					first_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #2196F3;"));
+			second_button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouse_event -> {
+                if (mouse_event.getButton() != MouseButton.PRIMARY)
+                    return;
+                stage.close();
+            });
+			second_button.addEventFilter(MouseEvent.MOUSE_ENTERED, mouse_event ->
+					second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #1E88E5;"));
+			second_button.addEventFilter(MouseEvent.MOUSE_EXITED, mouse_event ->
+					second_button.setStyle("-fx-background-radius: 6,6,6,6; -fx-border-radius: 6,6,6,6; " +
+							"-fx-background-color: #2196F3;"));
 		}
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(1, 1, 1, 1));

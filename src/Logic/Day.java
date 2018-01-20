@@ -15,7 +15,7 @@ public class Day {
     HashMap<Integer,Integer> courses;
     public Day(LocalDate new_date) {
         date = new_date;
-        courses = new HashMap<Integer,Integer>();
+        courses = new HashMap<>();
     }
     public void insertCourse(int course_id, int distance) {
         courses.put(course_id,distance);
@@ -58,13 +58,11 @@ public class Day {
                 continue;
             }
             if (distance <= 0 || course.getDaysBefore() >= distance){ //A student has not time to prepare to any of two courses
-                //System.out.println("Course " + course.getCourseID() + " conflicts with " + course_id + " distances " + distance + ": " + course.getDaysBefore() + " " + getDate());
                 return false;
             }
         }
         for (Constraint constraint: course.getConstraints()){//was getBadConstraints()
             if (constraint.date.equals(getDate())){
-                //System.out.println(course.getCourseID());
                 return false;
             }
         }

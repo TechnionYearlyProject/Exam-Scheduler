@@ -141,11 +141,14 @@ public class CoursesTable extends VBox{
      * initializes the course buttons (save,add,remove) for the table.
      */
     private void initCourseButtons(){
-        CustomButton save_button = new CustomButton("שמור", "/save_icon.png", this::saveFunction,40,160);
+        CustomButton save_button = new CustomButton("שמור", "/save_icon.png",
+                this::saveFunction,40,160);
         save_button.setCircular();
-        CustomButton add_button = new CustomButton("הוסף קורס", "/add_icon.png", this::AddFunction,40,160);
+        CustomButton add_button = new CustomButton("הוסף קורס", "/add_icon.png",
+                this::AddFunction,40,160);
         add_button.setCircular();
-        CustomButton remove_button = new CustomButton("הסר קורס", "/remove_icon.png", this::removeFunction,40,160);
+        CustomButton remove_button = new CustomButton("הסר קורס", "/remove_icon.png",
+                this::removeFunction,40,160);
         remove_button.setCircular();
         hbox = new HBox();
         hbox.setAlignment(Pos.TOP_RIGHT);
