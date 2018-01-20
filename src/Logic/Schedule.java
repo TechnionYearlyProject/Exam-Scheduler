@@ -419,21 +419,22 @@ public class Schedule {
             }
             index++;
         }
+        Boolean flag = true;
         for (Integer other_course: other_courses) { //check that there is no conflicts collision
             Integer other_days_before = day.courses.get(other_course);
             if (other_days_before <= 0) {
                 if (course.getConflictCourses().get(other_course) != null)
                     if (courseLoader.getCourse(other_course).getDaysBefore() != (-1*other_days_before))
-                        return false;
+                        flag = false;
             }
             else {
                 if ((course.getConflictCourses().get(other_course) != null) && (other_days_before<days_before))
-                    return false;
+                    flag = false;
             }
         }
         this.unassignCourse(course);
         this.assignCourse(course,index);
-        return true;
+        return flag;
     }
 
     /**
