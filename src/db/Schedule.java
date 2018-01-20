@@ -24,6 +24,12 @@ public class Schedule {
         this.schedule = new HashMap<>();
     }
 
+    /**
+     * Check if the schedule was properly initialized (and thus exams can be scheduled)
+     * @return True if schedule has start and end date, false else.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public boolean undefinedStartOrEnd() {
         return start == null || end == null;
     }
@@ -37,6 +43,14 @@ public class Schedule {
         }
     }
 
+    /**
+     * Define the starting day of the exam period. If exam were scheduled before this date, they
+     * will be removed.
+     * @param start The starting date of the exam period
+     * @throws InvalidSchedule If the end date of the exam period is before the parameter date.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void setStartDate(LocalDate start) throws InvalidSchedule {
         if (end != null && start.isAfter(end)) {
             throw new InvalidSchedule();
@@ -45,6 +59,14 @@ public class Schedule {
         updateSchedules();
     }
 
+    /**
+     * Define the end day of the exam period. If exam were scheduled after this date, they
+     * will be removed.
+     * @param end The end date of the exam period
+     * @throws InvalidSchedule If the starting date of the exam period is after the parameter date.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void setEndDate(LocalDate end) throws InvalidSchedule {
         if (start != null && end.isBefore(start)) {
             throw new InvalidSchedule();
@@ -53,6 +75,15 @@ public class Schedule {
         updateSchedules();
     }
 
+    /**
+     * Set the exam day of a course.
+     * @param courseId The ID of the course.
+     * @param date The date at which the course will have its exam.
+     * @throws DateOutOfSchedule If the date is before the starting date or after the end date of the exam period.
+     * @throws UninitializedSchedule If starting or end date was not updated.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void scheduleCourse(int courseId, LocalDate date) throws DateOutOfSchedule, UninitializedSchedule {
         if (undefinedStartOrEnd()) {
             throw new UninitializedSchedule();
@@ -63,10 +94,23 @@ public class Schedule {
         schedule.put(courseId, date);
     }
 
+    /**
+     * Remove the exam day of a course. Has no effect if no exam day was scheduled for this course.
+     * @param id The ID of the course.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void unscheduleCourse(int id) {
         schedule.remove(id);
     }
 
+    /**
+     * Return the exam date of a course.
+     * @param courseId the ID of the course.
+     * @return a LocalDate containing the date of the exam if it was defined, null else.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public LocalDate getCourseSchedule(int courseId) {
         if (!schedule.containsKey(courseId)) {
             return null;

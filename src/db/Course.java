@@ -54,6 +54,13 @@ public class Course {
         }
     }
 
+    /**
+     * Assign the course to a semester in the given study program.
+     * @param program The name of the study program.
+     * @param semester The number of the semester.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void setStudyProgram(String program, int semester) {
         programs.put(program, semester);
     }
@@ -62,10 +69,24 @@ public class Course {
         return programs.size();
     }
 
+    /**
+     * Remove the assignation from a study program.
+     * @param program The name of the study program.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void removeStudyProgram(String program) {
         programs.remove(program);
     }
 
+    /**
+     * Get the number of the semester in the study program at which the course was assigned.
+     * @param program The name of the study program.
+     * @return The number of the semester in the given study program, or 0 if the course
+     * was not assigned to this study program.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public int getStudyProgramSemester(String program) {
         if (!programs.containsKey(program)) {
             return 0;
@@ -85,6 +106,13 @@ public class Course {
         return courseName;
     }
 
+    /**
+     * Set the required number of days to prepare the exam.
+     * @param daysBefore The number of days. The number must be strictly positive.
+     * @throws IllegalDaysBefore If the value passed is 0 or negative.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void setDaysBefore(int daysBefore) throws IllegalDaysBefore {
         if(daysBefore < 1){
             throw new IllegalDaysBefore();
@@ -96,6 +124,12 @@ public class Course {
         return daysBefore;
     }
 
+    /**
+     * Define if the course should be scheduled at the beginning of the exam period.
+     * @param isFirst Whether the course should be scheduled at the beginning of the exam period or not.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void setAsFirst(boolean isFirst) {
         if (isFirst) {
             this.isLast = false;
@@ -103,6 +137,12 @@ public class Course {
         this.isFirst = isFirst;
     }
 
+    /**
+     * Define if the course should be scheduled at the end of the exam period.
+     * @param isLast Whether the course should be scheduled at the end of the exam period or not.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     public void setAsLast(boolean isLast) {
         if (isLast) {
             this.isFirst = false;

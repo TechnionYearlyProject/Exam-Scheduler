@@ -90,6 +90,16 @@ public class Database {
         return validators.get(path);
     }
 
+    /**
+     * Ensure the XML file is valid according to its XSD model.
+     * @param filePath the absolute path to the XML file.
+     * @return the File object associated to the XML file, if the file is valid.
+     * Else, an exception is thrown.
+     * @throws InvalidXMLFile If the file is not valid
+     * @throws InvalidDatabase If an I/O error occured (file can't be read)
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     private File validateXMLFile(String filePath) throws InvalidDatabase {
         File XMLFile = new File(filePath);
         String XSDFilename = getXSDFileFromXML(XMLFile.getName());
@@ -136,6 +146,17 @@ public class Database {
         }
     }
 
+    /**
+     * Main parsing function. Check that all the XML files exist, are valid, and that the data
+     * is logical.
+     * @param path The absolute path to the directory containing the XML files.
+     * @return A Semester object containing all the data of the XML files.
+     * @throws InvalidDatabase If one of the file is invalid or contains illogical data.
+     * @throws SemesterNotFound If the path do not point to an existing file.
+     * @throws SemesterFileMissing If the directory don't contains all the needed XML files.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     private Semester parseSemester(String path) throws InvalidDatabase, SemesterNotFound, SemesterFileMissing {
         File dir = new File(path);
         if (!dir.isDirectory()) {
@@ -349,6 +370,13 @@ public class Database {
         return element;
     }
 
+    /**
+     * Write all the data of the Semester into XML files.
+     * @param path The absolute path to a directory. If it doesn't exist, the directory is created.
+     * @param semester The Semester to write down into XML files.
+     * @author Rephael Azoulay
+     * @date 19/01/2018
+     */
     private void writeSemester(String path, Semester semester) {
         File directory = new File(path);
         if (!directory.exists()) {
