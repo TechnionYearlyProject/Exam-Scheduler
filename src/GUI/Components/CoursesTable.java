@@ -309,10 +309,8 @@ public class CoursesTable extends VBox{
      */
     public void saveFunction() {
         new AlertBox(AlertType.CONFIRM, "האם ברצונך לשמור את מצב הקורסים הנוכחי למסד הנתונים?", ()->{
-            if (manager.scheduleA != null)
-                manager.dbnotifier.save(manager.courseloader,manager.semester);
-            else
-                manager.dbnotifier.save(manager.courseloader,manager.semester);
+            manager.dbnotifier.save(manager.courseloader,manager.semester);
+            manager.db.saveSemester(manager.semesterYear,manager.semesterName);
         });
         /*Semester to_write = wrapper.manager.semester;
         wrapper.manager.db.saveSemester(wrapper.manager.semesterYear, wrapper.manager.semesterName);*/
