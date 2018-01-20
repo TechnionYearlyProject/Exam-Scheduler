@@ -162,7 +162,7 @@ public class AddCourse {
                     || ((add_semester3.program.getValue()!= "מסלול פקולטי") != (add_semester3.semester.getValue()!="סמסטר"))
                     || ((add_semester4.program.getValue()!= "מסלול פקולטי") != (add_semester4.semester.getValue()!="סמסטר")) )
                     flag = false;
-				if ( (course_name.getText().equals("")) || (!flag) || ((new_weight % 0.5) != 0) || (coursestable.manager.courseloader.getCourse(new_course_id) != null) || (new_course_id/100000>1) ) {
+				if ( (course_name.getText().equals("")) || (!flag) || ((new_weight % 0.5) != 0) || (coursestable.manager.courseloader.getCourse(new_course_id) != null) || (new_course_id/1000000>1) ) {
                     label.setStyle("-fx-text-fill: red");
                     return;
                 }
