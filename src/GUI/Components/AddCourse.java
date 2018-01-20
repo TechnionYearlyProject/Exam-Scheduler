@@ -94,17 +94,17 @@ public class AddCourse {
         course_id.setFocusTraversable(false);
         course_id.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         course_id.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        course_id.setPromptText("מספר הקורס");
+        course_id.setPromptText("מספר הקורס (מספר שלם עד 6 ספרות)");
         course_name = new TextField();
         course_name.setFocusTraversable(false);
         course_name.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         course_name.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        course_name.setPromptText("שם הקורס");
+        course_name.setPromptText("שם הקורס (מחרוזת כרצונכם)");
         weight = new TextField();
         weight.setFocusTraversable(false);
         weight.setStyle("-fx-focus-color: transparent;-fx-background-color: -fx-text-box-border, -fx-control-inner-background;");//"; -fx-text-box-border: transparent");
         weight.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        weight.setPromptText("נקודות זכות");
+        weight.setPromptText("נקודות זכות (כפולה שלמה של 0.5)");
 
         label = new Label("חלק מהשדות אינם מלאים כדרוש.");
         label.setAlignment(Pos.CENTER_RIGHT);
@@ -162,7 +162,7 @@ public class AddCourse {
                     || ((add_semester3.program.getValue()!= "מסלול פקולטי") != (add_semester3.semester.getValue()!="סמסטר"))
                     || ((add_semester4.program.getValue()!= "מסלול פקולטי") != (add_semester4.semester.getValue()!="סמסטר")) )
                     flag = false;
-				if ( (course_name.getText().equals("")) || (!flag) || ((new_weight % 0.5) != 0) || (coursestable.manager.courseloader.getCourse(new_course_id) != null) ) {
+				if ( (course_name.getText().equals("")) || (!flag) || ((new_weight % 0.5) != 0) || (coursestable.manager.courseloader.getCourse(new_course_id) != null) || (new_course_id/100000>1) ) {
                     label.setStyle("-fx-text-fill: red");
                     return;
                 }
