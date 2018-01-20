@@ -303,6 +303,8 @@ public class Schedule {
                 Day day = schedulable_days.get(i);
                 if (day.getDate().equals(dateToBeScheduled)){
                     this.assignCourse(course, i);
+                    Course tmp = new Course("",courseId,false,0);
+                    courses.remove(tmp);
                 }
             }
         }
