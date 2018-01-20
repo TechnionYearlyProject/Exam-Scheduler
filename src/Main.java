@@ -24,11 +24,11 @@ public class Main extends Application {
             primaryStage.setTitle("Exam Scheduler");
             primaryStage.setScene(main_window);
             primaryStage.getIcons().add(new Image("/app_icon.png"));
-            primaryStage.setResizable(true);
-/*            primaryStage.setMaxHeight(927);
+            primaryStage.setResizable(false);
+            primaryStage.setMaxHeight(927);
             primaryStage.setMinHeight(927);
             primaryStage.setMaxWidth(1691);
-            primaryStage.setMinWidth(1691);*/
+            primaryStage.setMinWidth(1691);
             primaryStage.show();
         } catch (Exception e) {
             new AlertBox(AlertType.ERROR,"התוכנית נתקלה בשגיאה ולכן תיסגר.",null,true);
