@@ -15,7 +15,7 @@ public class CourseLoader {
         this.semester = semester;
         courses = new HashMap<>();
         sortedCoursesList = new ArrayList<>();
-        dbCourses = semester.getCourseCollection().stream().filter(c->c.hasExam)
+        dbCourses = semester.getCourseCollection().stream()
                 .collect(Collectors.toMap(x-> x.courseID, x -> x));
         removedCourses = new ArrayList<>();
         //building Logic CourseList.
