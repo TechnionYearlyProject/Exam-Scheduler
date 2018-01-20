@@ -1,6 +1,6 @@
 package GUI.Components;
 import Logic.Course;
-import Logic.EMoed;
+//import Logic.EMoed;
 import Logic.Exceptions.IllegalDaysBefore;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

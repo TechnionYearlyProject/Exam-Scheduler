@@ -132,7 +132,7 @@ public class ScheduleTest {
         LocalDate dateWhenOsScheduled = moedA.getDayWhenScheduled(234123).date;
         LocalDate dateWhenAlgoScheduled = moedA.getDayWhenScheduled(234247).date;
         assertFalse(moedA.isMovePossible(algo, dateWhenOsScheduled, loaderA));
-        assertFalse(moedA.isMovePossible(os, dateWhenAlgoScheduled, loaderA));
+        assertTrue(moedA.isMovePossible(os, dateWhenAlgoScheduled, loaderA));
         assert(moedA.isMovePossible(algo, dateWhenOsScheduled.plusDays(3), loaderA));
         assert(moedA.isMovePossible(os, dateWhenAlgoScheduled, loaderA));
         assertEquals(dateWhenOsScheduled.plusDays(3), moedA.getDayWhenScheduled(algo.getCourseID()).date);

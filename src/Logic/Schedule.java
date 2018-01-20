@@ -400,7 +400,7 @@ public class Schedule {
      * @author dorbartov
      * @date 15/01/2018
      * this functions checks whether manually assigning a course after a schedule is made is legal (complies with
-     * constraints). if it is legal, it will update the schedule accordingly.
+     * constraints), makes the move and returns if it was legal.
      * @param course to be reassigned.
      * @param new_date to be which the course will be reassigned.
      * @param courseLoader used to get a Course type from  a course id.

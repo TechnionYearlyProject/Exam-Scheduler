@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class WriteScheduleToDB {
-    public void write(Semester s,List<Day> lst, CourseLoader cL,Schedule schedule) {
+    public static void write(Semester s,List<Day> lst, CourseLoader cL,Schedule schedule) {
         Semester.Moed sm;
         if(schedule == null){
             sm = Semester.Moed.MOED_A;
