@@ -172,17 +172,15 @@ public class Toolbar extends HBox{
      * @param stage the stage that needs to be closed
      * @return the new export button
      */
-    private CustomButton buildExportOption(String msg, String fileType, String fileFormat,
-                                           IFileWriter writer,Stage stage){
+    private CustomButton buildExportOption(String msg, String fileType, String fileFormat, IFileWriter writer,Stage stage){
         CustomButton button = new CustomButton(msg,null, ()->{
             try {
-                writer.write(System.getProperty("user.home") + "\\Desktop\\" +
-                        fileType + "_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays()
-                        ,wrapper.manager.courseloader);
-                String s = System.getProperty("user.home") + "\\Desktop\\" + fileType +
-                        "_output."+fileFormat;
-                File file = new File(s);
-                Desktop.getDesktop().open(file);
+                writer.write(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_Moed_A_output."+fileFormat,wrapper.manager.scheduleA.getSchedulableDays(),wrapper.manager.courseloader);
+                writer.write(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_Moed_B_output."+fileFormat,wrapper.manager.scheduleB.getSchedulableDays(),wrapper.manager.courseloader);
+                File file_A = new File(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_Moed_A_output."+fileFormat);
+                File file_B = new File(System.getProperty("user.home") + "\\Desktop\\" + fileType + "_Moed_B_output."+fileFormat);
+                Desktop.getDesktop().open(file_A);
+                Desktop.getDesktop().open(file_B);
                 stage.close();
             } catch (Exception e) {
                 new AlertBox(AlertType.ERROR,"שגיאה בפתיחת הקובץ.",null);
